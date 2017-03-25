@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/post/overview-python-data-science/</loc>
+    <lastmod>2016-11-06T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/post/sklearn-pipeline/</loc>
+    <lastmod>2016-11-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/post/KMeans/</loc>
+    <lastmod>2016-10-30T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/post/TexasDeathRow/</loc>
+    <lastmod>2016-10-29T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/page/about/</loc>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/tags/altair/</loc>
+    <lastmod>2016-10-29T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/tags/big-list/</loc>
+    <lastmod>2016-11-06T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/tags/gensim/</loc>
+    <lastmod>2016-10-29T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/tags/javascript/</loc>
+    <lastmod>2016-11-06T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/tags/machine-learning/</loc>
+    <lastmod>2016-11-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/tags/matplotlib/</loc>
+    <lastmod>2016-10-30T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/page/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/post/</loc>
+    <lastmod>2016-11-06T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/tags/python/</loc>
+    <lastmod>2016-11-06T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/</loc>
+    <lastmod>2016-11-06T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/tags/sklearn/</loc>
+    <lastmod>2016-11-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

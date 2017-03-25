@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+</head>
+<meta charset="utf-8">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/static/icons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/static/icons/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="/static/icons/manifest.json">
+<link rel="mask-icon" href="/static/icons/safari-pinned-tab.svg" color="#2ae2b1">
+<link rel="shortcut icon" href="/static/icons/favicon.ico">
+<meta name="msapplication-config" content="/static/icons/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="//fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet" type="text/css">
+<link rel="stylesheet"
+href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/hopscotch.min.css">
+<link rel="stylesheet" href="/static/css/normalize.css">
+<link rel="stylesheet" href="/static/css/skeleton.css">
+<link rel="stylesheet" href="/static/css/custom.css">
+
+
+
+<title></title>
+
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://signal-to-noise.xyz/post/sklearn-pipeline/"
+  },
+  "headline": "Why you should use scikit-learn&#39;s Pipeline object",
+  "name": "Why you should use scikit-learn&#39;s Pipeline object",
+  "datePublished": "2016-11-01",
+  "dateModified": "20161101-00:00:00.000",
+  "author": {
+    "@type": "Person",
+    "name": "Michele Lacchia"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Signal to Noise",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://signal-to-noise.xyz/static/images/signal-to-noise.png"
+    }
+  },
+  "description": "Making the case for sklearn&#39;s Pipeline object",
+  "keywords": "python,sklearn,machine-learning"
+}
+</script>
+<body>
+
+<div class="container">
+
+	<header role="banner">
+		<div class="header-logo">
+			<a href="/"><img src="/static/images/signal-to-noise.png" width="60" height="60" alt="Signal to Noise"></a>
+		</div>
+		
+	</header>
+
+
+
+
+<main role="main">
+    <article>
+        <h1 class="entry-title">Why you should use scikit-learn&#39;s Pipeline object</h1>
+        <span class="entry-meta"><time datetime="2016-11-01">November 01, 2016</time></span>,
+        <span class="entry-meta">Michele Lacchia</span>
+        <div class="post-after">
+              <div class="tags">
+                
+                    <a href="http://signal-to-noise.xyz//tags/python">python</a>
+                
+                    <a href="http://signal-to-noise.xyz//tags/sklearn">sklearn</a>
+                
+                    <a href="http://signal-to-noise.xyz//tags/machine-learning">machine-learning</a>
+                
+              </div>
+        </div>
+        <section>
+            
+
+<div class="img-with-copyright">
+<img itemprop="image" title="A pipeline" src="/static/images/pipes.jpg" />
+<div class="copyright"><span>Copyright: <a href="http://www.istockphoto.com/portfolio/visualgo">visualgo</a><span style="clear:both"></span></span></div>
+</div>
+
+<p>Machine learning models learn from data. It is crucial, however, that the data
+you feed them is specifically preprocessed and refined for the problem you want
+to solve. This includes data cleaning, preprocessing, feature engineering, and
+so on.</p>
+
+<p>Very often, when presented with a dataset, I would fire up a Jupyter notebook
+and start exploring it interactively. The notebook is great for that task, but
+after a while I ended up with code that is a total mess in the global
+namespace.</p>
+
+<p>Then I read about scikit-learn&rsquo;s <a href="http://scikit-learn.org/stable/modules/pipeline.html#pipeline"><code>Pipeline</code></a> object, a utility
+that provides a way to automate a machine learning workflow.  It works by
+allowing several transformers to be chained together. One can also add an
+estimator at the end of the pipeline. Data flows from the start of the pipeline
+to its end, and each time it is transformed and fed to the next component. A
+<code>Pipeline</code> object has two main methods:</p>
+
+<ul>
+<li><code>fit_transform</code>: this same method is called for each transformer and each time
+the result is fed into the next transformer;</li>
+<li><code>fit_predict</code>: if your pipeline ends with an estimator, then as before the
+data is transformed until it arrives at the last step, where it is fed into
+the estimator and <code>fit_predict</code> is called on the estimator.</li>
+</ul>
+
+<p>Sometimes data flow is not linear, and that&rsquo;s where <a href="http://scikit-learn.org/stable/modules/pipeline.html#featureunion-composite-feature-spaces"><code>FeatureUnion</code></a>
+comes in. A <code>FeatureUnion</code> is itself a transformer, which combines multiple
+transformers. During fitting, they are fitted independently, while for the
+transformation, each component of the union is applied in parallel. Where all
+the results have been collected, they are concatenated into a single vector.</p>
+
+<h3 id="example">Example</h3>
+
+<p>The excellent scikit-learn documentation has loads of examples. Let&rsquo;s take a
+look at the <a href="http://scikit-learn.org/stable/auto_examples/feature_selection/feature_selection_pipeline.html#sphx-glr-auto-examples-feature-selection-feature-selection-pipeline-py">Anova SVM pipeline</a>. The relevant part is the
+following:</p>
+
+<pre><code class="language-python"># ANOVA SVM-C
+# 1) anova filter, take 3 best ranked features
+anova_filter = SelectKBest(f_regression, k=3)
+# 2) svm
+clf = svm.SVC(kernel='linear')
+
+anova_svm = make_pipeline(anova_filter, clf)
+anova_svm.fit(X, y)
+anova_svm.predict(X)
+</code></pre>
+
+<p>The function
+<a href="http://scikit-learn.org/stable/modules/generated/sklearn.pipeline.make_pipeline.html"><code>make_pipeline</code></a>
+is just a wrapper around the class, and it allows to compose transformers and
+estimators without specifying a name for each one. The above code is equivalent
+to the following:</p>
+
+<pre><code class="language-python"># ANOVA SVM-C
+# 1) anova filter, take 3 best ranked features
+anova_filter = SelectKBest(f_regression, k=3)
+# 2) svm
+clf = svm.SVC(kernel='linear')
+
+anova_filter.fit(X, y)
+X_ = anova_filter.transform(X)
+clf.fit(X_, y)
+clf.predict(X_)
+</code></pre>
+
+<p>In this little example, we only have one transformer and one estimator, but the
+difference in readability and clarity is significantly in favour of the first
+version. In what follows, I&rsquo;ll explain how I got scikit-learn and pandas
+working together in a pipeline with many more transformers.</p>
+
+<h3 id="pipelines-and-pandas-dataframes">Pipelines and Pandas dataframes</h3>
+
+<p>Unfortunately, scikit-learn&rsquo;s API expects Numpy arrays. If you feed a dataframe
+into a pipeline, you will get a Numpy array out of it. Other times, as it is
+the case with <code>FeatureUnion</code>, it will not work as expected. It would be much
+better if one could get a dataframe out of the pipeline. Right now various
+efforts are in place to allow a better sklearn/pandas integration, namely:</p>
+
+<ul>
+<li>the PR <a href="https://github.com/scikit-learn/scikit-learn/pull/3886"><code>scikit-learn/3886</code></a>,
+which at the time of writing is still a work in progress;</li>
+<li>the package <a href="https://github.com/paulgb/sklearn-pandas"><code>sklearn-pandas</code></a>.</li>
+</ul>
+
+<p>I tried <code>sklearn-pandas</code> but it doesn&rsquo;t quite do what I wanted: it provides a
+way to map <code>DataFrame</code> columns to transformations. Most of the time, however, I
+construct a pipeline of transformers and I want to receive a <code>DataFrame</code> as
+input or output. For this reason I wrote a custom transformer that does
+precisely this:</p>
+
+<pre><code class="language-python">from sklearn.base import TransformerMixin
+
+class NoFitMixin:
+    def fit(self, X, y=None):
+        return self
+
+class DFTransform(TransformerMixin, NoFitMixin):
+    def __init__(self, func, copy=False):
+        self.func = func
+        self.copy = copy
+
+    def transform(self, X):
+        X_ = X if not self.copy else X.copy()
+        return self.func(X_)
+</code></pre>
+
+<p>It accepts a function as argument and the transformed data is simply its return
+value. The <code>copy</code> keyword argument is there to prevent a double copying: if the
+function itself returns a new <code>DataFrame</code>, then there&rsquo;s no need to copy it.</p>
+
+<p>The only problem arises when using <code>FeatureUnion</code>: it does not concatenate the
+results into a <code>DataFrame</code>. I wrote a custom class for this case as well:</p>
+
+<pre><code class="language-python">from sklearn.pipeline import Pipeline, FeatureUnion, _transform_one
+from sklearn.externals.joblib import Parallel, delayed
+
+class DFFeatureUnion(FeatureUnion):
+    def fit_transform(self, X, y=None, **fit_params):
+        # non-optimized default implementation; override when a better
+        # method is possible
+        if y is None:
+            # fit method of arity 1 (unsupervised transformation)
+            return self.fit(X, **fit_params).transform(X)
+        else:
+            # fit method of arity 2 (supervised transformation)
+            return self.fit(X, y, **fit_params).transform(X)
+
+    def transform(self, X):
+        Xs = Parallel(n_jobs=self.n_jobs)(
+            delayed(_transform_one)(trans, name, weight, X)
+            for name, trans, weight in self._iter())
+        return pd.concat(Xs, axis=1, join='inner')
+</code></pre>
+
+<p>This is an example showing how they can be used:</p>
+
+<pre><code class="language-python">pipeline = Pipeline([
+    ('ordinal_to_nums', DFTransform(_ordinal_to_nums, copy=True)),
+    ('union', DFFeatureUnion([
+        ('categorical', Pipeline([
+            ('select', DFTransform(lambda X: X.select_dtypes(include=['object']))),
+            ('fill_na', DFTransform(lambda X: X.fillna('NA'))),
+            ('one_hot', DFTransform(_one_hot_encode)),
+        ])),
+        ('numerical', Pipeline([
+            ('select', DFTransform(lambda X: X.select_dtypes(exclude=['object']))),
+            ('fill_median', DFTransform(lambda X: X.fillna(X.median()))),
+            ('add_features', DFTransform(_add_features, copy=True)),
+            ('remove_skew', DFTransform(_remove_skew, copy=True)),
+            ('find_outliers', DFTransform(_find_outliers, copy=True)),
+            ('normalize', DFTransform(lambda X: X.div(X.max())))
+        ])),
+    ])),
+])
+</code></pre>
+
+<p>The above pipeline splits the <code>DataFrame</code> into categorical and numerical
+columns, applying different transformation to each. The columns are
+concatenated into a <code>DataFrame</code> at then end of the <code>DFFeatureUnion</code>.</p>
+
+<p>The resulting code is well organized and very easy to understand. It&rsquo;s also
+extremely easy to add or remove steps to/from the pipeline.</p>
+
+        </section>
+    </article>
+</main>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'signal-to-noise';
+    var disqus_identifier = 'http:\/\/signal-to-noise.xyz\/post\/sklearn-pipeline\/';
+    var disqus_title = 'Why you should use scikit-learn\x27s Pipeline object';
+    var disqus_url = 'http:\/\/signal-to-noise.xyz\/post\/sklearn-pipeline\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+	<footer role="contentinfo">
+		<div class="hr"></div>
+		<div class="footer-link">
+            <ul>
+                <li><script>document.write('<'+'a'+' '+'h'+'r'+'e'+'f'+'='+"'"+'m'+'a'+'i'+'&'+'#'+'1'+'0'+
+'8'+';'+'t'+'o'+'&'+'#'+'5'+'8'+';'+'&'+'#'+'1'+'0'+'9'+';'+'i'+'c'+'h'+'&'+
+'#'+'1'+'0'+'1'+';'+'&'+'#'+'1'+'0'+'8'+';'+'%'+'6'+'5'+'l'+'%'+'6'+'1'+'c'+
+'c'+'%'+'6'+'8'+'i'+'a'+'%'+'&'+'#'+'5'+'2'+';'+'0'+'%'+'6'+'&'+'#'+'5'+'5'+
+';'+'&'+'#'+'1'+'0'+'9'+';'+'&'+'#'+'9'+'7'+';'+'&'+'#'+'1'+'0'+'5'+';'+'l'+
+'%'+'&'+'#'+'5'+'0'+';'+'E'+'%'+'6'+'3'+'o'+'m'+"'"+'>'+'E'+'m'+'a'+'i'+'&'+
+'#'+'1'+'0'+'8'+';'+'<'+'/'+'a'+'>');</script></li>
+                <li><a href="https://github.com/rubik/" target="_blank">GitHub</a></li>
+                <li><a href="/page/about/">About me</a></li>
+                <li><a href="http://feeds.feedburner.com/signal-to-noise">RSS</a></li>
+            </ul>
+
+		</div>
+		<div class="copyright">Copyright &copy; Created by Michele Lacchia, built with Hugo</div>
+	</footer>
+</div>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-86380700-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+</body>
+</html>
+

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Signal to Noise</title>
+    <link>http://signal-to-noise.xyz/index.xml</link>
+    <description>Recent content on Signal to Noise</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Created by Michele Lacchia, built with Hugo</copyright>
+    <lastBuildDate>Sun, 06 Nov 2016 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://signal-to-noise.xyz/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>An overview of great tools for data science</title>
+      <link>http://signal-to-noise.xyz/post/overview-python-data-science/</link>
+      <pubDate>Sun, 06 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://signal-to-noise.xyz/post/overview-python-data-science/</guid>
+      <description>Overview of the most useful tools for data science: mainly Python and Javscript</description>
+    </item>
+    
+    <item>
+      <title>Why you should use scikit-learn&#39;s Pipeline object</title>
+      <link>http://signal-to-noise.xyz/post/sklearn-pipeline/</link>
+      <pubDate>Tue, 01 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://signal-to-noise.xyz/post/sklearn-pipeline/</guid>
+      <description>Making the case for sklearn&#39;s Pipeline object</description>
+    </item>
+    
+    <item>
+      <title>The KMeans problem</title>
+      <link>http://signal-to-noise.xyz/post/KMeans/</link>
+      <pubDate>Sun, 30 Oct 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://signal-to-noise.xyz/post/KMeans/</guid>
+      <description>Mathematical explanation and Python implementation of the LLoyd&#39;s algorithm for the KMeans problem</description>
+    </item>
+    
+    <item>
+      <title>Exploration of Texas death row data</title>
+      <link>http://signal-to-noise.xyz/post/TexasDeathRow/</link>
+      <pubDate>Sat, 29 Oct 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://signal-to-noise.xyz/post/TexasDeathRow/</guid>
+      <description>Exploration of Texas death row data</description>
+    </item>
+    
+    <item>
+      <title>About me</title>
+      <link>http://signal-to-noise.xyz/page/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://signal-to-noise.xyz/page/about/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
