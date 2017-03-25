@@ -1,0 +1,25 @@
+	<footer role="contentinfo">
+		<div class="hr"></div>
+		<div class="footer-link">
+            <ul>
+                {{ with .Site.Params.obfuscated_email }}<li><script>{{ . | safeJS }}</script>{{ end }}</li>
+                {{ with .Site.Params.github }}<li><a href="{{ . }}" target="_blank">GitHub</a>{{ end }}</li>
+                <li><a href="/page/about/">About me</a></li>
+                <li><a href="http://feeds.feedburner.com/signal-to-noise">RSS</a></li>
+            </ul>
+
+		</div>
+		<div class="copyright">Copyright &copy; {{ .Site.Copyright | safeHTML }}</div>
+	</footer>
+</div>
+{{ template "_internal/google_analytics_async.html" . }}
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+{{ if .GetParam "hasMath"}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js"></script>
+    <script>renderMathInElement(document.body);</script>
+{{ end }}
+</body>
+</html>

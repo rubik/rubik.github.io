@@ -1,0 +1,22 @@
+{{ partial "header-with-index-data.html" . }}
+
+{{ $baseurl := .Site.BaseURL }}
+
+<main role="main">
+{{ range (where .Data.Pages ".Params.hidefromhome" "!=" "true") }}
+    <article>
+        <h2 class="entry-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+        <span class="entry-meta"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 02, 2006" }}</time></span>,
+        <span class="entry-meta">{{ .Params.author }}</span>
+        <div class="post-after">
+              <div class="tags">
+                {{ range .Params.tags }}
+                    <a href="{{ $baseurl }}/tags/{{ . | urlize }}">{{ . }}</a>
+                {{ end }}
+              </div>
+        </div>
+    </article>
+{{ end }}
+</main>
+
+{{ partial "footer.html" . }}
