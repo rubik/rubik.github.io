@@ -1,0 +1,54 @@
+==================================================================
+https://keybase.io/rubik
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://signal-to-noise.xyz
+  * I am rubik (https://keybase.io/rubik) on keybase.
+  * I have a public key ASAdcueU55alkZqzJ-Ha8dhGYEK3Uqy_ySm5OWVU6WtsOQo
+
+To do so, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "eldest_kid": "0101b6acb9899b57ab0ddb1a21e84b89af2a7f630abe9ba43b0232655aed62d345270a",
+            "host": "keybase.io",
+            "kid": "01201d72e794e796a5919ab327e1daf1d8466042b752acbfc929b9396554e96b6c390a",
+            "uid": "85b9350805878e4bc397fa5f4bcc7a19",
+            "username": "rubik"
+        },
+        "service": {
+            "hostname": "signal-to-noise.xyz",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "client": {
+        "name": "keybase.io go client",
+        "version": "1.0.18"
+    },
+    "ctime": 1484733776,
+    "expire_in": 504576000,
+    "merkle_root": {
+        "ctime": 1484733735,
+        "hash": "783b15e4f9c798fef4acab2590071a11fd9f364d9022ff8cfa707eb662bc4498cddab09241a4884cfc5bfbb61b31d4453328a540a60759dd6c3401836cd7f2d5",
+        "seqno": 804517
+    },
+    "prev": "a276c315c063031c030dfae17e4be5a44928521fc71b37b757e41eb6e4d15999",
+    "seqno": 7,
+    "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgHXLnlOeWpZGasyfh2vHYRmBCt1Ksv8kpuTllVOlrbDkKp3BheWxvYWTFAvd7ImJvZHkiOnsia2V5Ijp7ImVsZGVzdF9raWQiOiIwMTAxYjZhY2I5ODk5YjU3YWIwZGRiMWEyMWU4NGI4OWFmMmE3ZjYzMGFiZTliYTQzYjAyMzI2NTVhZWQ2MmQzNDUyNzBhIiwiaG9zdCI6ImtleWJhc2UuaW8iLCJraWQiOiIwMTIwMWQ3MmU3OTRlNzk2YTU5MTlhYjMyN2UxZGFmMWQ4NDY2MDQyYjc1MmFjYmZjOTI5YjkzOTY1NTRlOTZiNmMzOTBhIiwidWlkIjoiODViOTM1MDgwNTg3OGU0YmMzOTdmYTVmNGJjYzdhMTkiLCJ1c2VybmFtZSI6InJ1YmlrIn0sInNlcnZpY2UiOnsiaG9zdG5hbWUiOiJzaWduYWwtdG8tbm9pc2UueHl6IiwicHJvdG9jb2wiOiJodHRwOiJ9LCJ0eXBlIjoid2ViX3NlcnZpY2VfYmluZGluZyIsInZlcnNpb24iOjF9LCJjbGllbnQiOnsibmFtZSI6ImtleWJhc2UuaW8gZ28gY2xpZW50IiwidmVyc2lvbiI6IjEuMC4xOCJ9LCJjdGltZSI6MTQ4NDczMzc3NiwiZXhwaXJlX2luIjo1MDQ1NzYwMDAsIm1lcmtsZV9yb290Ijp7ImN0aW1lIjoxNDg0NzMzNzM1LCJoYXNoIjoiNzgzYjE1ZTRmOWM3OThmZWY0YWNhYjI1OTAwNzFhMTFmZDlmMzY0ZDkwMjJmZjhjZmE3MDdlYjY2MmJjNDQ5OGNkZGFiMDkyNDFhNDg4NGNmYzViZmJiNjFiMzFkNDQ1MzMyOGE1NDBhNjA3NTlkZDZjMzQwMTgzNmNkN2YyZDUiLCJzZXFubyI6ODA0NTE3fSwicHJldiI6ImEyNzZjMzE1YzA2MzAzMWMwMzBkZmFlMTdlNGJlNWE0NDkyODUyMWZjNzFiMzdiNzU3ZTQxZWI2ZTRkMTU5OTkiLCJzZXFubyI6NywidGFnIjoic2lnbmF0dXJlIn2jc2lnxEBFNX3S4Fphl/8ncvPa0FKzp4tsiTTkw20ev9IvtxNOgcSuFbmTU4AiO5aMwM+Q7D5zSGQN8b8B73uu5xwOk/4MqHNpZ190eXBlIKRoYXNogqR0eXBlCKV2YWx1ZcQguNOCJWxhyFhcIAYXe44Xwo1cYXlgt4G38AH+LkHwRXqjdGFnzQICp3ZlcnNpb24B
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/rubik
+
+==================================================================
