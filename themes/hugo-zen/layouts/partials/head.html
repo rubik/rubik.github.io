@@ -10,13 +10,11 @@
 <meta name="theme-color" content="#ffffff">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="//fonts.googleapis.com/css?family=Roboto:400" rel="stylesheet" type="text/css">
-<link rel="stylesheet"
-href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/hopscotch.min.css">
 <link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/hopscotch.min.css">
 {{ if .RSSLink }}
   <link href="{{ .RSSLink }}" rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" />
   <link href="{{ .RSSLink }}" rel="feed" type="application/rss+xml" title="{{ .Site.Title }}" />
 {{ end }}
-
 {{ $isHomePage := eq .Title .Site.Title }}
 <title>{{ .Title }}{{ if eq $isHomePage false }} - {{ .Site.Title }}{{ end }}</title>
