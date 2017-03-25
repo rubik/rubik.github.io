@@ -6,6 +6,7 @@ name = "Michele Lacchia"
 copyright = "Created by Michele Lacchia, built with Hugo"
 disqusShortname = "signal-to-noise"
 googleAnalytics = "UA-86380700-1"
+enableRobotsTXT = true
 
 [taxonomies]
 tag = "tags"
