@@ -1,0 +1,66 @@
++++
+date = "2017-03-31T20:39:53+02:00"
+title = "Interesting data structures: the BK-tree"
+author = "Michele Lacchia"
+tags = ["python","data-structures"]
+category = "post"
+hasMath = true
+draft = true
++++
+
+A BK-tree is a tree data structure specialized to index data in a [metric
+space](https://en.wikipedia.org/wiki/Metric_space). A metric space is
+essentially a set of object which we equipped with a distance function $$d(a,
+b)$$ for every pair of elements $$(a, b)$$. This distance function must satisfy
+a set of axioms that ensure it's well-behaved.
+
+The BK-tree data structure was proposed by [Burkhard and Keller in
+1973](http://dl.acm.org/citation.cfm?doid=362003.362025) as a solution to the
+problem of searching a set of keys to find a key which is closest to a given
+query key. The naive way to solve this problem is to simply compare the query
+key with every element of the set; if the comparision is done in constant time,
+this solution is $$O(n)$$. On the other hand, a BK-tree is likely to allow less
+comparisons to be made.
+
+## Construction of the tree
+
+To see how to construct a BK-tree, let's use a real scenario. We have a
+dictionary of words and we want to find those that are most similar to a given
+query word. To gauge how similar two words are, we are going to use the
+[Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance).
+Essentially, it's the minimum number of single-character edits (which can be
+insertions, deletions or substitutions) required to mutate one word into the
+other. For example, the distance between "soccer" and "otter" is $$3,$$ because
+we can change the first one into the other by deleting the leading **s**, and
+then substituting the two central **c**'s with two **t**'s.
+
+Let's use the dictionary
+```no-highlight
+{'some', 'soft', 'same', 'mole', 'soda', 'salmon'}
+```
+To construct the tree, we first choose any word as the root node, and then
+add the other words by calculating their distance from the root. In our case,
+we can choose "some" to be the root element. Then, after adding the two
+subsequent words the tree would look like this:
+
+<p class="centered">
+<img src="/static/images/bk-tree-1.png" width="200" />
+</p>
+
+because the distance between "some" and "same" is $$1$$ and the distance
+between "some" and "soft" is $$2$$. Now, let's add the next word, "safe".
+Observe that the distance between "safe" and "some" is again $$2,$$ so we add
+it to the tree as a child of "same", with an edge corresponding to their
+distance. After adding all the words we obtain the following tree:
+
+<p class="centered">
+<img src="/static/images/bk-tree-2.png" width="340" />
+</p>
+
+## Search
+Remember that the original problem was to find all the words closest to a given
+query word. Suppose we want to find all the words that are no more distant than
+$$N = 2$$ from the word "sort". The algorithm proceeds as follows:
+
+1.
+2. visit all the children that are at a distance

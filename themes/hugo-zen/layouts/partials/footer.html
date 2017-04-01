@@ -9,7 +9,7 @@
             </ul>
 
 		</div>
-		<div class="copyright">Copyright &copy; {{ .Site.Copyright | safeHTML }}</div>
+		<div class="copyright">{{ .Site.Copyright | safeHTML }}</div>
 	</footer>
 </div>
 {{ template "_internal/google_analytics_async.html" . }}

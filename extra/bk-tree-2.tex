@@ -1,0 +1,26 @@
+\documentclass[convert]{standalone}
+%\documentclass{article}
+\usepackage{forest}
+
+
+\begin{document}
+\pgfkeys{/pgf/inner sep=1.4em}
+\begin{forest}
+    for tree={%
+        circle,
+        draw,
+        ultra thick,
+        minimum height=1.5cm,
+        inner sep=1
+    },
+    [some
+         [same, edge label={node[pos=0.4,left]{1}}]
+         [soft, calign with current, edge
+             label={node[midway,fill=white,inner sep=1.5mm,outer sep=0]{2}}
+              [soda, edge label={node[pos=0.4,left]{2}}]
+              [mole, edge label={node[pos=0.4,right]{3}}]
+         ]
+         [salmon, edge label={node[pos=0.4,right]{4}}]
+    ]
+\end{forest}
+\end{document}
