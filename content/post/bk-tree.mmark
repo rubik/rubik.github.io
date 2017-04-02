@@ -5,14 +5,14 @@ author = "Michele Lacchia"
 tags = ["python","data-structures"]
 category = "post"
 hasMath = true
-draft = true
 +++
 
 A BK-tree is a tree data structure specialized to index data in a [metric
 space](https://en.wikipedia.org/wiki/Metric_space). A metric space is
-essentially a set of object which we equipped with a distance function $$d(a,
+essentially a set of objects which we equip with a distance function $$d(a,
 b)$$ for every pair of elements $$(a, b)$$. This distance function must satisfy
-a set of axioms that ensure it's well-behaved.
+a set of axioms in order to ensure it's well-behaved. The exact reason why this
+is required will be explained in the "[Search](#search)" paragraph below.
 
 The BK-tree data structure was proposed by [Burkhard and Keller in
 1973](http://dl.acm.org/citation.cfm?doid=362003.362025) as a solution to the
@@ -57,10 +57,153 @@ distance. After adding all the words we obtain the following tree:
 <img src="/static/images/bk-tree-2.png" width="340" />
 </p>
 
-## Search
+## <a id="search"></a>Search
 Remember that the original problem was to find all the words closest to a given
-query word. Suppose we want to find all the words that are no more distant than
-$$N = 2$$ from the word "sort". The algorithm proceeds as follows:
+query word. Call $$N$$ the maximum allowed distance. The algorithm proceeds as
+follows:
 
-1.
-2. visit all the children that are at a distance
+1. create a candidates list and add the root node to it
+2. take a candidate, compute its distance $$D$$ from the query key and compare
+   it with the tolerance;
+3. add to the candidates list all the children of the current node that, from
+   their parent, have a distance between $$D - N$$ and $$D + N$$.
+
+Suppose we want to find all the words in our dictionary that are no more
+distant than $$N = 2$$ from the word "sort". Our only candidate is the root
+node "some". We start by computing
+
+$$D = \mathop{\mathrm{Levenshtein}}(\text{`sort'}, \text{`some'}) = 2$$
+
+Since our tolerance is $$2,$$ we add "some" to the list of results. Then we
+extend our candidates list with all the children that have a distance from the
+root node between $$D - N = 0$$ and $$D + N = 4$$. In this case, all the
+children satisfy this condition. Moving on, we compute
+
+$$D = \mathop{\mathrm{Levenshtein}}(\text{`sort'}, \text{`same'}) = 3$$
+
+Since $$D > N$$, this node is not a result and we move on to "soft"; now
+
+$$D = \mathop{\mathrm{Levenshtein}}(\text{`sort'}, \text{`soft'}) = 1$$
+
+Hence "soft" is an acceptable result. Regarding its children, we take those
+that have a distance between $$D - N = -1$$ and $$D + N = 3$$. Again, all of
+them, but only "soda" is a valid result. Finally, "salmon" is not acceptable.
+If we sort our results by distance we end up with the following:
+```no-highlight
+[(1, 'soft'), (2, 'some'), (2, 'soda')]
+```
+
+### Why does it work?
+It's interesting to understand **why** we are allowed to prune all the children
+that do not meet the criterium we gave above. In the introduction we said that
+our distance function $$d$$ must satisfy a set of axioms in order for us to
+obtain the metric space structure. Those axioms are the following. For all
+elements $$a,b,c$$ it must hold:
+
+1. non-negativity: $$d(a, b) \ge 0$$;
+2. $$d(a, b) = 0$$ implies $$a = b$$ (and vice-versa);
+3. symmetry: $$d(a, b) = d(b, a)$$
+4. triangle inequality: $$d(a, b) \le d(a, c) + d(c, b)$$.
+
+The first three are just a formalization of our intuitive notion of "distance",
+while the last one derives from the relation between sides of a triangle in
+Euclidean geometry. This is often the most difficult property to demonstrate
+when we want to prove that a generic distance is actually a metric. As it turns
+out, the Levenshtein distance satisfies this property and therefore it's a
+metric. This is why we can use it in the examples above.
+
+Let's call the query key $$\bar x$$. Suppose we are evaluating the child $$B$$
+of an arbitrary node $$A$$ inside the tree, which we calculated to be at a distance $$D = d(\bar
+x, A)$$ from the query key. This situation is summarized in the following
+figure:
+
+<p class="centered">
+<img src="/static/images/bk-tree-3.png" width="350" />
+</p>
+
+Since we assumed that $$d$$ is a metric, by the triangle inequality we have
+
+$$d(A, B) \le d(A, \bar x) + d(\bar x, B)$$
+
+from which
+
+$$d(\bar x, B) \ge d(A, B) - d(A, \bar x) = x - D.$$
+
+Using the triangle inequality again, this time with $$d(A, \bar x)$$ and $$B$$,
+we obtain
+
+$$d(\bar x, B) \ge d(A, \bar x) - d(A, B) = D - x$$
+
+Since we are only interested in nodes that are at a distance *at most* $$N$$
+from the query key $$\bar x$$, we impose the constraint $$d(\bar x, B) \le N$$.
+This translates to
+
+$$\begin{cases}x - D \le N\\D - x \le N\end{cases}$$
+
+which is equivalent to
+
+$$D - N \le x \le D + N$$
+
+We have proved that if $$d$$ is a metric, we can safely discard nodes that do
+not meet the above criteria. Finally, note that *every* child of $$B$$ will be
+at a distance of $$x$$ from $$A$$ (by construction of the BK-tree) and
+therefore we can safely prune the whole sub-tree.
+
+## Implementation
+This data structure is easy to implement in Python, if we use dictionaries to
+represent edges.
+
+```python
+from collections import deque
+
+
+class BKTree:
+    def __init__(self, distance_func):
+        self._tree = None
+        self._distance_func = distance_func
+
+    def add(self, node):
+        if self._tree is None:
+            self._tree = (node, {})
+            return
+
+        current, children = self._tree
+        while True:
+            dist = self._distance_func(node, current)
+            target = children.get(dist)
+            if target is None:
+                children[dist] = (node, {})
+                break
+            current, children = target
+
+    def search(self, node, tolerance):
+        if self._tree is None:
+            return []
+
+        candidates = deque([self._tree])
+        result = []
+        while candidates:
+            candidate, children = candidates.popleft()
+            dist = self._distance_func(node, candidate)
+            if dist <= tolerance:
+                result.append((dist, candidate))
+
+            low, high = dist - tolerance, dist + tolerance
+            candidates.extend(c for d, c in children.items()
+                              if low <= d <= high)
+        return result
+```
+
+The implementation is pretty straightforward and adheres completely to the
+algorithm we explained above. A few comments:
+
+* there's no need to add a ``root`` argument to the ``__init__`` method, since
+  any element can be a root node. In our case the first one added will
+  become root;
+* why is ``deque`` even needed? At first I used a ``set``, only to see it fail
+  because dictionaries aren't hashable. We need another data structure that
+  allows $$O(1)$$ popping and linear insertion. Built-in ``deque``, being a
+  doubly-linked list, is a natural fit.
+
+## Conclusion
+The BK-tree is a really interesting structure that

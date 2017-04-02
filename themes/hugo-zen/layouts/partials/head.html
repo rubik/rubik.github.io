@@ -17,4 +17,4 @@
   <link href="{{ .RSSLink }}" rel="feed" type="application/rss+xml" title="{{ .Site.Title }}" />
 {{ end }}
 {{ $isHomePage := eq .Title .Site.Title }}
-<title>{{ .Title }}{{ if eq $isHomePage false }} - {{ .Site.Title }}{{ end }}</title>
+<title>{{ if .Title }}{{ .Title }}{{ else }}{{ .Site.Title }}{{ end }}{{ if eq $isHomePage false }} - {{ .Site.title }}{{ end }}</title>
