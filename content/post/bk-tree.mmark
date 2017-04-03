@@ -18,11 +18,14 @@ The BK-tree data structure was proposed by [Burkhard and Keller in
 1973](http://dl.acm.org/citation.cfm?doid=362003.362025) as a solution to the
 problem of searching a set of keys to find a key which is closest to a given
 query key. The naive way to solve this problem is to simply compare the query
-key with every element of the set; if the comparision is done in constant time,
+key with every element of the set; if the comparison is done in constant time,
 this solution is $$O(n)$$. On the other hand, a BK-tree is likely to allow less
 comparisons to be made.
 
 ## Construction of the tree
+BK-tree is defined in the following way. An arbitrary element $$a$$ is selected
+as root. Root may have zero or more sub-trees. The $$k$$-th sub-tree is
+recursively built of all elements $$b$$ such that $$d(a,b) = k$$.
 
 To see how to construct a BK-tree, let's use a real scenario. We have a
 dictionary of words and we want to find those that are most similar to a given
@@ -30,7 +33,7 @@ query word. To gauge how similar two words are, we are going to use the
 [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance).
 Essentially, it's the minimum number of single-character edits (which can be
 insertions, deletions or substitutions) required to mutate one word into the
-other. For example, the distance between "soccer" and "otter" is $$3,$$ because
+other. For example, the distance between "soccer" and "otter" is $$3$$, because
 we can change the first one into the other by deleting the leading **s**, and
 then substituting the two central **c**'s with two **t**'s.
 
@@ -48,25 +51,26 @@ subsequent words the tree would look like this:
 </p>
 
 because the distance between "some" and "same" is $$1$$ and the distance
-between "some" and "soft" is $$2$$. Now, let's add the next word, "safe".
-Observe that the distance between "safe" and "some" is again $$2,$$ so we add
+between "some" and "soft" is $$2$$. Now, let's add the next word, "mole".
+Observe that the distance between "mole" and "some" is again $$2$$, so we add
 it to the tree as a child of "same", with an edge corresponding to their
 distance. After adding all the words we obtain the following tree:
 
 <p class="centered">
-<img src="/static/images/bk-tree-2.png" width="340" />
+<img src="/static/images/bk-tree-2.png" width="320" />
 </p>
 
 ## <a id="search"></a>Search
 Remember that the original problem was to find all the words closest to a given
-query word. Call $$N$$ the maximum allowed distance. The algorithm proceeds as
-follows:
+query word. Call $$N$$ the maximum allowed distance (which we'll call radius).
+The algorithm proceeds as follows:
 
 1. create a candidates list and add the root node to it
 2. take a candidate, compute its distance $$D$$ from the query key and compare
-   it with the tolerance;
-3. add to the candidates list all the children of the current node that, from
-   their parent, have a distance between $$D - N$$ and $$D + N$$.
+   it with the radius;
+3. selection criterion: add to the candidates list all the children of the
+   current node that, from their parent, have a distance between $$D - N$$ and
+   $$D + N$$ (inclusive).
 
 Suppose we want to find all the words in our dictionary that are no more
 distant than $$N = 2$$ from the word "sort". Our only candidate is the root
@@ -74,10 +78,10 @@ node "some". We start by computing
 
 $$D = \mathop{\mathrm{Levenshtein}}(\text{`sort'}, \text{`some'}) = 2$$
 
-Since our tolerance is $$2,$$ we add "some" to the list of results. Then we
-extend our candidates list with all the children that have a distance from the
-root node between $$D - N = 0$$ and $$D + N = 4$$. In this case, all the
-children satisfy this condition. Moving on, we compute
+Since the radius is $$2,$$ we add "some" to the list of results. Then we extend
+our candidates list with all the children that have a distance from the root
+node between $$D - N = 0$$ and $$D + N = 4$$. In this case, all the children
+satisfy this condition. Moving on, we compute
 
 $$D = \mathop{\mathrm{Levenshtein}}(\text{`sort'}, \text{`same'}) = 3$$
 
@@ -95,10 +99,10 @@ If we sort our results by distance we end up with the following:
 
 ### Why does it work?
 It's interesting to understand **why** we are allowed to prune all the children
-that do not meet the criterium we gave above. In the introduction we said that
-our distance function $$d$$ must satisfy a set of axioms in order for us to
-obtain the metric space structure. Those axioms are the following. For all
-elements $$a,b,c$$ it must hold:
+that do not meet the criterion we gave above in point $$3$$. In the
+introduction we said that our distance function $$d$$ must satisfy a set of
+axioms in order for us to obtain the metric space structure. Those axioms are
+the following. For all elements $$a,b,c$$ it must hold:
 
 1. non-negativity: $$d(a, b) \ge 0$$;
 2. $$d(a, b) = 0$$ implies $$a = b$$ (and vice-versa);
@@ -147,7 +151,8 @@ $$D - N \le x \le D + N$$
 We have proved that if $$d$$ is a metric, we can safely discard nodes that do
 not meet the above criteria. Finally, note that *every* child of $$B$$ will be
 at a distance of $$x$$ from $$A$$ (by construction of the BK-tree) and
-therefore we can safely prune the whole sub-tree.
+therefore we can safely prune the whole sub-tree if $$B$$ alone does not meet
+the criterion.
 
 ## Implementation
 This data structure is easy to implement in Python, if we use dictionaries to
@@ -176,7 +181,7 @@ class BKTree:
                 break
             current, children = target
 
-    def search(self, node, tolerance):
+    def search(self, node, radius):
         if self._tree is None:
             return []
 
@@ -185,10 +190,10 @@ class BKTree:
         while candidates:
             candidate, children = candidates.popleft()
             dist = self._distance_func(node, candidate)
-            if dist <= tolerance:
+            if dist <= radius:
                 result.append((dist, candidate))
 
-            low, high = dist - tolerance, dist + tolerance
+            low, high = dist - radius, dist + radius
             candidates.extend(c for d, c in children.items()
                               if low <= d <= high)
         return result
@@ -206,4 +211,11 @@ algorithm we explained above. A few comments:
   doubly-linked list, is a natural fit.
 
 ## Conclusion
-The BK-tree is a really interesting structure that
+The BK-tree is a relatively lesser-known data structure suitable for nearest
+neighbor search (NNS). It allows a considerable reduction of the search space,
+if the distance we are working with is a *metric*. In practice, the speed
+improvement we get from pruning sub-trees heavily depends on the search space
+*and* the radius we select. This is why some experimentation is usually needed
+for the problem at hand. One area in which BK-tree does well is spell-checking:
+as long as one keeps the radius to $$1$$ or $$2$$ the search space is often
+reduced to under $$10\%$$ of the original.
