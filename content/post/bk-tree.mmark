@@ -53,7 +53,7 @@ subsequent words the tree would look like this:
 because the distance between "some" and "same" is $$1$$ and the distance
 between "some" and "soft" is $$2$$. Now, let's add the next word, "mole".
 Observe that the distance between "mole" and "some" is again $$2$$, so we add
-it to the tree as a child of "same", with an edge corresponding to their
+it to the tree as a child of "soft", with an edge corresponding to their
 distance. After adding all the words we obtain the following tree:
 
 <p class="centered">
