@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+</head>
+<meta charset="utf-8">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/static/icons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/static/icons/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="/static/icons/manifest.json">
+<link rel="mask-icon" href="/static/icons/safari-pinned-tab.svg" color="#2ae2b1">
+<link rel="shortcut icon" href="/static/icons/favicon.ico">
+<meta name="msapplication-config" content="/static/icons/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="//fonts.googleapis.com/css?family=Roboto:400" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/hopscotch.min.css">
+
+
+<title></title>
+
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://signal-to-noise.xyz/post/bk-tree/"
+  },
+  "headline": "Interesting data structures: the BK-tree",
+  "name": "Interesting data structures: the BK-tree",
+  "datePublished": "2017-04-03",
+  "dateModified": "20170403-20:39:53.000",
+  "author": {
+    "@type": "Person",
+    "name": "Michele Lacchia"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Signal to Noise",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://signal-to-noise.xyz/static/images/signal-to-noise.png"
+    }
+  },
+  "description": "",
+  "keywords": "python,data-structures"
+}
+</script>
+<body>
+
+<div class="container">
+
+	<header role="banner">
+		<div class="header-logo">
+			<a href="/"><img src="/static/images/signal-to-noise.png" width="60" height="60" alt="Signal to Noise"></a>
+		</div>
+		
+	</header>
+
+
+
+
+<main role="main">
+    <article>
+        <h1 class="entry-title">Interesting data structures: the BK-tree</h1>
+        <span class="entry-meta"><time datetime="2017-04-03">April 03, 2017</time></span>,
+        <span class="entry-meta">Michele Lacchia</span>
+        <div class="post-after">
+              <div class="tags">
+                
+                    <a href="http://signal-to-noise.xyz//tags/python">python</a>
+                
+                    <a href="http://signal-to-noise.xyz//tags/data-structures">data-structures</a>
+                
+              </div>
+        </div>
+        <section>
+            <p>A BK-tree is a tree data structure specialized to index data in a <a href="https://en.wikipedia.org/wiki/Metric_space">metric
+space</a>. A metric space is
+essentially a set of objects which we equip with a distance function <span  class="math">\(d(a,
+b)\)</span> for every pair of elements <span  class="math">\((a, b)\)</span>. This distance function must satisfy
+a set of axioms in order to ensure it's well-behaved. The exact reason why this
+is required will be explained in the &quot;<a href="#search">Search</a>&quot; paragraph below.</p>
+
+<p>The BK-tree data structure was proposed by <a href="http://dl.acm.org/citation.cfm?doid=362003.362025">Burkhard and Keller in
+1973</a> as a solution to the
+problem of searching a set of keys to find a key which is closest to a given
+query key. The naive way to solve this problem is to simply compare the query
+key with every element of the set; if the comparison is done in constant time,
+this solution is <span  class="math">\(O(n)\)</span>. On the other hand, a BK-tree is likely to allow less
+comparisons to be made.</p>
+
+<h2 id="construction-of-the-tree">Construction of the tree</h2>
+
+<p>BK-tree is defined in the following way. An arbitrary element <span  class="math">\(a\)</span> is selected
+as root. Root may have zero or more sub-trees. The <span  class="math">\(k\)</span>-th sub-tree is
+recursively built of all elements <span  class="math">\(b\)</span> such that <span  class="math">\(d(a,b) = k\)</span>.</p>
+
+<p>To see how to construct a BK-tree, let's use a real scenario. We have a
+dictionary of words and we want to find those that are most similar to a given
+query word. To gauge how similar two words are, we are going to use the
+<a href="https://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein distance</a>.
+Essentially, it's the minimum number of single-character edits (which can be
+insertions, deletions or substitutions) required to mutate one word into the
+other. For example, the distance between &quot;soccer&quot; and &quot;otter&quot; is <span  class="math">\(3\)</span>, because
+we can change the first one into the other by deleting the leading <strong>s</strong>, and
+then substituting the two central <strong>c</strong>'s with two <strong>t</strong>'s.</p>
+
+<p>Let's use the dictionary</p>
+
+<pre><code class="language-no-highlight">{'some', 'soft', 'same', 'mole', 'soda', 'salmon'}
+</code></pre>
+
+<p>To construct the tree, we first choose any word as the root node, and then
+add the other words by calculating their distance from the root. In our case,
+we can choose &quot;some&quot; to be the root element. Then, after adding the two
+subsequent words the tree would look like this:</p>
+
+<p class="centered">
+<img src="/static/images/bk-tree-1.png" width="200" />
+</p>
+
+<p>because the distance between &quot;some&quot; and &quot;same&quot; is <span  class="math">\(1\)</span> and the distance
+between &quot;some&quot; and &quot;soft&quot; is <span  class="math">\(2\)</span>. Now, let's add the next word, &quot;mole&quot;.
+Observe that the distance between &quot;mole&quot; and &quot;some&quot; is again <span  class="math">\(2\)</span>, so we add
+it to the tree as a child of &quot;same&quot;, with an edge corresponding to their
+distance. After adding all the words we obtain the following tree:</p>
+
+<p class="centered">
+<img src="/static/images/bk-tree-2.png" width="320" />
+</p>
+
+<h2 id="a-idsearchasearch"><a id="search"></a>Search</h2>
+
+<p>Remember that the original problem was to find all the words closest to a given
+query word. Call <span  class="math">\(N\)</span> the maximum allowed distance (which we'll call radius).
+The algorithm proceeds as follows:</p>
+
+<ol>
+<li>create a candidates list and add the root node to it</li>
+<li>take a candidate, compute its distance <span  class="math">\(D\)</span> from the query key and compare
+it with the radius;</li>
+<li>selection criterion: add to the candidates list all the children of the
+current node that, from their parent, have a distance between <span  class="math">\(D - N\)</span> and
+<span  class="math">\(D + N\)</span> (inclusive).</li>
+</ol>
+
+<p>Suppose we want to find all the words in our dictionary that are no more
+distant than <span  class="math">\(N = 2\)</span> from the word &quot;sort&quot;. Our only candidate is the root
+node &quot;some&quot;. We start by computing</p>
+
+<p><span  class="math">\[D = \mathop{\mathrm{Levenshtein}}(\text{`sort'}, \text{`some'}) = 2\]</span></p>
+
+<p>Since the radius is <span  class="math">\(2,\)</span> we add &quot;some&quot; to the list of results. Then we extend
+our candidates list with all the children that have a distance from the root
+node between <span  class="math">\(D - N = 0\)</span> and <span  class="math">\(D + N = 4\)</span>. In this case, all the children
+satisfy this condition. Moving on, we compute</p>
+
+<p><span  class="math">\[D = \mathop{\mathrm{Levenshtein}}(\text{`sort'}, \text{`same'}) = 3\]</span></p>
+
+<p>Since <span  class="math">\(D > N\)</span>, this node is not a result and we move on to &quot;soft&quot;; now</p>
+
+<p><span  class="math">\[D = \mathop{\mathrm{Levenshtein}}(\text{`sort'}, \text{`soft'}) = 1\]</span></p>
+
+<p>Hence &quot;soft&quot; is an acceptable result. Regarding its children, we take those
+that have a distance between <span  class="math">\(D - N = -1\)</span> and <span  class="math">\(D + N = 3\)</span>. Again, all of
+them, but only &quot;soda&quot; is a valid result. Finally, &quot;salmon&quot; is not acceptable.
+If we sort our results by distance we end up with the following:</p>
+
+<pre><code class="language-no-highlight">[(1, 'soft'), (2, 'some'), (2, 'soda')]
+</code></pre>
+
+<h3 id="why-does-it-work">Why does it work?</h3>
+
+<p>It's interesting to understand <strong>why</strong> we are allowed to prune all the children
+that do not meet the criterion we gave above in point <span  class="math">\(3\)</span>. In the
+introduction we said that our distance function <span  class="math">\(d\)</span> must satisfy a set of
+axioms in order for us to obtain the metric space structure. Those axioms are
+the following. For all elements <span  class="math">\(a,b,c\)</span> it must hold:</p>
+
+<ol>
+<li>non-negativity: <span  class="math">\(d(a, b) \ge 0\)</span>;</li>
+<li><span  class="math">\(d(a, b) = 0\)</span> implies <span  class="math">\(a = b\)</span> (and vice-versa);</li>
+<li>symmetry: <span  class="math">\(d(a, b) = d(b, a)\)</span></li>
+<li>triangle inequality: <span  class="math">\(d(a, b) \le d(a, c) + d(c, b)\)</span>.</li>
+</ol>
+
+<p>The first three are just a formalization of our intuitive notion of &quot;distance&quot;,
+while the last one derives from the relation between sides of a triangle in
+Euclidean geometry. This is often the most difficult property to demonstrate
+when we want to prove that a generic distance is actually a metric. As it turns
+out, the Levenshtein distance satisfies this property and therefore it's a
+metric. This is why we can use it in the examples above.</p>
+
+<p>Let's call the query key <span  class="math">\(\bar x\)</span>. Suppose we are evaluating the child <span  class="math">\(B\)</span>
+of an arbitrary node <span  class="math">\(A\)</span> inside the tree, which we calculated to be at a distance <span  class="math">\(D = d(\bar
+x, A)\)</span> from the query key. This situation is summarized in the following
+figure:</p>
+
+<p class="centered">
+<img src="/static/images/bk-tree-3.png" width="350" />
+</p>
+
+<p>Since we assumed that <span  class="math">\(d\)</span> is a metric, by the triangle inequality we have</p>
+
+<p><span  class="math">\[d(A, B) \le d(A, \bar x) + d(\bar x, B)\]</span></p>
+
+<p>from which</p>
+
+<p><span  class="math">\[d(\bar x, B) \ge d(A, B) - d(A, \bar x) = x - D.\]</span></p>
+
+<p>Using the triangle inequality again, this time with <span  class="math">\(d(A, \bar x)\)</span> and <span  class="math">\(B\)</span>,
+we obtain</p>
+
+<p><span  class="math">\[d(\bar x, B) \ge d(A, \bar x) - d(A, B) = D - x\]</span></p>
+
+<p>Since we are only interested in nodes that are at a distance <em>at most</em> <span  class="math">\(N\)</span>
+from the query key <span  class="math">\(\bar x\)</span>, we impose the constraint <span  class="math">\(d(\bar x, B) \le N\)</span>.
+This translates to</p>
+
+<p><span  class="math">\[\begin{cases}x - D \le N\\D - x \le N\end{cases}\]</span></p>
+
+<p>which is equivalent to</p>
+
+<p><span  class="math">\[D - N \le x \le D + N\]</span></p>
+
+<p>We have proved that if <span  class="math">\(d\)</span> is a metric, we can safely discard nodes that do
+not meet the above criteria. Finally, note that <em>every</em> child of <span  class="math">\(B\)</span> will be
+at a distance of <span  class="math">\(x\)</span> from <span  class="math">\(A\)</span> (by construction of the BK-tree) and
+therefore we can safely prune the whole sub-tree if <span  class="math">\(B\)</span> alone does not meet
+the criterion.</p>
+
+<h2 id="implementation">Implementation</h2>
+
+<p>This data structure is easy to implement in Python, if we use dictionaries to
+represent edges.</p>
+
+<pre><code class="language-python">from collections import deque
+
+
+class BKTree:
+    def __init__(self, distance_func):
+        self._tree = None
+        self._distance_func = distance_func
+
+    def add(self, node):
+        if self._tree is None:
+            self._tree = (node, {})
+            return
+
+        current, children = self._tree
+        while True:
+            dist = self._distance_func(node, current)
+            target = children.get(dist)
+            if target is None:
+                children[dist] = (node, {})
+                break
+            current, children = target
+
+    def search(self, node, radius):
+        if self._tree is None:
+            return []
+
+        candidates = deque([self._tree])
+        result = []
+        while candidates:
+            candidate, children = candidates.popleft()
+            dist = self._distance_func(node, candidate)
+            if dist &lt;= radius:
+                result.append((dist, candidate))
+
+            low, high = dist - radius, dist + radius
+            candidates.extend(c for d, c in children.items()
+                              if low &lt;= d &lt;= high)
+        return result
+</code></pre>
+
+<p>The implementation is pretty straightforward and adheres completely to the
+algorithm we explained above. A few comments:</p>
+
+<ul>
+<li>there's no need to add a <code>root</code> argument to the <code>__init__</code> method, since
+any element can be a root node. In our case the first one added will
+become root;</li>
+<li>why is <code>deque</code> even needed? At first I used a <code>set</code>, only to see it fail
+because dictionaries aren't hashable. We need another data structure that
+allows <span  class="math">\(O(1)\)</span> popping and linear insertion. Built-in <code>deque</code>, being a
+doubly-linked list, is a natural fit.</li>
+</ul>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>The BK-tree is a relatively lesser-known data structure suitable for nearest
+neighbor search (NNS). It allows a considerable reduction of the search space,
+if the distance we are working with is a <em>metric</em>. In practice, the speed
+improvement we get from pruning sub-trees heavily depends on the search space
+<em>and</em> the radius we select. This is why some experimentation is usually needed
+for the problem at hand. One area in which BK-tree does well is spell-checking:
+as long as one keeps the radius to <span  class="math">\(1\)</span> or <span  class="math">\(2\)</span> the search space is often
+reduced to under <span  class="math">\(10\%\)</span> of the original.</p>
+
+        </section>
+    </article>
+</main>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+      
+      
+      if (window.location.hostname == "localhost")
+                return;
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      var disqus_shortname = 'signal-to-noise';
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+	<footer role="contentinfo">
+		<div class="hr"></div>
+		<div class="footer-link">
+            <ul>
+                <li><script>document.write('<'+'a'+' '+'h'+'r'+'e'+'f'+'='+"'"+'m'+'a'+'i'+'&'+'#'+'1'+'0'+
+'8'+';'+'t'+'o'+'&'+'#'+'5'+'8'+';'+'&'+'#'+'1'+'0'+'9'+';'+'i'+'c'+'h'+'&'+
+'#'+'1'+'0'+'1'+';'+'&'+'#'+'1'+'0'+'8'+';'+'%'+'6'+'5'+'l'+'%'+'6'+'1'+'c'+
+'c'+'%'+'6'+'8'+'i'+'a'+'%'+'&'+'#'+'5'+'2'+';'+'0'+'%'+'6'+'&'+'#'+'5'+'5'+
+';'+'&'+'#'+'1'+'0'+'9'+';'+'&'+'#'+'9'+'7'+';'+'&'+'#'+'1'+'0'+'5'+';'+'l'+
+'%'+'&'+'#'+'5'+'0'+';'+'E'+'%'+'6'+'3'+'o'+'m'+"'"+'>'+'E'+'m'+'a'+'i'+'&'+
+'#'+'1'+'0'+'8'+';'+'<'+'/'+'a'+'>');</script></li>
+                <li><a href="https://github.com/rubik/" target="_blank">GitHub</a></li>
+                <li><a href="/page/about/">About me</a></li>
+                <li><a href="http://feeds.feedburner.com/signal-to-noise">RSS</a></li>
+            </ul>
+
+		</div>
+		<div class="copyright">Created by Michele Lacchia, built with Hugo</div>
+	</footer>
+</div>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-86380700-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js"></script>
+    <script>renderMathInElement(document.body);</script>
+
+</body>
+</html>
+
