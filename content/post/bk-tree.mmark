@@ -19,8 +19,8 @@ The BK-tree data structure was proposed by [Burkhard and Keller in
 problem of searching a set of keys to find a key which is closest to a given
 query key. The naive way to solve this problem is to simply compare the query
 key with every element of the set; if the comparison is done in constant time,
-this solution is $$O(n)$$. On the other hand, a BK-tree is likely to allow less
-comparisons to be made.
+this solution is $$O(n)$$. On the other hand, a BK-tree is likely to allow
+fewer comparisons to be made.
 
 ## Construction of the tree
 BK-tree is defined in the following way. An arbitrary element $$a$$ is selected
