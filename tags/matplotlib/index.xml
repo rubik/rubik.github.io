@@ -2,19 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Matplotlib on Signal to Noise</title>
-    <link>http://signal-to-noise.xyz/tags/matplotlib/index.xml</link>
+    <link>http://signal-to-noise.xyz/tags/matplotlib/</link>
     <description>Recent content in Matplotlib on Signal to Noise</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Created by Michele Lacchia, built with Hugo</copyright>
-    <atom:link href="http://signal-to-noise.xyz/tags/matplotlib/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 30 Oct 2016 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://signal-to-noise.xyz/tags/matplotlib/" rel="self" type="application/rss+xml" />
     
     <item>
       <title>The KMeans problem</title>
-      <link>http://signal-to-noise.xyz/post/KMeans/</link>
+      <link>http://signal-to-noise.xyz/post/kmeans/</link>
       <pubDate>Sun, 30 Oct 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://signal-to-noise.xyz/post/KMeans/</guid>
+      <guid>http://signal-to-noise.xyz/post/kmeans/</guid>
       <description>Mathematical explanation and Python implementation of the LLoyd&#39;s algorithm for the KMeans problem</description>
     </item>
     

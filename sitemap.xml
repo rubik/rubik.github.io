@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
     <loc>http://signal-to-noise.xyz/post/bk-tree/</loc>
@@ -17,12 +18,12 @@
   </url>
   
   <url>
-    <loc>http://signal-to-noise.xyz/post/KMeans/</loc>
+    <loc>http://signal-to-noise.xyz/post/kmeans/</loc>
     <lastmod>2016-10-30T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://signal-to-noise.xyz/post/TexasDeathRow/</loc>
+    <loc>http://signal-to-noise.xyz/post/texasdeathrow/</loc>
     <lastmod>2016-10-29T00:00:00+00:00</lastmod>
   </url>
   
@@ -39,6 +40,11 @@
   <url>
     <loc>http://signal-to-noise.xyz/tags/big-list/</loc>
     <lastmod>2016-11-06T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://signal-to-noise.xyz/categories/</loc>
     <priority>0</priority>
   </url>
   
@@ -103,6 +109,7 @@
   
   <url>
     <loc>http://signal-to-noise.xyz/tags/</loc>
+    <lastmod>2016-10-29T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

@@ -2,13 +2,13 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Signal to Noise</title>
-    <link>http://signal-to-noise.xyz/post/index.xml</link>
+    <link>http://signal-to-noise.xyz/post/</link>
     <description>Recent content in Posts on Signal to Noise</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Created by Michele Lacchia, built with Hugo</copyright>
     <lastBuildDate>Mon, 03 Apr 2017 20:39:53 +0200</lastBuildDate>
-    <atom:link href="http://signal-to-noise.xyz/post/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://signal-to-noise.xyz/post/" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Interesting data structures: the BK-tree</title>
@@ -39,19 +39,19 @@
     
     <item>
       <title>The KMeans problem</title>
-      <link>http://signal-to-noise.xyz/post/KMeans/</link>
+      <link>http://signal-to-noise.xyz/post/kmeans/</link>
       <pubDate>Sun, 30 Oct 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://signal-to-noise.xyz/post/KMeans/</guid>
+      <guid>http://signal-to-noise.xyz/post/kmeans/</guid>
       <description>Mathematical explanation and Python implementation of the LLoyd&#39;s algorithm for the KMeans problem</description>
     </item>
     
     <item>
       <title>Exploration of Texas death row data</title>
-      <link>http://signal-to-noise.xyz/post/TexasDeathRow/</link>
+      <link>http://signal-to-noise.xyz/post/texasdeathrow/</link>
       <pubDate>Sat, 29 Oct 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://signal-to-noise.xyz/post/TexasDeathRow/</guid>
+      <guid>http://signal-to-noise.xyz/post/texasdeathrow/</guid>
       <description>Exploration of Texas death row data</description>
     </item>
     
