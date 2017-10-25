@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ with .Site.LanguageCode }}{{ . }}{{ else }}en-US{{ end }}">
 <head>
-</head>
 {{ partial "head.html" }}
 {{ $isHomePage := eq .Title .Site.Title }}
 <script type="application/ld+json">
@@ -32,6 +31,7 @@
   "keywords": "{{ delimit .Params.tags "," }}"
 }
 </script>
+</head>
 <body>
 
 <div class="container">
