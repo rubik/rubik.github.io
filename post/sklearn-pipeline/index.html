@@ -14,7 +14,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="//fonts.googleapis.com/css?family=Roboto:400" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="/static/css/style.css">
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/hopscotch.min.css">
+<link rel="stylesheet" href="">
+
+<style>
+.hljs-comment,.hljs-quote{color:#989498}.hljs-variable,.hljs-template-variable,.hljs-attribute,.hljs-tag,.hljs-name,.hljs-selector-id,.hljs-selector-class,.hljs-regexp,.hljs-link,.hljs-deletion{color:#dd464c}.hljs-number,.hljs-built_in,.hljs-builtin-name,.hljs-literal,.hljs-type,.hljs-params{color:#fd8b19}.hljs-class .hljs-title{color:#fdcc59}.hljs-string,.hljs-symbol,.hljs-bullet,.hljs-addition{color:#8fc13e}.hljs-meta{color:#149b93}.hljs-function,.hljs-section,.hljs-title{color:#1290bf}.hljs-keyword,.hljs-selector-tag{color:#c85e7c}.hljs{display:block;background:#322931;color:#b9b5b8;padding:0.5em}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:bold}
+</style>
 
 
 <title></title>
@@ -217,8 +221,8 @@ class DFFeatureUnion(FeatureUnion):
 
     def transform(self, X):
         Xs = Parallel(n_jobs=self.n_jobs)(
-            delayed(_transform_one)(trans, name, weight, X)
-            for name, trans, weight in self._iter())
+            delayed(_transform_one)(trans, weight, X)
+            for _, trans, weight in self._iter())
         return pd.concat(Xs, axis=1, join='inner')
 </code></pre>
 
@@ -250,6 +254,11 @@ concatenated into a <code>DataFrame</code> at then end of the <code>DFFeatureUni
 
 <p>The resulting code is well organized and very easy to understand. It&rsquo;s also
 extremely easy to add or remove steps to/from the pipeline.</p>
+
+<p><strong>UPDATE (Oct 28, 2017)</strong>: As of scikit-learn v0.19.0, the function signature
+of the undocumented function <code>_transform_one</code> changed, and the code of
+<code>DFFeatureUnion</code> was updated accordingly (thanks to Paulo Cheadi Haddad Filho
+for pointing it out).</p>
 
         </section>
     </article>
