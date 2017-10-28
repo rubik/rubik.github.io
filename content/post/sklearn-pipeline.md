@@ -140,8 +140,8 @@ class DFFeatureUnion(FeatureUnion):
 
     def transform(self, X):
         Xs = Parallel(n_jobs=self.n_jobs)(
-            delayed(_transform_one)(trans, name, weight, X)
-            for name, trans, weight in self._iter())
+            delayed(_transform_one)(trans, weight, X)
+            for _, trans, weight in self._iter())
         return pd.concat(Xs, axis=1, join='inner')
 ```
 
@@ -174,6 +174,11 @@ concatenated into a `DataFrame` at then end of the `DFFeatureUnion`.
 
 The resulting code is well organized and very easy to understand. It's also
 extremely easy to add or remove steps to/from the pipeline.
+
+**UPDATE (Oct 28, 2017)**: As of scikit-learn v0.19.0, the function signature
+of the undocumented function `_transform_one` changed, and the code of
+`DFFeatureUnion` was updated accordingly (thanks to Paulo Cheadi Haddad Filho
+for pointing it out).
 
 [pipeline-doc]: http://scikit-learn.org/stable/modules/pipeline.html#pipeline
 [fu-doc]: http://scikit-learn.org/stable/modules/pipeline.html#featureunion-composite-feature-spaces
