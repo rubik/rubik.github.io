@@ -8,7 +8,9 @@
     <language>en-us</language>
     <copyright>Created by Michele Lacchia, built with Hugo</copyright>
     <lastBuildDate>Tue, 01 Nov 2016 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://signal-to-noise.xyz/tags/machine-learning/" rel="self" type="application/rss+xml" />
+    
+	<atom:link href="http://signal-to-noise.xyz/tags/machine-learning/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Why you should use scikit-learn&#39;s Pipeline object</title>
@@ -16,7 +18,8 @@
       <pubDate>Tue, 01 Nov 2016 00:00:00 +0000</pubDate>
       
       <guid>http://signal-to-noise.xyz/post/sklearn-pipeline/</guid>
-      <description>Making the case for sklearn&#39;s Pipeline object</description>
+      <description>Copyright: visualgo  Machine learning models learn from data. It is crucial, however, that the data you feed them is specifically preprocessed and refined for the problem you want to solve. This includes data cleaning, preprocessing, feature engineering, and so on.
+Very often, when presented with a dataset, I would fire up a Jupyter notebook and start exploring it interactively. The notebook is great for that task, but after a while I ended up with code that is a total mess in the global namespace.</description>
     </item>
     
     <item>
@@ -25,7 +28,8 @@
       <pubDate>Sun, 30 Oct 2016 00:00:00 +0000</pubDate>
       
       <guid>http://signal-to-noise.xyz/post/kmeans/</guid>
-      <description>Mathematical explanation and Python implementation of the LLoyd&#39;s algorithm for the KMeans problem</description>
+      <description>In this notebook, we will implement an algorithm for the K-Means problem and visualize it with a Matplotlib animation.
+A mathematical introduction In the K-Means problem, a set of \(n\) observations \(X = \{x_1, \ldots, x_n\}\), with \(x_i \in \mathbb R^d\), is given. The goal is to partition the set \(X\) into \(k\) sets \(S = \{S_1, \ldots, S_k\}\), such that the total energy is minimized. We define the energy of the \(i\)-th cluster as follows:</description>
     </item>
     
   </channel>

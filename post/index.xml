@@ -8,7 +8,9 @@
     <language>en-us</language>
     <copyright>Created by Michele Lacchia, built with Hugo</copyright>
     <lastBuildDate>Mon, 03 Apr 2017 20:39:53 +0200</lastBuildDate>
-    <atom:link href="http://signal-to-noise.xyz/post/" rel="self" type="application/rss+xml" />
+    
+	<atom:link href="http://signal-to-noise.xyz/post/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Interesting data structures: the BK-tree</title>
@@ -16,7 +18,7 @@
       <pubDate>Mon, 03 Apr 2017 20:39:53 +0200</pubDate>
       
       <guid>http://signal-to-noise.xyz/post/bk-tree/</guid>
-      <description></description>
+      <description>A BK-tree is a tree data structure specialized to index data in a metric space. A metric space is essentially a set of objects which we equip with a distance function \(d(a, b)\) for every pair of elements \((a, b)\). This distance function must satisfy a set of axioms in order to ensure it&#39;s well-behaved. The exact reason why this is required will be explained in the &amp;quot;Search&amp;quot; paragraph below.</description>
     </item>
     
     <item>
@@ -25,7 +27,7 @@
       <pubDate>Sun, 06 Nov 2016 00:00:00 +0000</pubDate>
       
       <guid>http://signal-to-noise.xyz/post/overview-python-data-science/</guid>
-      <description>Overview of the most useful tools for data science: mainly Python and Javscript</description>
+      <description>Travel vector designed by Freepik  This post presents an overview of the most useful tools for data science-related tasks. It is not meant to be a complete list, but rather a brief summary of the tools I&amp;rsquo;ve found repeatedly useful, with a couple new ones that show great promise. The idea came from my last project (Exploration of Texas Death row data), where I ended up using quite a lot of Python packages, without having planned it from the start.</description>
     </item>
     
     <item>
@@ -34,7 +36,8 @@
       <pubDate>Tue, 01 Nov 2016 00:00:00 +0000</pubDate>
       
       <guid>http://signal-to-noise.xyz/post/sklearn-pipeline/</guid>
-      <description>Making the case for sklearn&#39;s Pipeline object</description>
+      <description>Copyright: visualgo  Machine learning models learn from data. It is crucial, however, that the data you feed them is specifically preprocessed and refined for the problem you want to solve. This includes data cleaning, preprocessing, feature engineering, and so on.
+Very often, when presented with a dataset, I would fire up a Jupyter notebook and start exploring it interactively. The notebook is great for that task, but after a while I ended up with code that is a total mess in the global namespace.</description>
     </item>
     
     <item>
@@ -43,7 +46,8 @@
       <pubDate>Sun, 30 Oct 2016 00:00:00 +0000</pubDate>
       
       <guid>http://signal-to-noise.xyz/post/kmeans/</guid>
-      <description>Mathematical explanation and Python implementation of the LLoyd&#39;s algorithm for the KMeans problem</description>
+      <description>In this notebook, we will implement an algorithm for the K-Means problem and visualize it with a Matplotlib animation.
+A mathematical introduction In the K-Means problem, a set of \(n\) observations \(X = \{x_1, \ldots, x_n\}\), with \(x_i \in \mathbb R^d\), is given. The goal is to partition the set \(X\) into \(k\) sets \(S = \{S_1, \ldots, S_k\}\), such that the total energy is minimized. We define the energy of the \(i\)-th cluster as follows:</description>
     </item>
     
     <item>
@@ -52,7 +56,9 @@
       <pubDate>Sat, 29 Oct 2016 00:00:00 +0000</pubDate>
       
       <guid>http://signal-to-noise.xyz/post/texasdeathrow/</guid>
-      <description>Exploration of Texas death row data</description>
+      <description>On the site Texas Department of Criminal Justice there&#39;s a page which lists all the people that have been executed since 1982, when the death penalty was reinstated, along with their last statement. The data is here. In this project we are going to explore the data and see if we can apply topic modeling to the statements.
+Setup We are going to use the following packages:
+ scrapy to scrape the data numpy and pandas for the data manipulation altair to create plots, and occasionally matplotlib gmaps to create a heat map over a Google Map textblob for sentiment analysis scikit-learn to do topic modeling gensim for additional topic modeling  import numpy as np import pandas as pd import matplotlib.</description>
     </item>
     
   </channel>

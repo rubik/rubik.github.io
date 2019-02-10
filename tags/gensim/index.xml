@@ -8,7 +8,9 @@
     <language>en-us</language>
     <copyright>Created by Michele Lacchia, built with Hugo</copyright>
     <lastBuildDate>Sat, 29 Oct 2016 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://signal-to-noise.xyz/tags/gensim/" rel="self" type="application/rss+xml" />
+    
+	<atom:link href="http://signal-to-noise.xyz/tags/gensim/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Exploration of Texas death row data</title>
@@ -16,7 +18,9 @@
       <pubDate>Sat, 29 Oct 2016 00:00:00 +0000</pubDate>
       
       <guid>http://signal-to-noise.xyz/post/texasdeathrow/</guid>
-      <description>Exploration of Texas death row data</description>
+      <description>On the site Texas Department of Criminal Justice there&#39;s a page which lists all the people that have been executed since 1982, when the death penalty was reinstated, along with their last statement. The data is here. In this project we are going to explore the data and see if we can apply topic modeling to the statements.
+Setup We are going to use the following packages:
+ scrapy to scrape the data numpy and pandas for the data manipulation altair to create plots, and occasionally matplotlib gmaps to create a heat map over a Google Map textblob for sentiment analysis scikit-learn to do topic modeling gensim for additional topic modeling  import numpy as np import pandas as pd import matplotlib.</description>
     </item>
     
   </channel>

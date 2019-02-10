@@ -7,7 +7,9 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Created by Michele Lacchia, built with Hugo</copyright>
-    <atom:link href="http://signal-to-noise.xyz/categories/" rel="self" type="application/rss+xml" />
+    
+	<atom:link href="http://signal-to-noise.xyz/categories/index.xml" rel="self" type="application/rss+xml" />
+    
     
   </channel>
 </rss>

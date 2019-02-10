@@ -7,7 +7,9 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Created by Michele Lacchia, built with Hugo</copyright>
-    <atom:link href="http://signal-to-noise.xyz/page/" rel="self" type="application/rss+xml" />
+    
+	<atom:link href="http://signal-to-noise.xyz/page/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>About me</title>
@@ -15,7 +17,8 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>http://signal-to-noise.xyz/page/about/</guid>
-      <description></description>
+      <description>About me I&amp;rsquo;m an undergrad student in Engineering Mathematics at Politecnico di Torino, in Italy. I have a long-standing passion for programming and computer science in general. I started dabbling in Python when I was 13 years old and never stopped.
+At the moment my interest is geared towards data science: primarily data visualization and statistical models. I just started studying machine learning and I intend to learn R in the near future.</description>
     </item>
     
   </channel>

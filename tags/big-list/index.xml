@@ -8,7 +8,9 @@
     <language>en-us</language>
     <copyright>Created by Michele Lacchia, built with Hugo</copyright>
     <lastBuildDate>Sun, 06 Nov 2016 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://signal-to-noise.xyz/tags/big-list/" rel="self" type="application/rss+xml" />
+    
+	<atom:link href="http://signal-to-noise.xyz/tags/big-list/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>An overview of great tools for data science</title>
@@ -16,7 +18,7 @@
       <pubDate>Sun, 06 Nov 2016 00:00:00 +0000</pubDate>
       
       <guid>http://signal-to-noise.xyz/post/overview-python-data-science/</guid>
-      <description>Overview of the most useful tools for data science: mainly Python and Javscript</description>
+      <description>Travel vector designed by Freepik  This post presents an overview of the most useful tools for data science-related tasks. It is not meant to be a complete list, but rather a brief summary of the tools I&amp;rsquo;ve found repeatedly useful, with a couple new ones that show great promise. The idea came from my last project (Exploration of Texas Death row data), where I ended up using quite a lot of Python packages, without having planned it from the start.</description>
     </item>
     
   </channel>

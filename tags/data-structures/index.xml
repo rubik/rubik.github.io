@@ -8,7 +8,9 @@
     <language>en-us</language>
     <copyright>Created by Michele Lacchia, built with Hugo</copyright>
     <lastBuildDate>Mon, 03 Apr 2017 20:39:53 +0200</lastBuildDate>
-    <atom:link href="http://signal-to-noise.xyz/tags/data-structures/" rel="self" type="application/rss+xml" />
+    
+	<atom:link href="http://signal-to-noise.xyz/tags/data-structures/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Interesting data structures: the BK-tree</title>
@@ -16,7 +18,7 @@
       <pubDate>Mon, 03 Apr 2017 20:39:53 +0200</pubDate>
       
       <guid>http://signal-to-noise.xyz/post/bk-tree/</guid>
-      <description></description>
+      <description>A BK-tree is a tree data structure specialized to index data in a metric space. A metric space is essentially a set of objects which we equip with a distance function \(d(a, b)\) for every pair of elements \((a, b)\). This distance function must satisfy a set of axioms in order to ensure it&#39;s well-behaved. The exact reason why this is required will be explained in the &amp;quot;Search&amp;quot; paragraph below.</description>
     </item>
     
   </channel>
