@@ -1,19 +1,31 @@
 +++
 author = "Michele Lacchia"
-title = "A complete Kubernetes tutorial"
+title = "A complete Kubernetes tutorial, part I: the basic concepts"
 tags = ["kubernetes", "devops", "containers"]
 category = "posts"
 date = "2019-11-09"
-summary = "A complete tutorial covering all the basics."
+summary = "A complete Kubernetes tutorial series covering all the basics."
 +++
 
 ## Preface
-The goal of this tutorial series is to allow the reader to start deploying on Kubernetes with a basic understanding of Kubernetes architectural principles. We assume zero previous knowledge about Kubernetes, the only prerequisite being a knowledge of what containers are and how they work. The easiest way is to run one on your computer with [minikube](https://minikube.sigs.k8s.io/docs/start/) or use a managed environment like [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app). I recommend that you read the sections in the order they are presented, because some sections build on concepts explained in the previous ones. This tutorial is not short, but it should give you a solid understanding to start deploying working applications on Kubernetes.
+The goal of this tutorial series is to allow the reader to start deploying on
+Kubernetes with a basic understanding of Kubernetes architectural principles.
+We assume zero previous knowledge about Kubernetes, the only prerequisite being
+a knowledge of what containers are and how they work. I recommend that you read
+the sections in the order they are presented, because some sections build on
+concepts explained in the previous ones. This tutorial is not short, but it
+should give you a solid understanding to start deploying working applications
+on Kubernetes.
 
-I found that many tutorials make the mistake of diving right away into practical examples without explaining the basic concepts, or on the other hand they only offer an overview of the main concepts without any examples. This three-part series is my attempt at explaining the basics of Kubernetes, with both theory and examples. Here is the structure of the series:
-Part I: Kubernetes basic concepts
-Part II: A practical example
-Part III: Best practices
+I found that many tutorials make the mistake of diving right away into
+practical examples without explaining the basic concepts, or on the other hand
+they only offer an overview of the main concepts without any examples. This
+three-part series is my attempt at explaining the basics of Kubernetes, with
+both theory and examples. Here is the structure of the series:
+
+* Part I: Kubernetes basic concepts (this post)
+* Part II: A practical example
+* Part III: Best practices
 
 ## Introduction
 Kubernetes (sometimes abbreviated k8s) is an open-source system for automating
@@ -250,7 +262,8 @@ automatically created.
 <figure>
 <img width="80%" src="/static/images/kubernetes-service-loadbalancer.svg" alt="A NodePort Service" />
 <figcaption>
-    <strong>Fig. 4</strong> A LoadBalancer Service
+    <strong>Fig. 4</strong> A LoadBalancer Service creates the corresponding
+    NodePort Service and provisions a cloud load balancer automatically.
 </figcaption>
 </figure>
 
