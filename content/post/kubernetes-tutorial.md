@@ -17,24 +17,22 @@ concepts explained in the previous ones. This tutorial is not short, but it
 should give you a solid understanding to start deploying working applications
 on Kubernetes.
 
-I found that many tutorials make the mistake of diving right away into
-practical examples without explaining the basic concepts, or on the other hand
-they only offer an overview of the main concepts without any examples. This
-three-part series is my attempt at explaining the basics of Kubernetes, with
-both theory and examples. Here is the structure of the series:
+This tutorial series is essentially what I would have wanted to read when I
+first approached Kubernetes, instead of searching and reading lots of different
+sources. The first part will only cover some theory, and then we'll dive into a
+practical example. This is the structure of the series:
 
 * Part I: Kubernetes basic concepts (this post)
 * Part II: A practical example
 * Part III: Best practices
 
 ## Introduction
-Kubernetes (sometimes abbreviated k8s) is an open-source system for automating
-deployment, scaling, and management of containerized applications. Kubernetes,
-which translates from Greek to “pilot," “helmsman,” or "governor" is managed by
-CNCF, a foundation created by Google and Linux to house Kubernetes and other
-open-source computing projects. Kubernetes was born out of the necessity to
-automate the deployment and management of containers across all stages of the
-development cycle.
+Kubernetes, which translates from Grek to "pilot" or "helmsman", is an
+open-source system for automating deployment, scaling, and managing
+containerized applications. It was born out of the necessity to automate the
+deployment and management of containers across all stages of the development
+cycle. Kubernetes is supported by the CNCF, a foundation created by Google and
+others to house Kubernetes and other open-source computing projects.
 
 A Kubernetes cluster consists of at least one master and multiple compute
 nodes. The master is responsible for exposing the application program interface
@@ -63,7 +61,7 @@ The **control plane** is a term that collectively refers to the system
 processes that collaborate to make a Kubernetes cluster work. They constantly
 monitor the state of the cluster, and whenever the current state does not match
 the desired state, remediation actions are applied. These can include
-scheduling or unscheduling workloads, creating or deleting objects.
+scheduling or unscheduling workloads, for example.
 
 <figure>
 <img width="80%" src="/static/images/kubernetes-architecture.svg" alt="Architecture of a Kubernetes cluster" />
@@ -90,7 +88,9 @@ shares the network namespace including the IP address and network ports.
 Containers within the same Pod can communicate through localhost. A Pod can
 also mount a set of volumes that are shared among its containers.
 
-This is a minimal YAML file with the spec for a Pod that runs nginx:
+Objects are defined in YAML manifest files. As an example, this is a minimal
+YAML manifest with the spec for a Pod that runs
+[nginx](https://hub.docker.com/_/nginx):
 
 ```yaml
 apiVersion: v1
@@ -108,11 +108,9 @@ spec:
 Manifest files have certain required fields. The field `apiVersion` specifies
 which API version is used to create the object; the Kubernetes API is
 versioned, and this helps to maintain backward compatibility. This file
-declares an object of Pod kind, which can be found in version v1. Objects can
-be separated into multiple namespaces, and Kubernetes requires that each object
-has a unique name. The default namespace is `default` and can be omitted. The
-spec block defines the container, which in this case is built from the nginx
-image and exposes port 80.
+declares an object of Pod kind, which can be found in version v1. The spec
+block defines the container, which in this case is built from the nginx image
+and exposes port 80.
 
 When the above manifest is deployed (we’ll see how in part II of this series),
 the control plane determines that the desired state differs from the current
@@ -127,7 +125,7 @@ are designed to be ephemeral and disposable. For these reasons, Pods are almost
 never deployed directly. There are better ways to manage your workloads,
 especially if you need to deploy multiple copies of the same Pod: instead of
 using multiple manifest files that define the same Pod object, one can make use
-of the so-called controller objects. One of the most useful ones is the
+of the so-called controller objects. One of the most commonly used ones is the
 Deployment object.
 
 A **Deployment** ensures that a defined set of Pods is running at any given
@@ -148,27 +146,30 @@ This is how a Deployment manifest file looks like:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: nginx-proxy
+  name: nginx-proxy
 spec:
-    replicas: 3
-    template:
-        metadata:
-            labels:
-                name: nginx-proxy
-        spec:
-            containers:
-- name: nginx-proxy
-  image: nginx:1.17.5
-  ports:
-      - containerPort: 80
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        name: nginx-proxy
+    spec:
+      containers:
+      - name: nginx-proxy
+        image: nginx:1.17.5
+        ports:
+        - containerPort: 80
 ```
 
 With this manifest, the nginx-proxy Deployment is created with three replicated
 Pods. the Pod template defines some metadata and the spec of each of the Pods
 in this replica set. In this example, each Pod encapsulates one container that
-is built from the nginx:1.17.5 image, exposing port 80. Here the Deployment,
+is built from the nginx:1.17.5 image, exposing port 80. In this the Deployment,
 each Pod and each container all have the same name “nginx-proxy”, but there is
-no requirement to keep the same name for all these objects.
+no requirement to keep the same name for all these objects. More importantly,
+Pod names have to be unique, and the name provided at
+`spec.template.metadata.labels.name` is the prefix of the final name, which
+contains an hash identifying the Pod and the ReplicaSet it belongs to.
 
 A Deployment is an abstraction that represents a stateless application. As
 such, its Pods are indistinguishable from one another. Applications that need
@@ -331,7 +332,7 @@ spec:
   - name: htpasswd
     secret:
       secretName: htpasswd
-      Items:
+      items:
       - key: HTPASSWD
         path: htpasswd
 ```
