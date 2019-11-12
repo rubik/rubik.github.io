@@ -4,6 +4,7 @@
             <ul>
                 {{ with .Site.Params.obfuscated_email }}<li><script>{{ . | safeJS }}</script>{{ end }}</li>
                 {{ with .Site.Params.github }}<li><a href="{{ . }}" target="_blank">GitHub</a>{{ end }}</li>
+                {{ with .Site.Params.linkedin }}<li><a href="{{ . }}" target="_blank">LinkedIn</a>{{ end }}</li>
                 <li><a href="/page/about/">About me</a></li>
                 <li><a href="http://feeds.feedburner.com/signal-to-noise">RSS</a></li>
             </ul>
