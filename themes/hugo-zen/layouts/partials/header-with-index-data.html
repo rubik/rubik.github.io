@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="{{ with .Site.LanguageCode }}{{ . }}{{ else }}en-US{{ end }}">
 <head>
-</head>
 {{ partial "head.html" }}
 {{ $isHomePage := eq .Title .Site.Title }}
 {{ $site := .Site }}
+<title>{{ .Title }}</title>
+<meta name="description" content="Blog about Python, math, data science and software development in general.">
 <script type="application/ld+json">
 {
   "@context": "http://schema.org",
@@ -16,11 +17,11 @@
   "image": "{{ "/static/images/avatar.png" | absURL }}",
   "headline": "{{ .Title }}",
   "name": "{{ .Title }}",
-  "datePublished": "2016-10-1",
+  "datePublished": "20162910-00:00:00.000",
   "dateModified": "{{ .Lastmod.Format "20060102-15:04:05.000" }}",
   "author": {
     "@type": "Person",
-    "name": "{{ .Params.author }}"
+    "name": "{{ $site.Params.author }}"
   },
   "publisher": {
     "@type": "Organization",
@@ -30,7 +31,7 @@
       "url": "{{ $site.Params.logo | absURL }}"
     }
   },
-  "description": "Blog about Python, math and data science",
+  "description": "Blog about Python, math, data science and software development in general.",
   "blogPosts": [
     {{ $list := (where .Data.Pages ".Params.hidefromhome" "!=" "true") }}
     {{ $len := (len $list) }}
@@ -67,13 +68,13 @@
   ]
 }
 </script>
+</head>
+
 <body>
-
-<div class="container">
-
-	<header role="banner">
-		<div class="header-logo">
-			<a href="/"><img src="{{ .Site.Params.logo }}" width="60" height="60" alt="{{ .Site.Title }}"></a>
-		</div>
-		{{ if eq $isHomePage true }}<h1 class="site-title">{{ .Site.Title }}</h1>{{ end }}
-	</header>
+  <div class="container">
+    <header role="banner">
+      <div class="header-logo">
+        <a href="/"><img src="{{ .Site.Params.logo }}" width="60" height="60" alt="{{ .Site.Title }}"></a>
+      </div>
+      {{ if eq $isHomePage true }}<h1 class="site-title">{{ .Site.Title }}</h1>{{ end }}
+    </header>
