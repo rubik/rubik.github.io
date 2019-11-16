@@ -13,6 +13,7 @@ tag = "tags"
 category = "categories"
 
 [params]
+author = "Michele Lacchia"
 publisherName = "Signal to Noise"
 logo = "/static/images/signal-to-noise.png"
 github = "https://github.com/rubik/"
