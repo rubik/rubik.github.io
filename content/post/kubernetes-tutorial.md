@@ -1,9 +1,9 @@
 +++
 author = "Michele Lacchia"
 title = "A complete Kubernetes tutorial, part I: the basic concepts"
-tags = ["kubernetes", "devops", "containers"]
+tags = ["kubernetes", "containers"]
 category = "posts"
-date = "2019-11-09"
+date = "2019-11-11"
 summary = "A complete Kubernetes tutorial series covering all the basics."
 +++
 
@@ -23,8 +23,8 @@ sources. The first part will only cover some theory, and then we'll dive into a
 practical example. This is the structure of the series:
 
 * Part I: Kubernetes basic concepts (this post)
-* Part II: A practical example
-* Part III: Best practices
+* Part II: A practical and realistic example (still WIP)
+* Part III: Best practices (still WIP)
 
 ## Introduction
 Kubernetes, which translates from Grek to "pilot" or "helmsman", is an
@@ -64,7 +64,7 @@ the desired state, remediation actions are applied. These can include
 scheduling or unscheduling workloads, for example.
 
 <figure>
-<img width="80%" src="/static/images/kubernetes-architecture.svg" alt="Architecture of a Kubernetes cluster" />
+<img src="/static/images/kubernetes-Architecture.png" alt="Architecture of a Kubernetes cluster" />
 <figcaption>
     <strong>Fig. 1</strong> A client, like kubectl, interacts with the
     Kubernetes API. The master node takes care of managing pods on the worker
@@ -227,7 +227,7 @@ This type exposes the Service on a cluster-internal IP address. This is useful
 for exposing Services running inside the same cluster to each other.
 
 <figure>
-<img width="80%" src="/static/images/kubernetes-service-clusterip.svg" alt="A ClusterIP Service" />
+<img src="/static/images/kubernetes-ClusterIP.png" alt="A ClusterIP Service" />
 <figcaption>
     <strong>Fig. 2</strong> A ClusterIP Service can be reached from inside the
     cluster. It routes traffic to all Pods matching its label selector. In this
@@ -242,7 +242,7 @@ and can be used to access the Pods from outside the cluster.  A ClusterIP
 Service, to which the NodePort Service routes, is automatically created.
 
 <figure>
-<img width="80%" src="/static/images/kubernetes-service-nodeport.svg" alt="A NodePort Service" />
+<img src="/static/images/kubernetes-NodePort.png" alt="A NodePort Service" />
 <figcaption>
     <strong>Fig. 3</strong> A NodePort Service exposes its Pods on each node at
     a random port chosen in the range 30000-32767. This port can be customized
@@ -261,7 +261,7 @@ ClusterIP Services, to which the external load balancer routes, are
 automatically created.
 
 <figure>
-<img width="80%" src="/static/images/kubernetes-service-loadbalancer.svg" alt="A NodePort Service" />
+<img src="/static/images/kubernetes-LoadBalancer.png" alt="A NodePort Service" />
 <figcaption>
     <strong>Fig. 4</strong> A LoadBalancer Service creates the corresponding
     NodePort Service and provisions a cloud load balancer automatically.
