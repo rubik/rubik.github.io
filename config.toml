@@ -1,6 +1,6 @@
 languageCode = "en-us"
 title = "Signal to Noise"
-baseURL = "http://signal-to-noise.xyz/"
+baseURL = "https://signal-to-noise.xyz/"
 theme = "hugo-zen"
 name = "Michele Lacchia"
 copyright = "Created by Michele Lacchia, built with Hugo"
