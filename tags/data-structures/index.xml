@@ -1,23 +1,23 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Data Structures on Signal to Noise</title>
-    <link>http://signal-to-noise.xyz/tags/data-structures/</link>
-    <description>Recent content in Data Structures on Signal to Noise</description>
+    <title>data-structures on Signal to Noise</title>
+    <link>https://signal-to-noise.xyz/tags/data-structures/</link>
+    <description>Recent content in data-structures on Signal to Noise</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Created by Michele Lacchia, built with Hugo</copyright>
     <lastBuildDate>Mon, 03 Apr 2017 20:39:53 +0200</lastBuildDate>
     
-	<atom:link href="http://signal-to-noise.xyz/tags/data-structures/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://signal-to-noise.xyz/tags/data-structures/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Interesting data structures: the BK-tree</title>
-      <link>http://signal-to-noise.xyz/post/bk-tree/</link>
+      <link>https://signal-to-noise.xyz/post/bk-tree/</link>
       <pubDate>Mon, 03 Apr 2017 20:39:53 +0200</pubDate>
       
-      <guid>http://signal-to-noise.xyz/post/bk-tree/</guid>
+      <guid>https://signal-to-noise.xyz/post/bk-tree/</guid>
       <description>A BK-tree is a tree data structure specialized to index data in a metric space. A metric space is essentially a set of objects which we equip with a distance function \(d(a, b)\) for every pair of elements \((a, b)\). This distance function must satisfy a set of axioms in order to ensure it&#39;s well-behaved. The exact reason why this is required will be explained in the &amp;quot;Search&amp;quot; paragraph below.</description>
     </item>
     

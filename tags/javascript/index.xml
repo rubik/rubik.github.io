@@ -1,24 +1,24 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Javascript on Signal to Noise</title>
-    <link>http://signal-to-noise.xyz/tags/javascript/</link>
-    <description>Recent content in Javascript on Signal to Noise</description>
+    <title>javascript on Signal to Noise</title>
+    <link>https://signal-to-noise.xyz/tags/javascript/</link>
+    <description>Recent content in javascript on Signal to Noise</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Created by Michele Lacchia, built with Hugo</copyright>
     <lastBuildDate>Sun, 06 Nov 2016 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://signal-to-noise.xyz/tags/javascript/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://signal-to-noise.xyz/tags/javascript/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>An overview of great tools for data science</title>
-      <link>http://signal-to-noise.xyz/post/overview-python-data-science/</link>
+      <link>https://signal-to-noise.xyz/post/overview-python-data-science/</link>
       <pubDate>Sun, 06 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://signal-to-noise.xyz/post/overview-python-data-science/</guid>
-      <description>Travel vector designed by Freepik  This post presents an overview of the most useful tools for data science-related tasks. It is not meant to be a complete list, but rather a brief summary of the tools I&amp;rsquo;ve found repeatedly useful, with a couple new ones that show great promise. The idea came from my last project (Exploration of Texas Death row data), where I ended up using quite a lot of Python packages, without having planned it from the start.</description>
+      <guid>https://signal-to-noise.xyz/post/overview-python-data-science/</guid>
+      <description>Overview of the most useful tools for data science: mainly Python and Javscript</description>
     </item>
     
   </channel>

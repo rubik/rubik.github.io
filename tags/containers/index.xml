@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>containers on Signal to Noise</title>
+    <link>https://signal-to-noise.xyz/tags/containers/</link>
+    <description>Recent content in containers on Signal to Noise</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Created by Michele Lacchia, built with Hugo</copyright>
+    <lastBuildDate>Mon, 11 Nov 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://signal-to-noise.xyz/tags/containers/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>A complete Kubernetes tutorial, part I: the basic concepts</title>
+      <link>https://signal-to-noise.xyz/post/kubernetes-tutorial/</link>
+      <pubDate>Mon, 11 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://signal-to-noise.xyz/post/kubernetes-tutorial/</guid>
+      <description>A complete Kubernetes tutorial series covering all the basics.</description>
+    </item>
+    
+  </channel>
+</rss>
