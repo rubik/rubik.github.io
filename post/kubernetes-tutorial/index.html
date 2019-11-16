@@ -110,12 +110,12 @@ practical example. This is the structure of the series:</p>
 
 <h2 id="introduction">Introduction</h2>
 
-<p>Kubernetes, which translates from Grek to &ldquo;pilot&rdquo; or &ldquo;helmsman&rdquo;, is an
-open-source system for automating deployment, scaling, and managing
-containerized applications. It was born out of the necessity to automate the
-deployment and management of containers across all stages of the development
-cycle. Kubernetes is supported by the CNCF, a foundation created by Google and
-others to house Kubernetes and other open-source computing projects.</p>
+<p><a href="https://kubernetes.io/">Kubernetes</a>, which translates from Grek to &ldquo;pilot&rdquo; or
+&ldquo;helmsman&rdquo;, is an open-source system for automating deployment, scaling, and
+managing containerized applications. It was born out of the necessity to
+automate the deployment and management of containers across all stages of the
+development cycle. Kubernetes is supported by the CNCF, a foundation created by
+Google and others to house Kubernetes and other open-source computing projects.</p>
 
 <p>A Kubernetes cluster consists of at least one master and multiple compute
 nodes. The master is responsible for exposing the application program interface
@@ -461,6 +461,21 @@ this VM needs to be in the same GCP project and zone of the persistent disk.</p>
 
 <p><a href="https://kubernetes.io/docs/concepts/storage/volumes/">Documentation</a></p>
 
+<h2 id="recap">Recap</h2>
+
+<ul>
+<li>Kubernetes enforces the state you describes through manifest files;</li>
+<li>The desired state is abstracted by <strong>objects</strong>;</li>
+<li>Pods are managed directly by Kubernetes and they are ephemeral;</li>
+<li>Your application will be usually deployed with a <strong>Deployment</strong> or a
+<strong>StatefulSet</strong> configuration;</li>
+<li>Networking between components is defined by Services: <strong>ClusterIP</strong> for
+intra-cluster communication, <strong>NodePort</strong> and <strong>LoadBalancer</strong> if traffic
+comes from outside the cluster;</li>
+<li>Persistence is achieved with the <strong>Volume</strong> abstraction &ndash; there are many
+different kinds depending on your use case.</li>
+</ul>
+
 <h2 id="conclusion">Conclusion</h2>
 
 <p>This tutorial was meant to give the reader a basic understanding of the most
@@ -512,6 +527,7 @@ by Redis.</p>
 	</footer>
 </div>
 
+
 <script type="application/javascript">
 var doNotTrack = false;
 if (!doNotTrack) {
@@ -522,6 +538,7 @@ if (!doNotTrack) {
 }
 </script>
 <script async src='https://www.google-analytics.com/analytics.js'></script>
+
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
