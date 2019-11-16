@@ -27,12 +27,12 @@ practical example. This is the structure of the series:
 * Part III: Best practices (still WIP)
 
 ## Introduction
-Kubernetes, which translates from Grek to "pilot" or "helmsman", is an
-open-source system for automating deployment, scaling, and managing
-containerized applications. It was born out of the necessity to automate the
-deployment and management of containers across all stages of the development
-cycle. Kubernetes is supported by the CNCF, a foundation created by Google and
-others to house Kubernetes and other open-source computing projects.
+[Kubernetes](https://kubernetes.io/), which translates from Grek to "pilot" or
+"helmsman", is an open-source system for automating deployment, scaling, and
+managing containerized applications. It was born out of the necessity to
+automate the deployment and management of containers across all stages of the
+development cycle. Kubernetes is supported by the CNCF, a foundation created by
+Google and others to house Kubernetes and other open-source computing projects.
 
 A Kubernetes cluster consists of at least one master and multiple compute
 nodes. The master is responsible for exposing the application program interface
@@ -375,6 +375,19 @@ There are additional restrictions: the Pod must be running on a GCE VM, and
 this VM needs to be in the same GCP project and zone of the persistent disk.
 
 [Documentation](https://kubernetes.io/docs/concepts/storage/volumes/)
+
+## Recap
+* Kubernetes enforces the state you describes through manifest files;
+* The desired state is abstracted by **objects**;
+* Pods are managed directly by Kubernetes and they are ephemeral;
+* Your application will be usually deployed with a **Deployment** or a
+  **StatefulSet** configuration;
+* Networking between components is defined by Services: **ClusterIP** for
+  intra-cluster communication, **NodePort** and **LoadBalancer** if traffic
+  comes from outside the cluster;
+* Persistence is achieved with the **Volume** abstraction -- there are many
+  different kinds depending on your use case.
+
 
 ## Conclusion
 This tutorial was meant to give the reader a basic understanding of the most
