@@ -2,6 +2,8 @@
 title = "About me"
 type = "page"
 hidefromhome = true
+date = "2016-29-10"
+summary = "A brief description of myself and my interests."
 +++
 
 # About me
