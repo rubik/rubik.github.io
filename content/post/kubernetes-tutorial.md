@@ -121,11 +121,11 @@ available node.
 
 ## Controller objects
 Pods don't heal or repair themselves and they're not meant to run forever. They
-are designed to be ephemeral and disposable. For these reasons, Pods are almost
-never deployed directly. There are better ways to manage your workloads,
-especially if you need to deploy multiple copies of the same Pod: instead of
-using multiple manifest files that define the same Pod object, one can make use
-of the so-called controller objects. One of the most commonly used ones is the
+are designed to be ephemeral and disposable. For these reasons, Pods are rarely
+deployed directly. There are better ways to manage your workloads, especially
+if you need to deploy multiple copies of the same Pod: instead of using
+multiple manifest files that define the same Pod object, one can make use of
+the so-called controller objects. One of the most commonly used ones is the
 Deployment object.
 
 A **Deployment** ensures that a defined set of Pods is running at any given
@@ -181,7 +181,7 @@ predictable name, whereas those created by a Deployment have a semi-random
 name. For example, Redis and Elasticsearch clusters would be deployed using a
 StatefulSet configuration.
 
-Finally, there are some less used controllers that are nonetheless important:
+Finally, some less used controllers that are nonetheless important:
 
 * **DaemonSets** ensure that a specific Pod is always running on all or a
   subset of nodes. If new nodes are added to the cluster, this controller will
