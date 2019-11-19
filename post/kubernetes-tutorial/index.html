@@ -108,6 +108,19 @@ practical example. This is the structure of the series:</p>
 <li>Part III: Best practices (still WIP)</li>
 </ul>
 
+<h4 id="table-of-contents">Table of contents</h4>
+
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#pods">Pods</a></li>
+<li><a href="#controller-objects">Controller objects</a></li>
+<li><a href="#services">Services</a></li>
+<li><a href="#ingresses">Ingresses</a></li>
+<li><a href="#volumes">Volumes</a></li>
+<li><a href="#recap">Recap</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+
 <h2 id="introduction">Introduction</h2>
 
 <p><a href="https://kubernetes.io/">Kubernetes</a>, which translates from Grek to &ldquo;pilot&rdquo; or
@@ -357,6 +370,72 @@ automatically created.</p>
 
 <p><a href="https://kubernetes.io/docs/concepts/services-networking/service/">Documentation</a></p>
 
+<h2 id="ingresses">Ingresses</h2>
+
+<p>Typically, you use Services to expose your Pods inside or outside the cluster
+to other components of your architecture, but you don&rsquo;t route HTTP(S) traffic
+to them directly. One exception to this are cloud load balancer, which can be
+configured to accept external traffic.</p>
+
+<p>For HTTP(S) traffic, an <strong>Ingress</strong> offers more flexibility and features. It
+can be configured to load balance traffic, do SSL/TLS termination, or to
+implement name-based virtual hosting.</p>
+
+<p>By itself, an Ingress only defines the configuration and has no additional
+effect. To fulfill it, you also need to deploy what is called an <strong>Ingress
+controller</strong>. At the time of writing, Kubernetes officially supports two:
+<a href="https://github.com/kubernetes/ingress-gce/blob/master/README.md">GCE</a> and
+<a href="https://github.com/kubernetes/ingress-nginx/blob/master/README.md">nginx</a>.</p>
+
+<p>As an example, here is a manifest file that defines an Ingress backed by nginx:</p>
+
+<pre><code class="language-yaml">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: my-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+  - hosts:
+    - web1.example.com
+    secretName: letsencrypt-web1-certificate-secret
+    - web2.example.com
+    secretName: letsencrypt-web2-certificate-secret
+  rules:
+  - host: web1.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: web1
+          servicePort: 80
+  - host: web2.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: web2
+          servicePort: 80
+      - path: /api
+        backend:
+          serviceName: web2-api
+          servicePort: 3002
+</code></pre>
+
+<p>This manifest files defines an Ingress that serves HTTPS traffic for
+web1.example.com and web2.example.com. Traffic to the former host is entirely
+routed to the service <code>web1</code>, whereas traffic to web2.example.com is routed to
+the services <code>web2</code> and <code>web2-api</code> depending on the path. These services don&rsquo;t
+need to be exposed, and they could be simple ClusterIP Services.</p>
+
+<p>The <code>tls</code> object defines the certificate secrets. You could manually provide
+them to Kubernetes or use a tool like
+<a href="https://docs.cert-manager.io/en/latest/">cert-manager</a>, but that&rsquo;s outside of
+the scope of this simple overview.</p>
+
+<p><a href="https://kubernetes.io/docs/concepts/services-networking/ingress/">Documentation</a></p>
+
 <h2 id="volumes">Volumes</h2>
 
 <p>A container application can write data to the read-write layer inside the
@@ -472,6 +551,9 @@ this VM needs to be in the same GCP project and zone of the persistent disk.</p>
 <li>Networking between components is defined by Services: <strong>ClusterIP</strong> for
 intra-cluster communication, <strong>NodePort</strong> and <strong>LoadBalancer</strong> if traffic
 comes from outside the cluster;</li>
+<li>HTTP(S) traffic is served through an <strong>Ingress</strong>, which only defines the
+configuration; the actual work is done by an <strong>Ingress controller</strong> like GCE
+or nginx.</li>
 <li>Persistence is achieved with the <strong>Volume</strong> abstraction &ndash; there are many
 different kinds depending on your use case.</li>
 </ul>
