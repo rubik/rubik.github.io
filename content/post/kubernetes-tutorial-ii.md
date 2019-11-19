@@ -138,4 +138,51 @@ stable network identity or persistent storage. They could be scaled up and down
 at any moment without issues.
 
 For these reasons, the **Deployment** controller is the right abstraction in
-this case. Here is the manifest file for the nginx instance:
+this case. Let's create the manifest the nginx instance.
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  template:
+    spec:
+      containers:
+      - args: ['nginx', '-g', 'daemon off;']
+        image: kubernetes-tutorial-frontend:v0.1.0
+        imagePullPolicy: Always
+        name: nginx
+        ports:
+        - containerPort: 80
+      restartPolicy: Always
+```
+
+This manifest file instructs Kubernetes to create a Deployment called
+`frontend`. Each Pod managed by the Deployment will be created according to the
+spec template: it will be built from the image
+`kubernetes-tutorial-frontend:v0.1.0` and will expose port 80.  Additionally,
+we define the restart policy as "Always". This ensures that the container will
+be restarted in all cases (even if it exists with a success code). We want our
+nginx instance to be always up, so that's the appropriate policy. Other
+possible values are OnFailure and Never.
+
+The actual application is packaged in the Docker image
+[kubernetes-tutorial-frontend](https://hub.docker.com/repository/docker/c1524db4f1/kubernetes-tutorial-frontend),
+which was created specifically for this tutorial. Similarly, the backend app's
+image is
+[kubernetes-tutorial-backend](https://hub.docker.com/repository/docker/c1524db4f1/kubernetes-tutorial-backend).
+
+Let's submit this manifest file to Kubernetes. We do so by saving the manifest
+file to `deploy/frontend/20-deployment.yaml` and running
+
+```shell
+$ kubectl apply -f deploy/frontend/20-deployment.yaml
+```
+
+We can check the status of this deployment with
+
+```shell
+$  kubectl get deployments
+
+```
