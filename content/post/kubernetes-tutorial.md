@@ -26,6 +26,17 @@ practical example. This is the structure of the series:
 * Part II: A practical and realistic example (still WIP)
 * Part III: Best practices (still WIP)
 
+#### Table of contents
+
+* [Introduction](#introduction)
+* [Pods](#pods)
+* [Controller objects](#controller-objects)
+* [Services](#services)
+* [Ingresses](#ingresses)
+* [Volumes](#volumes)
+* [Recap](#recap)
+* [Conclusion](#conclusion)
+
 ## Introduction
 [Kubernetes](https://kubernetes.io/), which translates from Grek to "pilot" or
 "helmsman", is an open-source system for automating deployment, scaling, and
@@ -270,6 +281,72 @@ automatically created.
 
 [Documentation](https://kubernetes.io/docs/concepts/services-networking/service/)
 
+## Ingresses
+Typically, you use Services to expose your Pods inside or outside the cluster
+to other components of your architecture, but you don't route HTTP(S) traffic
+to them directly. One exception to this are cloud load balancer, which can be
+configured to accept external traffic.
+
+For HTTP(S) traffic, an **Ingress** offers more flexibility and features. It
+can be configured to load balance traffic, do SSL/TLS termination, or to
+implement name-based virtual hosting.
+
+By itself, an Ingress only defines the configuration and has no additional
+effect. To fulfill it, you also need to deploy what is called an **Ingress
+controller**. At the time of writing, Kubernetes officially supports two:
+[GCE](https://github.com/kubernetes/ingress-gce/blob/master/README.md) and
+[nginx](https://github.com/kubernetes/ingress-nginx/blob/master/README.md).
+
+As an example, here is a manifest file that defines an Ingress backed by nginx:
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: my-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+  - hosts:
+    - web1.example.com
+    secretName: letsencrypt-web1-certificate-secret
+    - web2.example.com
+    secretName: letsencrypt-web2-certificate-secret
+  rules:
+  - host: web1.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: web1
+          servicePort: 80
+  - host: web2.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: web2
+          servicePort: 80
+      - path: /api
+        backend:
+          serviceName: web2-api
+          servicePort: 3002
+```
+
+This manifest files defines an Ingress that serves HTTPS traffic for
+web1.example.com and web2.example.com. Traffic to the former host is entirely
+routed to the service `web1`, whereas traffic to web2.example.com is routed to
+the services `web2` and `web2-api` depending on the path. These services don't
+need to be exposed, and they could be simple ClusterIP Services.
+
+The `tls` object defines the certificate secrets. You could manually provide
+them to Kubernetes or use a tool like
+[cert-manager](https://docs.cert-manager.io/en/latest/), but that's outside of
+the scope of this simple overview.
+
+[Documentation](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+
 ## Volumes
 A container application can write data to the read-write layer inside the
 container, but that is ephemeral. So when the container terminates, whatever
@@ -385,6 +462,9 @@ this VM needs to be in the same GCP project and zone of the persistent disk.
 * Networking between components is defined by Services: **ClusterIP** for
   intra-cluster communication, **NodePort** and **LoadBalancer** if traffic
   comes from outside the cluster;
+* HTTP(S) traffic is served through an **Ingress**, which only defines the
+  configuration; the actual work is done by an **Ingress controller** like GCE
+  or nginx.
 * Persistence is achieved with the **Volume** abstraction -- there are many
   different kinds depending on your use case.
 
