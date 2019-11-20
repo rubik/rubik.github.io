@@ -56,7 +56,7 @@ instance to store and retrieve data.
 <figure>
 <img src="/static/images/Kubernetes tutorial - Architecture.png" alt="Architecture of the application we will deploy" />
 <figcaption>
-    <strong>Fig. 1</strong> An HTTP client interacts with the nginx instance,
+    <strong>Fig. 1</strong>&emsp;An HTTP client interacts with the nginx instance,
     which proxies all the traffic to the web application. We will also set up
     the Redis instance and the corresponding persistence volume to make sure
     our Redis data is not lost.

@@ -77,7 +77,7 @@ scheduling or unscheduling workloads, for example.
 <figure>
 <img src="/static/images/kubernetes-Architecture.png" alt="Architecture of a Kubernetes cluster" />
 <figcaption>
-    <strong>Fig. 1</strong> A client, like kubectl, interacts with the
+    <strong>Fig. 1</strong>&emsp;A client, like kubectl, interacts with the
     Kubernetes API. The master node takes care of managing pods on the worker
     nodes. Each of these nodes runs the kubelet agent, which communicates with
     the master, and a container runtime to execute the containers.
@@ -240,7 +240,7 @@ for exposing Services running inside the same cluster to each other.
 <figure>
 <img src="/static/images/kubernetes-ClusterIP.png" alt="A ClusterIP Service" />
 <figcaption>
-    <strong>Fig. 2</strong> A ClusterIP Service can be reached from inside the
+    <strong>Fig. 2</strong>&emsp;A ClusterIP Service can be reached from inside the
     cluster. It routes traffic to all Pods matching its label selector. In this
     example, the Service matches all Pods having the label <code>app:
     web</code>. The Service IP can be customized with the
@@ -255,7 +255,7 @@ Service, to which the NodePort Service routes, is automatically created.
 <figure>
 <img src="/static/images/kubernetes-NodePort.png" alt="A NodePort Service" />
 <figcaption>
-    <strong>Fig. 3</strong> A NodePort Service exposes its Pods on each node at
+    <strong>Fig. 3</strong>&emsp;A NodePort Service exposes its Pods on each node at
     a random port chosen in the range 30000-32767. This port can be customized
     with the <code>nodePort</code> field. Traffic to this port is routed by
     Kubernetes to the Service Pods, even if they are not on the same node that
@@ -274,7 +274,7 @@ automatically created.
 <figure>
 <img src="/static/images/kubernetes-LoadBalancer.png" alt="A NodePort Service" />
 <figcaption>
-    <strong>Fig. 4</strong> A LoadBalancer Service creates the corresponding
+    <strong>Fig. 4</strong>&emsp;A LoadBalancer Service creates the corresponding
     NodePort Service and provisions a cloud load balancer automatically.
 </figcaption>
 </figure>
