@@ -160,6 +160,9 @@ metadata:
   name: nginx-proxy
 spec:
   replicas: 3
+  selector:
+    matchLabels:
+      name: nginx-proxy
   template:
     metadata:
       labels:
