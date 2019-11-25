@@ -138,4 +138,408 @@ stable network identity or persistent storage. They could be scaled up and down
 at any moment without issues.
 
 For these reasons, the **Deployment** controller is the right abstraction in
-this case. Here is the manifest file for the nginx instance:
+this case. Let's create the manifest the nginx instance:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - args: ['nginx', '-g', 'daemon off;']
+        image: c1524db4f1/kubernetes-tutorial-frontend:v0.2.0
+        imagePullPolicy: Always
+        name: nginx
+        ports:
+        - containerPort: 80
+      restartPolicy: Always
+```
+
+This manifest file instructs Kubernetes to create a Deployment called
+`frontend`. Each Pod managed by the Deployment will be created according to the
+spec template: it will be built from the image
+`c1524db4f1/kubernetes-tutorial-frontend:v0.2.0` and will expose port 80.
+We specified `replicas: 2` for redundancy and availability: our frontend
+Deployment will manage two nginx instances. Additionally, we define the restart
+policy as "Always". This ensures that the container will be restarted in all
+cases (even if it exists with a success code). We want our nginx instance to be
+always up, so that's the appropriate policy. Other possible values are
+OnFailure and Never.
+
+Observe that the `spec.selector` field is mandatory: the Deployment needs to
+know which Pods to manage. In this case, it controls all the Pods with label
+`app=web`. All the Pods created by this spec have that label, as defined by
+`spec.template.metadata.labels`.
+
+The actual application is packaged in the Docker image
+[c1524db4f1/kubernetes-tutorial-frontend](https://hub.docker.com/repository/docker/c1524db4f1/kubernetes-tutorial-frontend),
+which was created specifically for this tutorial. Similarly, the backend app's
+image is
+[c1524db4f1/kubernetes-tutorial-backend](https://hub.docker.com/repository/docker/c1524db4f1/kubernetes-tutorial-backend).
+
+Let's submit this manifest file to Kubernetes. We do so by saving the manifest
+file to `deploy/frontend/20-deployment.yaml` and running
+
+```shell
+$ kubectl apply -f deploy/frontend/20-deployment.yaml
+```
+
+We can check the status of this Deployment with
+
+```shell
+$ kubectl get deployments
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+frontend   2/2     2            2            4s
+```
+
+The API informs us that the Deployment `frontend` is up to date, available, and
+its Pods are all ready. We can also query the state of all the Pods (by
+default, this will only display Pods in the `default` namespace):
+
+```shell
+$ kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+frontend-557854f87f-924f8   1/1     Running   0           7s
+frontend-557854f87f-fvmgb   1/1     Running   0           7s
+```
+
+These Pods have a special name because they were created by the Deployment
+controller. Their status is Running, so all is fine. Other possible status
+values are:
+
+* Pending: if the configuration has been accepted by the Kubernetes API, but
+  one or more containers have not been created; a Pod could remain in Pending
+  state forever if it cannot be scheduled (e.g. there are no available nodes or
+  ports) --- more details are found with the command `kubectl describe pod <pod
+  name>`;
+* Success: if all containers in the Pod have terminated successfully, and will
+  not be restarted;
+* Failure: if at least one container in the Pod has terminated in failure, i.e.
+  it exited with a non-zero exit code or it was forcefully terminated by the
+  system;
+* Unknown: if the state of the Pod is not known to the control plane; this
+  could indicate the presence of communication issues.
+
+
+#### Health checks
+Note that Kubernetes reports that our Pods are fully ready: `1/1` means that one
+container (out of a total of one) in each Pod is ready. But how does Kubernetes
+know when the nginx container is ready to accept requests? By default,
+Kubernetes marks a Pod as ready and begins to send traffic when all its
+containers start, and restarts the containers when they crash. While this can
+be acceptable for some simpler deployments, a more robust approach is necessary
+for production deployments.
+
+For example, container might need some warm up time before it gets to an
+operational state. This could mean some requests are dropped if Kubernetes
+considers the container ready when it's not. To remedy, we can configure
+readiness and liveness probes.
+
+* **Readiness** probes are designed to let Kubernetes know when a Pod is ready
+  to accept traffic. A common misconception is that readiness probes are only
+  active during startup. This is not true: Kubernetes keeps testing for
+  readiness during the whole lifetime of the Pod, and pauses and resumes
+  routing to the Pod according to the readiness probe response.
+* **Liveness** probes indicate wheter a container is alive or not: if it's not
+  it will be restarted by Kubernetes. This probe can be used to detect
+  deadlocks or other broken states that don't necessarily result in a crash.
+
+There are three types of probes: HTTP checks, TCP checks, and checks performed
+by running commands inside the container. For our nginx container, we'll use
+the second one. This is accomplished by adding the following configuration in
+the `spec.template.spec.containers.0` object of our manifest:
+
+```yaml
+readinessProbe:
+  tcpSocket:
+    port. 80
+  periodSeconds: 2
+livenessProbe:
+  tcpSocket:
+    port: 80
+  initialDelaySeconds: 20
+  periodSeconds: 30
+```
+
+We configure the same health check in both cases, with a different frequency.
+If the container is unresponsive for a longer period of time, it will be
+restarted. More details on the probe types and all the options are found
+[here](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
+
+#### Deployment updates
+Finally, let's consider Deployment updates. If we make changes to the manifest
+file, we can push the update with `kubectl apply -f <manifest-file>`.
+Kubernetes will compare the old version with the new one and, if it finds any
+differences, it will take steps to reach the desired state.
+
+If we update the image version, for example, the Deployment controller will
+create a new set of Pods with the new container image, and will gradually scale
+up the new replica set. At the same time, it will scale down the replica set
+with the previous version. This update strategy is called **RollingUpdate**.
+There are other strategies available. Notably, the **Recreate** one, which is
+quite handy during development. It consists in terminating all the running
+instances and then recreating them with the newer version.
+
+While the **RollingUpdate** strategy can prevent downtime, if configured
+appropriately, with the **Recreate** one that's not possible. Let's configure
+our update to prevent downtime. We'll add the following configuration to the
+`spec` object:
+
+```yaml
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+```
+
+With the above parameters, the frontend Deployment will create one additional
+Pod during the update and it will ensure that no Pods are unavailable at any
+time. Additional update strategies are discussed
+[here](https://blog.container-solutions.com/kubernetes-deployment-strategies).
+
+
+#### Final configuration
+With those improvements, the configuration for our frontend Deployment looks
+like this:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: web
+      service: nginx
+  template:
+    metadata:
+      labels:
+        app: web
+        service: nginx
+    spec:
+      containers:
+      - args: ['nginx', '-g', 'daemon off;']
+        image: c1524db4f1/kubernetes-tutorial-frontend:v0.2.0
+        imagePullPolicy: Always
+        name: nginx
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          tcpSocket:
+            port: 80
+          periodSeconds: 2
+        livenessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 30
+      restartPolicy: Always
+```
+
+After submitting the manifest with
+
+```shell
+$ kubectl apply -f deploy/frontend/20-deployment.yaml
+```
+
+we see that the number of Pods immediately increases to three (due to
+`maxSurge: 1`). When the new Pod is ready, Kubernetes starts terminating the
+old Pods and creating new ones. This process happens gradually one by one,
+because we specified `maxUnavailable: 0`, which forces Kubernetes to maintaing
+two fully ready Pods at any time (as we set `replicas: 2`). Had we specified
+`maxUnavailable: 1`, Kubernetes would have upgraded two Pods at a time.
+
+For our application, we'll create a similar Deployment manifest. It is
+essentially the same, so we will not discuss it in detail. We save the
+following configuration in `deploy/backend/20-deployment.yaml`:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: web
+      service: app
+  template:
+    metadata:
+      labels:
+        app: web
+        service: app
+    spec:
+      containers:
+      - args: ['/bin/app']
+        image: c1524db4f1/kubernetes-tutorial-backend:v0.2.0
+        imagePullPolicy: Always
+        name: app
+        ports:
+        - containerPort: 1323
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 1323
+          periodSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 1323
+          initialDelaySeconds: 30
+          periodSeconds: 30
+      restartPolicy: Always
+```
+
+This manifest is almost identical to the previous one, with the only difference
+that in this case the health checks are performed by requesting a particular
+HTTP endpoint.
+
+After deploying, this is the output of `kubectl get pods`:
+
+```shell
+NAME                        READY   STATUS    RESTARTS   AGE
+backend-78d87dd74b-pk7tr    1/1     Running   0          14m
+backend-78d87dd74b-wth2f    1/1     Running   0          14m
+frontend-59f5cf4948-96drd   1/1     Running   0          23m
+frontend-59f5cf4948-gcrll   1/1     Running   0          23m
+```
+
+## Networking between Pods
+We are now ready to set up the Services that will allow our Pods to
+communicate. We will create a LoadBalancer Service for the nginx Pods, since
+they need to be reached from outside the cluster, and a ClusterIP service for
+the Go application. If you need to, you can refresh your knowledge about
+Kubernetes services [here](/post/kubernetes-tutorial/#services).
+
+This is the manifest that declares the LoadBalancer service for our nginx Pods:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  type: LoadBalancer
+  ports:
+  - name: "80"
+    port: 80
+    targetPort: 80
+  selector:
+    app: web
+    service: nginx
+```
+
+This manifest specifies that the Service is a LoadBalancer and that it needs to
+forward traffic from port 80 (`port`), to port 80 (`targetPort`) of the
+selected Pods. We select Pods that have the labels `app: web` and `service:
+nginx`, which are the same ones we used in the nginx Deployment.
+
+As before, we save this manifest to `deploy/frontend/30-service.yaml` and
+submit it to the Kubernetes API with
+
+```shell
+$ kubectl apply -f deploy/frontend/30-service.yaml
+```
+
+As mentioned above, for the Go application we'll deploy a ClusterIP service.
+That's because it's proxied by nginx, so all its traffic comes from inside the
+cluster. The manifest file is quite simple like the previous one:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+spec:
+  type: ClusterIP
+  ports:
+  - name: "1323"
+    port: 1323
+    targetPort: 1323
+  selector:
+    app: web
+    service: app
+```
+
+We save it in `deploy/backend/30-service.yaml` and deploy it:
+
+```shell
+$ kubectl apply -f deploy/backend/30-service.yaml
+```
+
+We can inspect the status of the running Services (again, in the `default`
+namespace, which is the one we're working with) with the following command:
+
+```shell
+$ kubectl get svc
+NAME         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+app          ClusterIP      10.97.226.151   <none>        1323/TCP       1m10s
+nginx        LoadBalancer   10.97.210.57    <pending>     80:31494/TCP   1m14
+```
+
+As we can see, the ClusterIP has no external IP, while the LoadBalancer shows
+"pending". That's because my cluster is local and runs throuh Minikube. If we
+were communicating with a cloud Kubernetes installation (e.g. GKE), the load
+balancer would be provisioned automatically and the external IP would appear
+after a few seconds. In this case, howerver, we need to run `minikube tunnel`
+in order to obtain an external IP. After running that command separately, we
+can check the status of our Services again:
+
+```shell
+$ kubectl get svc
+NAME         TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)        AGE
+app          ClusterIP      10.97.226.151   <none>         1323/TCP       1m24s
+nginx        LoadBalancer   10.97.210.57    10.97.210.57   80:31494/TCP   1m28s
+```
+
+We can now test the connectivity to our application:
+
+```shell
+$  http 10.97.210.57/healthz
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Length: 3
+Content-Type: text/plain; charset=UTF-8
+Date: Sun, 24 Nov 2019 18:02:31 GMT
+Server: nginx/1.17.5
+
+✓
+```
+
+This response is generated by our Go application, which in turn is proxied by
+the nginx instances. This is a good point to learn about a new command:
+`kubectl logs`. It allows us to read the logs produced by our Pods:
+
+```shell
+$ kubectl logs frontend-99d9cfbc9-dbbdj
+192.168.99.1 - - [24/Nov/2019:18:02:31 +0000] "GET /healthz HTTP/1.1" 200 3 "-" "HTTPie/1.0.3"
+$ kubectl logs frontend-99d9cfbc9-dknvq
+$
+```
+
+As we can see, our request was routed through the Pod
+`frontend-99d9cfbc9-dbbdj`, while the other Pod hasn't served any traffic yet.
