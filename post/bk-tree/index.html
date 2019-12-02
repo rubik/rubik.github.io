@@ -116,10 +116,7 @@ we can change the first one into the other by deleting the leading <strong>s</st
 then substituting the two central <strong>c</strong>'s with two <strong>t</strong>'s.</p>
 
 <p>Let's use the dictionary</p>
-
-<pre><code class="language-no-highlight">{'some', 'soft', 'same', 'mole', 'soda', 'salmon'}
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-no-highlight" data-lang="no-highlight">{&#39;some&#39;, &#39;soft&#39;, &#39;same&#39;, &#39;mole&#39;, &#39;soda&#39;, &#39;salmon&#39;}</code></pre></div>
 <p>To construct the tree, we first choose any word as the root node, and then
 add the other words by calculating their distance from the root. In our case,
 we can choose &quot;some&quot; to be the root element. Then, after adding the two
@@ -175,10 +172,7 @@ satisfy this condition. Moving on, we compute</p>
 that have a distance between <span  class="math">\(D - N = -1\)</span> and <span  class="math">\(D + N = 3\)</span>. Again, all of
 them, but only &quot;soda&quot; is a valid result. Finally, &quot;salmon&quot; is not acceptable.
 If we sort our results by distance we end up with the following:</p>
-
-<pre><code class="language-no-highlight">[(1, 'soft'), (2, 'some'), (2, 'soda')]
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-no-highlight" data-lang="no-highlight">[(1, &#39;soft&#39;), (2, &#39;some&#39;), (2, &#39;soda&#39;)]</code></pre></div>
 <h3 id="why-does-it-work">Why does it work?</h3>
 
 <p>It's interesting to understand <strong>why</strong> we are allowed to prune all the children
@@ -243,47 +237,44 @@ the criterion.</p>
 
 <p>This data structure is easy to implement in Python, if we use dictionaries to
 represent edges.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> collections <span style="color:#f92672">import</span> deque
 
-<pre><code class="language-python">from collections import deque
 
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BKTree</span>:
+    <span style="color:#66d9ef">def</span> __init__(self, distance_func):
+        self<span style="color:#f92672">.</span>_tree <span style="color:#f92672">=</span> None
+        self<span style="color:#f92672">.</span>_distance_func <span style="color:#f92672">=</span> distance_func
 
-class BKTree:
-    def __init__(self, distance_func):
-        self._tree = None
-        self._distance_func = distance_func
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add</span>(self, node):
+        <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>_tree <span style="color:#f92672">is</span> None:
+            self<span style="color:#f92672">.</span>_tree <span style="color:#f92672">=</span> (node, {})
+            <span style="color:#66d9ef">return</span>
 
-    def add(self, node):
-        if self._tree is None:
-            self._tree = (node, {})
-            return
+        current, children <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_tree
+        <span style="color:#66d9ef">while</span> True:
+            dist <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_distance_func(node, current)
+            target <span style="color:#f92672">=</span> children<span style="color:#f92672">.</span>get(dist)
+            <span style="color:#66d9ef">if</span> target <span style="color:#f92672">is</span> None:
+                children[dist] <span style="color:#f92672">=</span> (node, {})
+                <span style="color:#66d9ef">break</span>
+            current, children <span style="color:#f92672">=</span> target
 
-        current, children = self._tree
-        while True:
-            dist = self._distance_func(node, current)
-            target = children.get(dist)
-            if target is None:
-                children[dist] = (node, {})
-                break
-            current, children = target
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">search</span>(self, node, radius):
+        <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>_tree <span style="color:#f92672">is</span> None:
+            <span style="color:#66d9ef">return</span> []
 
-    def search(self, node, radius):
-        if self._tree is None:
-            return []
+        candidates <span style="color:#f92672">=</span> deque([self<span style="color:#f92672">.</span>_tree])
+        result <span style="color:#f92672">=</span> []
+        <span style="color:#66d9ef">while</span> candidates:
+            candidate, children <span style="color:#f92672">=</span> candidates<span style="color:#f92672">.</span>popleft()
+            dist <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_distance_func(node, candidate)
+            <span style="color:#66d9ef">if</span> dist <span style="color:#f92672">&lt;</span><span style="color:#f92672">=</span> radius:
+                result<span style="color:#f92672">.</span>append((dist, candidate))
 
-        candidates = deque([self._tree])
-        result = []
-        while candidates:
-            candidate, children = candidates.popleft()
-            dist = self._distance_func(node, candidate)
-            if dist &lt;= radius:
-                result.append((dist, candidate))
-
-            low, high = dist - radius, dist + radius
-            candidates.extend(c for d, c in children.items()
-                              if low &lt;= d &lt;= high)
-        return result
-</code></pre>
-
+            low, high <span style="color:#f92672">=</span> dist <span style="color:#f92672">-</span> radius, dist <span style="color:#f92672">+</span> radius
+            candidates<span style="color:#f92672">.</span>extend(c <span style="color:#66d9ef">for</span> d, c <span style="color:#f92672">in</span> children<span style="color:#f92672">.</span>items()
+                              <span style="color:#66d9ef">if</span> low <span style="color:#f92672">&lt;</span><span style="color:#f92672">=</span> d <span style="color:#f92672">&lt;</span><span style="color:#f92672">=</span> high)
+        <span style="color:#66d9ef">return</span> result</code></pre></div>
 <p>The implementation is pretty straightforward and adheres completely to the
 algorithm we explained above. A few comments:</p>
 

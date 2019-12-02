@@ -103,99 +103,93 @@
 <li><code>scikit-learn</code> to do topic modeling</li>
 <li><code>gensim</code> for additional topic modeling</li>
 </ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+<span style="color:#f92672">from</span> altair <span style="color:#f92672">import</span> Chart, X, Y, Axis, Scale, Color, Bin, SortField, Column, Formula
 
-<pre><code class="language-python">import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from altair import Chart, X, Y, Axis, Scale, Color, Bin, SortField, Column, Formula
+<span style="color:#75715e"># Two convenience functions to work with Altair and Matplotlib</span>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">show</span>(<span style="color:#f92672">*</span>charts, width<span style="color:#f92672">=</span><span style="color:#ae81ff">700</span>, height<span style="color:#f92672">=</span><span style="color:#ae81ff">300</span>):
+    <span style="color:#66d9ef">for</span> chart <span style="color:#f92672">in</span> charts:
+        chart<span style="color:#f92672">.</span>configure_cell(width<span style="color:#f92672">=</span>width, height<span style="color:#f92672">=</span>height)<span style="color:#f92672">.</span>display()
 
-# Two convenience functions to work with Altair and Matplotlib
-def show(*charts, width=700, height=300):
-    for chart in charts:
-        chart.configure_cell(width=width, height=height).display()
-
-def pie(ax, *args, **kwargs):
-    patches, _, _ = ax.pie(
-        *args,
-        colors=['#BEE9E8', '#62B6CB', '#5FA8D3', '#DCEDEC'],
-        autopct='%1.1f%%',
-        **kwargs
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">pie</span>(ax, <span style="color:#f92672">*</span>args, <span style="color:#f92672">*</span><span style="color:#f92672">*</span>kwargs):
+    patches, _, _ <span style="color:#f92672">=</span> ax<span style="color:#f92672">.</span>pie(
+        <span style="color:#f92672">*</span>args,
+        colors<span style="color:#f92672">=</span>[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">#BEE9E8</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">#62B6CB</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">#5FA8D3</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">#DCEDEC</span><span style="color:#e6db74">&#39;</span>],
+        autopct<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%1.1f</span><span style="color:#e6db74">%%</span><span style="color:#e6db74">&#39;</span>,
+        <span style="color:#f92672">*</span><span style="color:#f92672">*</span>kwargs
     )
-    for p in patches:
-        p.set_linewidth(0.6)
-    ax.axis('equal')
-</code></pre>
-
+    <span style="color:#66d9ef">for</span> p <span style="color:#f92672">in</span> patches:
+        p<span style="color:#f92672">.</span>set_linewidth(<span style="color:#ae81ff">0.6</span>)
+    ax<span style="color:#f92672">.</span>axis(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">equal</span><span style="color:#e6db74">&#39;</span>)</code></pre></div>
 <h1 id="scraping-the-data">Scraping the data</h1>
 
 <p>I used <a href="https://scrapy.org/">Scrapy</a> to obtain all the data. In the first iteration of this project I was using <code>requests</code> and <code>BeautifulSoup</code>. However, the code quickly became messy and even though I was using <code>concurrent.futures</code> to send asynchronous requests it was unbearably slow. Hence my decision to switch to Scrapy. I had already used it, and it's really easy to setup. I won't post the complete code here, because Scrapy requires a whole project to run. The important part is the spider, which is contained in a single class. If you've already used Scrapy, the code is very easy to follow, with minor adjustments for errors in the original page (see people #416 and #419 for an example).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> scrapy
 
-<pre><code class="language-python">import scrapy
-
-class TexasDeathSpider(scrapy.Spider):
-    name = 'texas_death'
-    allowed_domains = ['www.tdcj.state.tx.us']
-    start_urls = (
-        'http://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html',
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TexasDeathSpider</span>(scrapy<span style="color:#f92672">.</span>Spider):
+    name <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">texas_death</span><span style="color:#e6db74">&#39;</span>
+    allowed_domains <span style="color:#f92672">=</span> [<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">www.tdcj.state.tx.us</span><span style="color:#e6db74">&#39;</span>]
+    start_urls <span style="color:#f92672">=</span> (
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">http://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html</span><span style="color:#e6db74">&#39;</span>,
     )
 
-    def parse(self, response):
-        _, *rows = response.css('table tr')
-        fields = ['execution', 'last_name', 'first_name', 'tdcj_number',
-                  'age_execution', 'date_execution', 'race', 'county']
-        for row in rows:
-            item = PersonItem()
-            values = row.css('td::text').extract()
-            if len(values) &gt; len(fields):
-                # Special cases: people #416 and #419
-                del values[1]
-            for field, value in zip(fields, values):
-                item[field] = value.strip()
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse</span>(self, response):
+        _, <span style="color:#f92672">*</span>rows <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">table tr</span><span style="color:#e6db74">&#39;</span>)
+        fields <span style="color:#f92672">=</span> [<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">execution</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">last_name</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">first_name</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">tdcj_number</span><span style="color:#e6db74">&#39;</span>,
+                  <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">age_execution</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">date_execution</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">county</span><span style="color:#e6db74">&#39;</span>]
+        <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> rows:
+            item <span style="color:#f92672">=</span> PersonItem()
+            values <span style="color:#f92672">=</span> row<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">td::text</span><span style="color:#e6db74">&#39;</span>)<span style="color:#f92672">.</span>extract()
+            <span style="color:#66d9ef">if</span> len(values) <span style="color:#f92672">&gt;</span> len(fields):
+                <span style="color:#75715e"># Special cases: people #416 and #419</span>
+                <span style="color:#66d9ef">del</span> values[<span style="color:#ae81ff">1</span>]
+            <span style="color:#66d9ef">for</span> field, value <span style="color:#f92672">in</span> zip(fields, values):
+                item[field] <span style="color:#f92672">=</span> value<span style="color:#f92672">.</span>strip()
 
-            info, last_stmt = row.css('td &gt; a::attr(href)').extract()
-            no_info = info.endswith(('.jpg', 'no_info_available.html'))
-            no_stmt = last_stmt.endswith('no_last_statement.html')
-            if no_info:
-                item['gender'] = ''
-                info = False
-            if no_stmt:
-                item['last_statement'] = ''
+            info, last_stmt <span style="color:#f92672">=</span> row<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">td &gt; a::attr(href)</span><span style="color:#e6db74">&#39;</span>)<span style="color:#f92672">.</span>extract()
+            no_info <span style="color:#f92672">=</span> info<span style="color:#f92672">.</span>endswith((<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.jpg</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">no_info_available.html</span><span style="color:#e6db74">&#39;</span>))
+            no_stmt <span style="color:#f92672">=</span> last_stmt<span style="color:#f92672">.</span>endswith(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">no_last_statement.html</span><span style="color:#e6db74">&#39;</span>)
+            <span style="color:#66d9ef">if</span> no_info:
+                item[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">gender</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>
+                info <span style="color:#f92672">=</span> False
+            <span style="color:#66d9ef">if</span> no_stmt:
+                item[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">last_statement</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>
 
-            if no_info and no_stmt:
-                yield item
-            elif no_stmt:
-                yield scrapy.Request(response.urljoin(info),
-                                     callback=self.parse_gender,
-                                     meta={'item': item})
-            else:
-                info_url = response.urljoin(info) if info else False
-                yield scrapy.Request(response.urljoin(last_stmt),
-                                     callback=self.parse_last_stmt,
-                                     meta={'item': item,
-                                           'info_url': info_url})
+            <span style="color:#66d9ef">if</span> no_info <span style="color:#f92672">and</span> no_stmt:
+                <span style="color:#66d9ef">yield</span> item
+            <span style="color:#66d9ef">elif</span> no_stmt:
+                <span style="color:#66d9ef">yield</span> scrapy<span style="color:#f92672">.</span>Request(response<span style="color:#f92672">.</span>urljoin(info),
+                                     callback<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>parse_gender,
+                                     meta<span style="color:#f92672">=</span>{<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">item</span><span style="color:#e6db74">&#39;</span>: item})
+            <span style="color:#66d9ef">else</span>:
+                info_url <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>urljoin(info) <span style="color:#66d9ef">if</span> info <span style="color:#66d9ef">else</span> False
+                <span style="color:#66d9ef">yield</span> scrapy<span style="color:#f92672">.</span>Request(response<span style="color:#f92672">.</span>urljoin(last_stmt),
+                                     callback<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>parse_last_stmt,
+                                     meta<span style="color:#f92672">=</span>{<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">item</span><span style="color:#e6db74">&#39;</span>: item,
+                                           <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">info_url</span><span style="color:#e6db74">&#39;</span>: info_url})
 
-    def parse_last_stmt(self, response):
-        item = response.meta['item']
-        info_url = response.meta['info_url']
-        ps = [p.strip() for p in response.css('p::text').extract()
-              if p.strip()]
-        item['last_statement'] = ps[-1]
-        if not info_url:
-            yield item
-            return
-        yield scrapy.Request(
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse_last_stmt</span>(self, response):
+        item <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">item</span><span style="color:#e6db74">&#39;</span>]
+        info_url <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">info_url</span><span style="color:#e6db74">&#39;</span>]
+        ps <span style="color:#f92672">=</span> [p<span style="color:#f92672">.</span>strip() <span style="color:#66d9ef">for</span> p <span style="color:#f92672">in</span> response<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">p::text</span><span style="color:#e6db74">&#39;</span>)<span style="color:#f92672">.</span>extract()
+              <span style="color:#66d9ef">if</span> p<span style="color:#f92672">.</span>strip()]
+        item[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">last_statement</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> ps[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> info_url:
+            <span style="color:#66d9ef">yield</span> item
+            <span style="color:#66d9ef">return</span>
+        <span style="color:#66d9ef">yield</span> scrapy<span style="color:#f92672">.</span>Request(
                 info_url,
-                callback=self.parse_gender,
-                meta={'item': item},
+                callback<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>parse_gender,
+                meta<span style="color:#f92672">=</span>{<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">item</span><span style="color:#e6db74">&#39;</span>: item},
         )
 
-    def parse_gender(self, response):
-        item = response.meta['item']
-        rows = response.css('table tr')
-        item['gender'] = rows[10].css('td::text').extract()[-1].strip()
-        yield item
-</code></pre>
-
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse_gender</span>(self, response):
+        item <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">item</span><span style="color:#e6db74">&#39;</span>]
+        rows <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">table tr</span><span style="color:#e6db74">&#39;</span>)
+        item[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">gender</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> rows[<span style="color:#ae81ff">10</span>]<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">td::text</span><span style="color:#e6db74">&#39;</span>)<span style="color:#f92672">.</span>extract()[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>strip()
+        <span style="color:#66d9ef">yield</span> item</code></pre></div>
 <p>The crawler is really fast compared to the previous approach and with Scrapy exporting the data to other formats is relatively painless. I saved all the data in the file <code>texas_death_itmes.csv</code>.
 If you read the spider code you'll have noticed that there are a few special cases. In some cases, there is no additional information. In others the additional information is not in an HTML page but in an image of a scanned document.</p>
 
@@ -206,14 +200,7 @@ If you read the spider code you'll have noticed that there are a few special cas
 <h1 id="cleaning-and-processing-the-data">Cleaning and processing the data</h1>
 
 <p>We'll now clean the data we have to see if there's anything interesting in it.</p>
-
-<pre><code class="language-python">people = pd.read_csv('texas_death_items.csv')
-</code></pre>
-
-<pre><code class="language-python">people.info()
-</code></pre>
-
-<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">texas_death_items.csv</span><span style="color:#e6db74">&#39;</span>)</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people<span style="color:#f92672">.</span>info()</code></pre></div><pre><code><class 'pandas.core.frame.DataFrame'>
 RangeIndex: 538 entries, 0 to 537
 Data columns (total 10 columns):
 execution         538 non-null int64
@@ -227,14 +214,9 @@ date_execution    538 non-null object
 county            538 non-null object
 last_statement    436 non-null object
 dtypes: int64(3), object(7)
-memory usage: 42.1+ KB
-</code></pre>
-
+memory usage: 42.1+ KB</code></pre>
 <p>We see that we are only missing the gender and about a hundred statements, from the people who declined to make one.</p>
-
-<pre><code class="language-python">people.head()
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people<span style="color:#f92672">.</span>head()</code></pre></div>
 <div>
 <table border="1" class="dataframe">
   <thead>
@@ -323,135 +305,89 @@ memory usage: 42.1+ KB
 </div>
 
 <p>Let's start by processing the dates.</p>
-
-<pre><code class="language-python">people.date_execution.map(len).value_counts()
-</code></pre>
-
-<pre><code>10    536
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people<span style="color:#f92672">.</span>date_execution<span style="color:#f92672">.</span>map(len)<span style="color:#f92672">.</span>value_counts()</code></pre></div><pre><code>10    536
 9       2
-Name: date_execution, dtype: int64
-</code></pre>
-
+Name: date_execution, dtype: int64</code></pre>
 <p>The two dates which are nine characters long could be malformed, let's check.</p>
-
-<pre><code class="language-python">people.date_execution[people.date_execution.map(len) == 9]
-</code></pre>
-
-<pre><code>425    11/6/2008
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people<span style="color:#f92672">.</span>date_execution[people<span style="color:#f92672">.</span>date_execution<span style="color:#f92672">.</span>map(len) <span style="color:#f92672">==</span> <span style="color:#ae81ff">9</span>]</code></pre></div><pre><code>425    11/6/2008
 536    10/6/2015
-Name: date_execution, dtype: object
-</code></pre>
-
+Name: date_execution, dtype: object</code></pre>
 <p>It turns out they aren't malformed, so we can process them in bulk.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> datetime
 
-<pre><code class="language-python">import datetime
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_read_date</span>(date):
+    <span style="color:#66d9ef">return</span> datetime<span style="color:#f92672">.</span>datetime<span style="color:#f92672">.</span>strptime(date, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%</span><span style="color:#e6db74">m/</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">/</span><span style="color:#e6db74">%</span><span style="color:#e6db74">Y</span><span style="color:#e6db74">&#39;</span>)
 
-def _read_date(date):
-    return datetime.datetime.strptime(date, '%m/%d/%Y')
-
-people.date_execution = people.date_execution.map(_read_date)
-</code></pre>
-
+people<span style="color:#f92672">.</span>date_execution <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>date_execution<span style="color:#f92672">.</span>map(_read_date)</code></pre></div>
 <p>The gender column is a bit more complicated to fill, since in theory there are a few names that are considered 'unisex' (<a href="http://www.babynameguide.com/categoryunisex.asp?strCat=Unisex">this site</a> has a comprehensive list). Let's check the names of the people for which we are missing the gender.</p>
-
-<pre><code class="language-python">people.gender.replace('male', 'Male', inplace=True)
-known_names = dict(people[['first_name', 'gender']].dropna().values)
-</code></pre>
-
-<pre><code class="language-python">names = people.first_name[people[['first_name', 'gender']].isnull().any(axis=1)]
-len(names.unique()), len(names)
-</code></pre>
-
-<pre><code>(204, 387)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people<span style="color:#f92672">.</span>gender<span style="color:#f92672">.</span>replace(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">male</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Male</span><span style="color:#e6db74">&#39;</span>, inplace<span style="color:#f92672">=</span>True)
+known_names <span style="color:#f92672">=</span> dict(people[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">first_name</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">gender</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>dropna()<span style="color:#f92672">.</span>values)</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">names <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>first_name[people[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">first_name</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">gender</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>any(axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)]
+len(names<span style="color:#f92672">.</span>unique()), len(names)</code></pre></div><pre><code>(204, 387)</code></pre>
 <p>First of all, we'll use the information we already have to infer the gender of the other people:</p>
-
-<pre><code class="language-python">known_names = dict(people[['first_name', 'gender']].dropna().values)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">known_names <span style="color:#f92672">=</span> dict(people[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">first_name</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">gender</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>dropna()<span style="color:#f92672">.</span>values)</code></pre></div>
 <p>For the remaining names we'll use the package <code>SexMachine</code>. Note that it does not work on Python 3, and I had to manually change a couple of lines of code.</p>
-
-<pre><code class="language-python">from sexmachine.detector import Detector
-d = Detector()
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sexmachine.detector <span style="color:#f92672">import</span> Detector
+d <span style="color:#f92672">=</span> Detector()</code></pre></div>
 <p>The detector returns <code>mostly_{gender}</code> when it's not sure. Since almost the totality of executed people are male, in our case we can safely interpret <code>mostly_male</code> as <code>male</code>. We have to manually check the rest. (Note: here <code>andy</code> means androgynous, i.e. what I called 'unisex' name before.)</p>
-
-<pre><code class="language-python">remaining = set()
-for name in names.unique():
-    gender = d.get_gender(name).split('_')[-1]
-    if gender == 'male':
-        known_names[name] = 'Male'
-        continue
-    remaining.add(name)
-    print('{} -&gt; {}'.format(name, gender))
-</code></pre>
-
-<pre><code>Marion -&gt; female
-Jessie -&gt; female
-Caruthers -&gt; andy
-Ponchai -&gt; andy
-Betty -&gt; female
-Clydell -&gt; andy
-Excell -&gt; andy
-Lesley -&gt; andy
-Esequel -&gt; andy
-Kavin -&gt; andy
-G.W. -&gt; andy
-Markum -&gt; andy
-Denton -&gt; andy
-Hai -&gt; andy
-Dorsie -&gt; andy
-Irineo -&gt; andy
-Jessel -&gt; andy
-Aua -&gt; andy
-Karla -&gt; female
-Sammie -&gt; andy
-Orien -&gt; andy
-Stacey -&gt; female
-Jermarr -&gt; andy
-Ronford -&gt; andy
-T.J. -&gt; andy
-Toronto -&gt; andy
-Alva -&gt; andy
-Kia -&gt; female
-Kelsey -&gt; female
-Dominique -&gt; andy
-Shannon -&gt; andy
-Jaime -&gt; andy
-Jackie -&gt; andy
-Mauriceo -&gt; andy
-Farley -&gt; andy
-Lionell -&gt; andy
-Daroyce -&gt; andy
-Elkie -&gt; andy
-Jamie -&gt; female
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">remaining <span style="color:#f92672">=</span> set()
+<span style="color:#66d9ef">for</span> name <span style="color:#f92672">in</span> names<span style="color:#f92672">.</span>unique():
+    gender <span style="color:#f92672">=</span> d<span style="color:#f92672">.</span>get_gender(name)<span style="color:#f92672">.</span>split(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">_</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+    <span style="color:#66d9ef">if</span> gender <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">male</span><span style="color:#e6db74">&#39;</span>:
+        known_names[name] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Male</span><span style="color:#e6db74">&#39;</span>
+        <span style="color:#66d9ef">continue</span>
+    remaining<span style="color:#f92672">.</span>add(name)
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">{} -&gt; {}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(name, gender))</code></pre></div><pre><code>Marion -> female
+Jessie -> female
+Caruthers -> andy
+Ponchai -> andy
+Betty -> female
+Clydell -> andy
+Excell -> andy
+Lesley -> andy
+Esequel -> andy
+Kavin -> andy
+G.W. -> andy
+Markum -> andy
+Denton -> andy
+Hai -> andy
+Dorsie -> andy
+Irineo -> andy
+Jessel -> andy
+Aua -> andy
+Karla -> female
+Sammie -> andy
+Orien -> andy
+Stacey -> female
+Jermarr -> andy
+Ronford -> andy
+T.J. -> andy
+Toronto -> andy
+Alva -> andy
+Kia -> female
+Kelsey -> female
+Dominique -> andy
+Shannon -> andy
+Jaime -> andy
+Jackie -> andy
+Mauriceo -> andy
+Farley -> andy
+Lionell -> andy
+Daroyce -> andy
+Elkie -> andy
+Jamie -> female</code></pre>
 <p>I checked each one by hand on the TDCJ page, and as expected they're all male except two: <code>Betty</code> and <code>Karla</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">for</span> name <span style="color:#f92672">in</span> remaining:
+    known_names[name] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Male</span><span style="color:#e6db74">&#39;</span>
+known_names[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Betty</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Female</span><span style="color:#e6db74">&#39;</span>
+known_names[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Karla</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Female</span><span style="color:#e6db74">&#39;</span>
 
-<pre><code class="language-python">for name in remaining:
-    known_names[name] = 'Male'
-known_names['Betty'] = 'Female'
-known_names['Karla'] = 'Female'
-
-people.gender = people.apply(
-    lambda row: known_names.get(row.first_name, row.gender),
-    axis=1,
+people<span style="color:#f92672">.</span>gender <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>apply(
+    <span style="color:#66d9ef">lambda</span> row: known_names<span style="color:#f92672">.</span>get(row<span style="color:#f92672">.</span>first_name, row<span style="color:#f92672">.</span>gender),
+    axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>,
 )
-people.gender.value_counts(dropna=False)
-</code></pre>
-
-<pre><code>Male      533
+people<span style="color:#f92672">.</span>gender<span style="color:#f92672">.</span>value_counts(dropna<span style="color:#f92672">=</span>False)</code></pre></div><pre><code>Male      533
 Female      5
-Name: gender, dtype: int64
-</code></pre>
-
-<pre><code class="language-python">people.info()
-</code></pre>
-
-<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+Name: gender, dtype: int64</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people<span style="color:#f92672">.</span>info()</code></pre></div><pre><code><class 'pandas.core.frame.DataFrame'>
 RangeIndex: 538 entries, 0 to 537
 Data columns (total 10 columns):
 execution         538 non-null int64
@@ -465,9 +401,7 @@ date_execution    538 non-null datetime64[ns]
 county            538 non-null object
 last_statement    436 non-null object
 dtypes: datetime64[ns](1), int64(3), object(6)
-memory usage: 42.1+ KB
-</code></pre>
-
+memory usage: 42.1+ KB</code></pre>
 <h1 id="data-visualization">Data visualization</h1>
 
 <p>We'll first observe the general characteristics of the dataset by visualizing the most important ones.</p>
@@ -475,38 +409,29 @@ memory usage: 42.1+ KB
 <h2 id="distribution-of-race-age-and-sex">Distribution of race, age and sex</h2>
 
 <p>Let's start by plotting the race distribution as a pie chart.</p>
-
-<pre><code class="language-python">race_counts = people['race'].value_counts().reset_index()
-race_counts.columns = ['race', 'count']
-pop = pd.DataFrame({'race': ['White', 'Black', 'Hispanic', 'Other'], 'count': [196817552, 37685848, 50477594, 23764544]})
-</code></pre>
-
-<pre><code class="language-python">fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(10, 6))
-pie(ax1, race_counts['count'], labels=race_counts['race'])
-pie(ax2, pop['count'], labels=pop['race'])
-ax1.set_title('Race distribution among executed people')
-ax2.set_title('Race distribution among U.S. population (2010)')
-fig.subplots_adjust(wspace=0.5)
-plt.show(fig)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">race_counts <span style="color:#f92672">=</span> people[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>]<span style="color:#f92672">.</span>value_counts()<span style="color:#f92672">.</span>reset_index()
+race_counts<span style="color:#f92672">.</span>columns <span style="color:#f92672">=</span> [<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count</span><span style="color:#e6db74">&#39;</span>]
+pop <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame({<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>: [<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">White</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Black</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Hispanic</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Other</span><span style="color:#e6db74">&#39;</span>], <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count</span><span style="color:#e6db74">&#39;</span>: [<span style="color:#ae81ff">196817552</span>, <span style="color:#ae81ff">37685848</span>, <span style="color:#ae81ff">50477594</span>, <span style="color:#ae81ff">23764544</span>]})</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">fig, (ax1, ax2) <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(ncols<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">6</span>))
+pie(ax1, race_counts[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count</span><span style="color:#e6db74">&#39;</span>], labels<span style="color:#f92672">=</span>race_counts[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>])
+pie(ax2, pop[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count</span><span style="color:#e6db74">&#39;</span>], labels<span style="color:#f92672">=</span>pop[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>])
+ax1<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Race distribution among executed people</span><span style="color:#e6db74">&#39;</span>)
+ax2<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Race distribution among U.S. population (2010)</span><span style="color:#e6db74">&#39;</span>)
+fig<span style="color:#f92672">.</span>subplots_adjust(wspace<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>)
+plt<span style="color:#f92672">.</span>show(fig)</code></pre></div>
 <p><figure><img src="/TexasDeathRow_files/TexasDeathRow_32_0.png" alt="png"></figure></p>
 
 <p>The population data was taken from the <a href="http://www.census.gov/prod/cen2010/briefs/c2010br-02.pdf">2010 US Census</a> (PDF). It's pretty clear that White people are underrepresented in the death row data, while Black people are considerably overrepresented. People of Hispanic descent are roughly proportional. Although it would be very interesting to investigate into the causes of this disproportion, we have too little data and our main goal is to analyze the statements, so we will not venture further.</p>
 
 <p>Let's visualize the age with respect to race.</p>
-
-<pre><code class="language-python">show(Chart(people[['race', 'age_execution']]).mark_bar().encode(
-        column=Column('age_execution',
-                      bin=Bin(maxbins=10)),
-        x=X('race',
-            axis=Axis(labels=False, tickSize=0, titleFontSize=0),
-            scale=Scale(bandSize=10)),
-        y='count(*)',
-        color='race',
-    ).configure_facet_cell(strokeWidth=0))
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">show(Chart(people[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">age_execution</span><span style="color:#e6db74">&#39;</span>]])<span style="color:#f92672">.</span>mark_bar()<span style="color:#f92672">.</span>encode(
+        column<span style="color:#f92672">=</span>Column(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">age_execution</span><span style="color:#e6db74">&#39;</span>,
+                      bin<span style="color:#f92672">=</span>Bin(maxbins<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>)),
+        x<span style="color:#f92672">=</span>X(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>,
+            axis<span style="color:#f92672">=</span>Axis(labels<span style="color:#f92672">=</span>False, tickSize<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, titleFontSize<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>),
+            scale<span style="color:#f92672">=</span>Scale(bandSize<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>)),
+        y<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count(*)</span><span style="color:#e6db74">&#39;</span>,
+        color<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>,
+    )<span style="color:#f92672">.</span>configure_facet_cell(strokeWidth<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))</code></pre></div>
 <div class="vega-embed" id="ee8d68e8-06d9-48b9-8be5-8233ebfe95ff"></div>
 
 <style>
@@ -524,15 +449,12 @@ plt.show(fig)
 <p>It's very interesting to note that black people are generally younger than white people at the time of the execution. We could think that white people tend to commit violent crimes at an older age, compared with the crimes committed by black people. However, we have to remember that the age in the chart is the age at the time of execution, not the age at the time of the crime. Many inmates sit on the death row for quite a long time. The Texas Department of Criminal Justice has <a href="https://www.tdcj.state.tx.us/death_row/dr_facts.html">a page</a> with some statistics. We see that the average time on death row prior to execution is almost <code>11</code> years. The page doesn't provide the variance in the data, but lists the more extreme cases: <code>252</code> days is the shortest time, while <code>11 575</code> days (that is, <code>31</code> years) is the longest time recorded.</p>
 
 <p>Also interesting is the distribution of gender:</p>
-
-<pre><code class="language-python">show(Chart(people[['race', 'gender']].dropna()).mark_bar().encode(
-        x='count(*)',
-        y=Y('race',
-            sort=SortField('count(*)', op='mean', order='descending')),
-        color='gender',
-    ), width=600)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">show(Chart(people[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">gender</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>dropna())<span style="color:#f92672">.</span>mark_bar()<span style="color:#f92672">.</span>encode(
+        x<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count(*)</span><span style="color:#e6db74">&#39;</span>,
+        y<span style="color:#f92672">=</span>Y(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>,
+            sort<span style="color:#f92672">=</span>SortField(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count(*)</span><span style="color:#e6db74">&#39;</span>, op<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">mean</span><span style="color:#e6db74">&#39;</span>, order<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">descending</span><span style="color:#e6db74">&#39;</span>)),
+        color<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">gender</span><span style="color:#e6db74">&#39;</span>,
+    ), width<span style="color:#f92672">=</span><span style="color:#ae81ff">600</span>)</code></pre></div>
 <div class="vega-embed" id="e40a9335-7c99-47cd-a135-d0fe6f744354"></div>
 
 <style>
@@ -556,20 +478,14 @@ plt.show(fig)
 <h2 id="statement-length">Statement length</h2>
 
 <p>We'll count the number of sentences in each statement. We'll make use of the amazing package <code>textblob</code>, which has a better API than <code>nltk</code> but uses it behind the scenes. We store the blobs because we'll need them later as well.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> textblob
 
-<pre><code class="language-python">import textblob
-
-statements = people.last_statement.dropna()
-blobs = statements.map(lambda s: textblob.TextBlob(s))
-n_sentences = blobs.map(lambda b: len(b.sentences))
-</code></pre>
-
-<pre><code class="language-python">show(Chart(pd.DataFrame({'Number of sentences': n_sentences})).mark_bar().encode(
-        x='Number of sentences:N',
-        y='count(*)',
-    ))
-</code></pre>
-
+statements <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>last_statement<span style="color:#f92672">.</span>dropna()
+blobs <span style="color:#f92672">=</span> statements<span style="color:#f92672">.</span>map(<span style="color:#66d9ef">lambda</span> s: textblob<span style="color:#f92672">.</span>TextBlob(s))
+n_sentences <span style="color:#f92672">=</span> blobs<span style="color:#f92672">.</span>map(<span style="color:#66d9ef">lambda</span> b: len(b<span style="color:#f92672">.</span>sentences))</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">show(Chart(pd<span style="color:#f92672">.</span>DataFrame({<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Number of sentences</span><span style="color:#e6db74">&#39;</span>: n_sentences}))<span style="color:#f92672">.</span>mark_bar()<span style="color:#f92672">.</span>encode(
+        x<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Number of sentences:N</span><span style="color:#e6db74">&#39;</span>,
+        y<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count(*)</span><span style="color:#e6db74">&#39;</span>,
+    ))</code></pre></div>
 <div class="vega-embed" id="befce099-a95c-4087-97f7-623fe66b1f73"></div>
 
 <style>
@@ -585,23 +501,11 @@ n_sentences = blobs.map(lambda b: len(b.sentences))
 <p><figure><img src="/TexasDeathRow_files/TexasDeathRow_42_2.png" alt="png"></figure></p>
 
 <p>The distribution of the number of sentences is skewed to the left, favoring shorter statements. There's one statement that separates itself from the rest: it is much longer than all the others, at 138 sentences. Out of curiosity, let's investigate a bit:</p>
-
-<pre><code class="language-python">len(blobs[n_sentences.argmax()].words)
-</code></pre>
-
-<pre><code>1294
-</code></pre>
-
-<pre><code class="language-python">people[['last_name', 'first_name', 'race', 'date_execution']].ix[n_sentences.argmax()]
-</code></pre>
-
-<pre><code>last_name                      Graham
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">len(blobs[n_sentences<span style="color:#f92672">.</span>argmax()]<span style="color:#f92672">.</span>words)</code></pre></div><pre><code>1294</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">last_name</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">first_name</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">date_execution</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>ix[n_sentences<span style="color:#f92672">.</span>argmax()]</code></pre></div><pre><code>last_name                      Graham
 first_name                       Gary
 race                            Black
 date_execution    2000-06-22 00:00:00
-Name: 258, dtype: object
-</code></pre>
-
+Name: 258, dtype: object</code></pre>
 <p>The statement is from Shaka Sankofa, a.k.a. Gary Graham, who was found guilty in a controversial process in the nineties. His supporters brought his case to international attention. Here are the first words of his statement:</p>
 
 <blockquote>
@@ -613,16 +517,13 @@ Name: 258, dtype: object
 <h2 id="number-of-executions-per-year">Number of executions per year</h2>
 
 <p>For this one, a line chart is a better fit.</p>
-
-<pre><code class="language-python">people['year_execution'] = people.date_execution.map(lambda d: d.year)
-show(Chart(people).mark_line().encode(
-        x=X('year_execution',
-            axis=Axis(format='f'),
-            scale=Scale(zero=False)),
-        y='count(*)',
-    ))
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">year_execution</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>date_execution<span style="color:#f92672">.</span>map(<span style="color:#66d9ef">lambda</span> d: d<span style="color:#f92672">.</span>year)
+show(Chart(people)<span style="color:#f92672">.</span>mark_line()<span style="color:#f92672">.</span>encode(
+        x<span style="color:#f92672">=</span>X(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">year_execution</span><span style="color:#e6db74">&#39;</span>,
+            axis<span style="color:#f92672">=</span>Axis(format<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;</span>),
+            scale<span style="color:#f92672">=</span>Scale(zero<span style="color:#f92672">=</span>False)),
+        y<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count(*)</span><span style="color:#e6db74">&#39;</span>,
+    ))</code></pre></div>
 <div class="vega-embed" id="b4d1d94e-cf5d-47a3-b1fa-75296c9dc3ca"></div>
 
 <style>
@@ -644,32 +545,23 @@ show(Chart(people).mark_line().encode(
 <p>We'll make a heat map of the counties where the crimes were committed, and for that we'll need the geographic centre of each county. I found an extremely useful table curated by the Wikipedia user Michael J, which among a wealth of other data also has coordinates for each county. The table is available <a href="https://en.wikipedia.org/wiki/User:Michael_J/County_table">here</a>.</p>
 
 <p>Since there are no links to follow, a whole Scrapy spider is redundant, but we'll use the convenient Scrapy selector.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> scrapy
+<span style="color:#f92672">import</span> requests
 
-<pre><code class="language-python">import scrapy
-import requests
-
-counties = []
-body = scrapy.Selector(
-    text=requests.get('https://en.wikipedia.org/wiki/User:Michael_J/County_table').text
+counties <span style="color:#f92672">=</span> []
+body <span style="color:#f92672">=</span> scrapy<span style="color:#f92672">.</span>Selector(
+    text<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">https://en.wikipedia.org/wiki/User:Michael_J/County_table</span><span style="color:#e6db74">&#39;</span>)<span style="color:#f92672">.</span>text
 )
-_, *rows = body.css('table tr')
-for row in rows:
-    cols = row.css('td ::text').extract()
-    if cols[1] == 'TX':
-        lat, long = map(lambda i: i.strip('°').replace('\u2013', '-'), cols[-2:])
-        counties.append((cols[3], lat, long))
-counties = pd.DataFrame(counties, columns=['county', 'lat', 'lon'])
-</code></pre>
-
-<pre><code class="language-python">counties.lat = pd.to_numeric(counties.lat)
-counties.lon = pd.to_numeric(counties.lon)
-</code></pre>
-
+_, <span style="color:#f92672">*</span>rows <span style="color:#f92672">=</span> body<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">table tr</span><span style="color:#e6db74">&#39;</span>)
+<span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> rows:
+    cols <span style="color:#f92672">=</span> row<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">td ::text</span><span style="color:#e6db74">&#39;</span>)<span style="color:#f92672">.</span>extract()
+    <span style="color:#66d9ef">if</span> cols[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">TX</span><span style="color:#e6db74">&#39;</span>:
+        lat, long <span style="color:#f92672">=</span> map(<span style="color:#66d9ef">lambda</span> i: i<span style="color:#f92672">.</span>strip(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">°</span><span style="color:#e6db74">&#39;</span>)<span style="color:#f92672">.</span>replace(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\u2013</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">-</span><span style="color:#e6db74">&#39;</span>), cols[<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>:])
+        counties<span style="color:#f92672">.</span>append((cols[<span style="color:#ae81ff">3</span>], lat, long))
+counties <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(counties, columns<span style="color:#f92672">=</span>[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">county</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">lat</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">lon</span><span style="color:#e6db74">&#39;</span>])</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">counties<span style="color:#f92672">.</span>lat <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>to_numeric(counties<span style="color:#f92672">.</span>lat)
+counties<span style="color:#f92672">.</span>lon <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>to_numeric(counties<span style="color:#f92672">.</span>lon)</code></pre></div>
 <p>Now we have the coordinates of each county:</p>
-
-<pre><code class="language-python">counties.head()
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">counties<span style="color:#f92672">.</span>head()</code></pre></div>
 <div>
 <table border="1" class="dataframe">
   <thead>
@@ -716,11 +608,8 @@ counties.lon = pd.to_numeric(counties.lon)
 </div>
 
 <p>We just have to group our data with respect to the county,</p>
-
-<pre><code class="language-python">county_count = people.groupby(people.county).size().reset_index(name='count')
-county_count.head()
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">county_count <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>groupby(people<span style="color:#f92672">.</span>county)<span style="color:#f92672">.</span>size()<span style="color:#f92672">.</span>reset_index(name<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count</span><span style="color:#e6db74">&#39;</span>)
+county_count<span style="color:#f92672">.</span>head()</code></pre></div>
 <div>
 <table border="1" class="dataframe">
   <thead>
@@ -761,11 +650,8 @@ county_count.head()
 </div>
 
 <p>and merge the two dataframes:</p>
-
-<pre><code class="language-python">county_data = county_count.merge(counties, on='county')
-county_data.head()
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">county_data <span style="color:#f92672">=</span> county_count<span style="color:#f92672">.</span>merge(counties, on<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">county</span><span style="color:#e6db74">&#39;</span>)
+county_data<span style="color:#f92672">.</span>head()</code></pre></div>
 <div>
 <table border="1" class="dataframe">
   <thead>
@@ -818,27 +704,18 @@ county_data.head()
 </div>
 
 <p>The heat map is drawn as a layer over a Google Map. In a Jupyter notebook this is rendered as an interactive map. Unfortunately, in the exported notebook the map is only an image.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> os
+<span style="color:#f92672">import</span> gmaps
 
-<pre><code class="language-python">import os
-import gmaps
-
-gmaps.configure(api_key=os.environ['GMAPS_API_KEY'])
-</code></pre>
-
-<pre><code class="language-python">m = gmaps.Map()
-data = county_data[['lat', 'lon', 'count']].values.tolist()
-heatmap = gmaps.WeightedHeatmap(data=data, point_radius=30)
-m.add_layer(heatmap)
-m
-</code></pre>
-
+gmaps<span style="color:#f92672">.</span>configure(api_key<span style="color:#f92672">=</span>os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">GMAPS_API_KEY</span><span style="color:#e6db74">&#39;</span>])</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">m <span style="color:#f92672">=</span> gmaps<span style="color:#f92672">.</span>Map()
+data <span style="color:#f92672">=</span> county_data[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">lat</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">lon</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>values<span style="color:#f92672">.</span>tolist()
+heatmap <span style="color:#f92672">=</span> gmaps<span style="color:#f92672">.</span>WeightedHeatmap(data<span style="color:#f92672">=</span>data, point_radius<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>)
+m<span style="color:#f92672">.</span>add_layer(heatmap)
+m</code></pre></div>
 <p><img src="/TexasDeathRow_files/heatmap.png" style="width: 100%"></p>
 
 <p>It's evident that violent crimes leading to death penalties peak in the largest cities. Comparing this data with the population in Texas, only Austin appears to be an exception It's the fourth largest city in Texas according to <a href="https://en.wikipedia.org/wiki/List_of_cities_in_Texas_by_population">this table</a>, but its county, Travis, isn't even in the top ten:</p>
-
-<pre><code class="language-python">county_count.sort_values(by='count', ascending=False).head(10)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">county_count<span style="color:#f92672">.</span>sort_values(by<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count</span><span style="color:#e6db74">&#39;</span>, ascending<span style="color:#f92672">=</span>False)<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">10</span>)</code></pre></div>
 <div>
 <table border="1" class="dataframe">
   <thead>
@@ -910,67 +787,58 @@ m
 <h2 id="frequency-analysis">Frequency analysis</h2>
 
 <p>The statements contain some non-ASCII characters, which we will replace for easier processing. There is also spurious text in the form of <code>(Spanish)</code>, <code>(English)</code>, which is added to specify the language in which the statement was spoken.</p>
-
-<pre><code class="language-python">try:
-    with open('statements.txt') as fobj:
-        all_text = fobj.read()
-except OSError:
-    to_replace = {
-        '\xa0': '',
-        '’': '\'',
-        '‘': '\'',
-        '“': '&quot;',
-        '”': '&quot;',
-        '\u2013': '-',
-        '\u2026': '...',
-        '(Spanish)': '',
-        '(English)': '',
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">try</span>:
+    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">statements.txt</span><span style="color:#e6db74">&#39;</span>) <span style="color:#66d9ef">as</span> fobj:
+        all_text <span style="color:#f92672">=</span> fobj<span style="color:#f92672">.</span>read()
+<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">OSError</span>:
+    to_replace <span style="color:#f92672">=</span> {
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\xa0</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>,
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">’</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#39;</span>,
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">‘</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#39;</span>,
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">“</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">&#39;</span>,
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">”</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">&#39;</span>,
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\u2013</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">-</span><span style="color:#e6db74">&#39;</span>,
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\u2026</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">...</span><span style="color:#e6db74">&#39;</span>,
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">(Spanish)</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>,
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">(English)</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>,
     }
-    all_text = statements.str.cat(sep='\n')
-    for a, b in to_replace.items():
-        all_text = all_text.replace(a, b)
-    with open('statements.txt', 'w') as fobj:
-        fobj.write(all_text)
-</code></pre>
-
+    all_text <span style="color:#f92672">=</span> statements<span style="color:#f92672">.</span>str<span style="color:#f92672">.</span>cat(sep<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)
+    <span style="color:#66d9ef">for</span> a, b <span style="color:#f92672">in</span> to_replace<span style="color:#f92672">.</span>items():
+        all_text <span style="color:#f92672">=</span> all_text<span style="color:#f92672">.</span>replace(a, b)
+    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">statements.txt</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">w</span><span style="color:#e6db74">&#39;</span>) <span style="color:#66d9ef">as</span> fobj:
+        fobj<span style="color:#f92672">.</span>write(all_text)</code></pre></div>
 <p>The first thing we'll do is use the amazing package <code>wordcloud</code> to generate a pretty visualization of the most used words. We'll also keep the words processed by <code>wordcloud</code> for later use. The packages conveniently processes the text for us, by lowercasing the text, splitting the words and removing the punctuation.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> wordcloud
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+<span style="color:#f92672">from</span> scipy.misc <span style="color:#f92672">import</span> imread
 
-<pre><code class="language-python">import wordcloud
-import matplotlib.pyplot as plt
-from scipy.misc import imread
-
-colors = wordcloud.ImageColorGenerator(imread('colors.png'))
-wc = wordcloud.WordCloud(background_color='white',
-                         scale=2,
-                         max_words=200,
-                         relative_scaling=0.6)
-words = wc.process_text(all_text)
-wc.generate_from_frequencies(words)
-plt.figure(figsize=(12, 6))
-plt.imshow(wc.recolor(color_func=colors))
-plt.axis('off')
-plt.show()
-</code></pre>
-
+colors <span style="color:#f92672">=</span> wordcloud<span style="color:#f92672">.</span>ImageColorGenerator(imread(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">colors.png</span><span style="color:#e6db74">&#39;</span>))
+wc <span style="color:#f92672">=</span> wordcloud<span style="color:#f92672">.</span>WordCloud(background_color<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">white</span><span style="color:#e6db74">&#39;</span>,
+                         scale<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>,
+                         max_words<span style="color:#f92672">=</span><span style="color:#ae81ff">200</span>,
+                         relative_scaling<span style="color:#f92672">=</span><span style="color:#ae81ff">0.6</span>)
+words <span style="color:#f92672">=</span> wc<span style="color:#f92672">.</span>process_text(all_text)
+wc<span style="color:#f92672">.</span>generate_from_frequencies(words)
+plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">6</span>))
+plt<span style="color:#f92672">.</span>imshow(wc<span style="color:#f92672">.</span>recolor(color_func<span style="color:#f92672">=</span>colors))
+plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">off</span><span style="color:#e6db74">&#39;</span>)
+plt<span style="color:#f92672">.</span>show()</code></pre></div>
 <p><figure><img src="/TexasDeathRow_files/TexasDeathRow_69_0.png" alt="png"></figure></p>
 
 <p>It's pretty clear that 'love' is the most frequent word, by far. It's followed by 'know', 'family', 'thank', 'will' and religious terms as 'God', 'Jesus', 'Father', 'Christ', 'Lord'. As one could expect, people on the death row thought about family and religion, and their connection with them. Curiously, the most frequent religious terms are almost exclusively Christian (with the exception of 'God', maybe). There's also 'Allah' but it's much less frequent. Let's check the exact frequencies of the top twenty words:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> collections
 
-<pre><code class="language-python">import collections
-
-counts = collections.Counter(dict(words))
-most_common = pd.DataFrame(counts.most_common(20), columns=['Word', 'Count'])
-show(Chart(most_common).mark_bar().encode(
-        x=X('Word',
-            scale=Scale(bandSize=30),
-            sort=SortField('Count')),
-        y='Count',
-        color=Color('Count',
-                    scale=Scale(range=['orange', 'darkred']),
-                    bin=Bin(maxbins=3)),
-    ), height=350)
-</code></pre>
-
+counts <span style="color:#f92672">=</span> collections<span style="color:#f92672">.</span>Counter(dict(words))
+most_common <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(counts<span style="color:#f92672">.</span>most_common(<span style="color:#ae81ff">20</span>), columns<span style="color:#f92672">=</span>[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Word</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Count</span><span style="color:#e6db74">&#39;</span>])
+show(Chart(most_common)<span style="color:#f92672">.</span>mark_bar()<span style="color:#f92672">.</span>encode(
+        x<span style="color:#f92672">=</span>X(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Word</span><span style="color:#e6db74">&#39;</span>,
+            scale<span style="color:#f92672">=</span>Scale(bandSize<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>),
+            sort<span style="color:#f92672">=</span>SortField(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Count</span><span style="color:#e6db74">&#39;</span>)),
+        y<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Count</span><span style="color:#e6db74">&#39;</span>,
+        color<span style="color:#f92672">=</span>Color(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Count</span><span style="color:#e6db74">&#39;</span>,
+                    scale<span style="color:#f92672">=</span>Scale(range<span style="color:#f92672">=</span>[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">orange</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">darkred</span><span style="color:#e6db74">&#39;</span>]),
+                    bin<span style="color:#f92672">=</span>Bin(maxbins<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)),
+    ), height<span style="color:#f92672">=</span><span style="color:#ae81ff">350</span>)</code></pre></div>
 <div class="vega-embed" id="6056016c-dcdd-46f4-a18b-9685ac5ddeb6"></div>
 
 <style>
@@ -992,10 +860,7 @@ show(Chart(most_common).mark_bar().encode(
 <h2 id="sentiment-analysis">Sentiment analysis</h2>
 
 <p>Before moving on to the last part of the analysis, I'll insert a brief aside about sentiment analysis. We'll be using the package <code>textblob</code>, which builds stands on the shoulders of giants (the famous <code>NLTK</code> package), providing at the same time a modern API that is a pleasure to work with. The core concept in <code>textblob</code> is that of a 'blob', or a segment of text.</p>
-
-<pre><code class="language-python">all_sentiments = blobs.map(lambda b: b.sentiment)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">all_sentiments <span style="color:#f92672">=</span> blobs<span style="color:#f92672">.</span>map(<span style="color:#66d9ef">lambda</span> b: b<span style="color:#f92672">.</span>sentiment)</code></pre></div>
 <p>The <code>textblob</code> API offers two sentiment metrics:</p>
 
 <ul>
@@ -1004,30 +869,24 @@ show(Chart(most_common).mark_bar().encode(
 </ul>
 
 <p><code>textblob</code> offers the possibility to use NLTK's <code>NaiveBayesClassifier</code> to classify the polarity of each document. However, NLTK's classifier is trained on a movie reviews corpus, and the results weren't satisfactory. For this reason I opted to stay with the default implementation, which is built upon a sentiment lexicon. Each word in the lexicon has polarity and subjectivity scores, along with the intensity of each word. The total score is an aggregate of the single word scores. Although seemingly simple, the default analyzer covers quite a few special cases, including negations and intensity modifiers.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> operator
 
-<pre><code class="language-python">import operator
-
-people_with_stmt = people.iloc[people.last_statement.dropna().index].copy()
-people_with_stmt['sentiment_polarity'] = [s.polarity for s in all_sentiments]
-people_with_stmt['sentiment_subjectivity'] = [s.subjectivity for s in all_sentiments]
-</code></pre>
-
+people_with_stmt <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>iloc[people<span style="color:#f92672">.</span>last_statement<span style="color:#f92672">.</span>dropna()<span style="color:#f92672">.</span>index]<span style="color:#f92672">.</span>copy()
+people_with_stmt[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_polarity</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> [s<span style="color:#f92672">.</span>polarity <span style="color:#66d9ef">for</span> s <span style="color:#f92672">in</span> all_sentiments]
+people_with_stmt[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_subjectivity</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> [s<span style="color:#f92672">.</span>subjectivity <span style="color:#66d9ef">for</span> s <span style="color:#f92672">in</span> all_sentiments]</code></pre></div>
 <p>We'll plot <code>polarity</code> against <code>subjectivity</code>, grouping the data by race. Why? Because usually culture and tradition correlate with race. Even thought the relation is somewhat blurry and there are a lot of other factors in play (for instance, where you grow up has considerable influence on your culture), that is the best we have.</p>
-
-<pre><code class="language-python">data = people_with_stmt[['race', 'sentiment_polarity', 'sentiment_subjectivity', 'age_execution']]
-data = data[data.race != 'Other']
-show(Chart(data).mark_point().encode(
-        x=X('sentiment_polarity',
-            scale=Scale(range=[-1, 1])),
-        y=Y('sentiment_subjectivity',
-            scale=Scale(range=[0, 1])),
-        color=Color('age_execution',
-                    scale=Scale(range=['yellow', 'red']),
-                    bin=Bin(maxbins=5)),
-        row='race',
-    ), width=590)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">data <span style="color:#f92672">=</span> people_with_stmt[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_polarity</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_subjectivity</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">age_execution</span><span style="color:#e6db74">&#39;</span>]]
+data <span style="color:#f92672">=</span> data[data<span style="color:#f92672">.</span>race <span style="color:#f92672">!=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Other</span><span style="color:#e6db74">&#39;</span>]
+show(Chart(data)<span style="color:#f92672">.</span>mark_point()<span style="color:#f92672">.</span>encode(
+        x<span style="color:#f92672">=</span>X(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_polarity</span><span style="color:#e6db74">&#39;</span>,
+            scale<span style="color:#f92672">=</span>Scale(range<span style="color:#f92672">=</span>[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>])),
+        y<span style="color:#f92672">=</span>Y(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_subjectivity</span><span style="color:#e6db74">&#39;</span>,
+            scale<span style="color:#f92672">=</span>Scale(range<span style="color:#f92672">=</span>[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>])),
+        color<span style="color:#f92672">=</span>Color(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">age_execution</span><span style="color:#e6db74">&#39;</span>,
+                    scale<span style="color:#f92672">=</span>Scale(range<span style="color:#f92672">=</span>[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">yellow</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">red</span><span style="color:#e6db74">&#39;</span>]),
+                    bin<span style="color:#f92672">=</span>Bin(maxbins<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>)),
+        row<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>,
+    ), width<span style="color:#f92672">=</span><span style="color:#ae81ff">590</span>)</code></pre></div>
 <div class="vega-embed" id="640d6b2f-babb-461c-8c4f-53ae4c0e4b1d"></div>
 
 <style>
@@ -1043,10 +902,7 @@ show(Chart(data).mark_point().encode(
 <p><figure><img src="/TexasDeathRow_files/TexasDeathRow_78_2.png" alt="png"></figure></p>
 
 <p>Apart from the fact that black people are generally younger, which we had already found, it's quite evident that white people's statements have a polarity much more centered around zero, than the other two groups. Let's find the mean for each group:</p>
-
-<pre><code class="language-python">people_with_stmt[['race', 'sentiment_polarity']].groupby(people_with_stmt['race']).mean()
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people_with_stmt[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_polarity</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>groupby(people_with_stmt[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>])<span style="color:#f92672">.</span>mean()</code></pre></div>
 <div>
 <table border="1" class="dataframe">
   <thead>
@@ -1081,10 +937,7 @@ show(Chart(data).mark_point().encode(
 </div>
 
 <p>As we expected from the chart, statements from black people have the highest average polarity, almost double than those from white people! Instead, the subjectivity doesn't appear to be a very useful metric in this case. All the charts are very centered around <code>0.5</code>, which represents middle ground between objectivity and subjectivity, and the mean doesn't surprise us:</p>
-
-<pre><code class="language-python">people_with_stmt[['race', 'sentiment_subjectivity']].groupby(people_with_stmt['race']).mean()
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people_with_stmt[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_subjectivity</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>groupby(people_with_stmt[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>])<span style="color:#f92672">.</span>mean()</code></pre></div>
 <div>
 <table border="1" class="dataframe">
   <thead>
@@ -1127,32 +980,23 @@ show(Chart(data).mark_point().encode(
 <p>It turns out that the lower-rank matrix that results from the application of the SVD algorithm can be viewed as an approximation of the original matrix, and there's more: this lower-rank matrix is actually the best approximation among all the other matrices with the same rank. This is extremely convenient: if one assumes that synonym words are used similarly, then the rank-lowering process should merge those terms.</p>
 
 <p>Since we don't have labeled data, we'll use an unsupervised algorithm like <code>KMeans</code>, then we'll validate the results with the <a href="https://en.wikipedia.org/wiki/Silhouette_(clustering)">silhouette method</a>. But first we have to choose how many features we want to reduce the problem to. For LSA, it's suggested to have around <span  class="math">\(100\)</span> features. However, in the earlier iterations of this project, I found that leaving that many features gave very poor results. After some experimentation, I settled on <span  class="math">\(20\)</span>, knowing that it's particularly low.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.pipeline <span style="color:#f92672">import</span> make_pipeline
+<span style="color:#f92672">from</span> sklearn.preprocessing <span style="color:#f92672">import</span> Normalizer
+<span style="color:#f92672">from</span> sklearn.decomposition <span style="color:#f92672">import</span> TruncatedSVD
+<span style="color:#f92672">from</span> sklearn.feature_extraction.text <span style="color:#f92672">import</span> TfidfVectorizer
 
-<pre><code class="language-python">from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import Normalizer
-from sklearn.decomposition import TruncatedSVD
-from sklearn.feature_extraction.text import TfidfVectorizer
-
-vectorizer = TfidfVectorizer(stop_words='english', sublinear_tf=True, use_idf=True)
-svd = TruncatedSVD(n_components=20)
-pipe = make_pipeline(
+vectorizer <span style="color:#f92672">=</span> TfidfVectorizer(stop_words<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">english</span><span style="color:#e6db74">&#39;</span>, sublinear_tf<span style="color:#f92672">=</span>True, use_idf<span style="color:#f92672">=</span>True)
+svd <span style="color:#f92672">=</span> TruncatedSVD(n_components<span style="color:#f92672">=</span><span style="color:#ae81ff">20</span>)
+pipe <span style="color:#f92672">=</span> make_pipeline(
     vectorizer,
     svd,
-    Normalizer(copy=False),
+    Normalizer(copy<span style="color:#f92672">=</span>False),
 )
 
-X_s = pipe.fit_transform(people_with_stmt.last_statement)
-</code></pre>
-
+X_s <span style="color:#f92672">=</span> pipe<span style="color:#f92672">.</span>fit_transform(people_with_stmt<span style="color:#f92672">.</span>last_statement)</code></pre></div>
 <p>As expected, the shape of the resulting matrix is <span  class="math">\((\text{n\_statements},
 \text{n\_components})\)</span>:</p>
-
-<pre><code class="language-python">X_s.shape
-</code></pre>
-
-<pre><code>(436, 20)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">X_s<span style="color:#f92672">.</span>shape</code></pre></div><pre><code>(436, 20)</code></pre>
 <p>We have now the possibility to check the hypothesis we formulated earlier: the idea was that the statements are roughly divided into three groups:</p>
 
 <ul>
@@ -1164,61 +1008,58 @@ X_s = pipe.fit_transform(people_with_stmt.last_statement)
 <p>Let's check this hypothesis. We'll now try different values for the number of
 clusters (from <span  class="math">\(2\)</span> to <span  class="math">\(7\)</span>) and visualize the silhouette score of each
 result.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.cm <span style="color:#f92672">as</span> cm
+<span style="color:#f92672">from</span> sklearn.cluster <span style="color:#f92672">import</span> KMeans
+<span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> silhouette_score, silhouette_samples
 
-<pre><code class="language-python">import matplotlib.cm as cm
-from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score, silhouette_samples
+fig, axes <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">10</span>))
 
-fig, axes = plt.subplots(3, 2, figsize=(7, 10))
+<span style="color:#66d9ef">for</span> n_clusters <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">8</span>):
+    ax <span style="color:#f92672">=</span> axes[n_clusters <span style="color:#f92672">/</span><span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>, n_clusters <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">1</span>]
+    ax<span style="color:#f92672">.</span>set_xlim([<span style="color:#f92672">-</span><span style="color:#ae81ff">0.1</span>, <span style="color:#ae81ff">0.5</span>])
+    <span style="color:#75715e"># The (n_clusters+1)*10 is for inserting blank space between silhouette</span>
+    <span style="color:#75715e"># plots of individual clusters, to demarcate them clearly.</span>
+    ax<span style="color:#f92672">.</span>set_ylim([<span style="color:#ae81ff">0</span>, len(X_s) <span style="color:#f92672">+</span> (n_clusters <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">10</span>])
 
-for n_clusters in range(2, 8):
-    ax = axes[n_clusters // 2 - 1, n_clusters &amp; 1]
-    ax.set_xlim([-0.1, 0.5])
-    # The (n_clusters+1)*10 is for inserting blank space between silhouette
-    # plots of individual clusters, to demarcate them clearly.
-    ax.set_ylim([0, len(X_s) + (n_clusters + 1) * 10])
+    clusterer <span style="color:#f92672">=</span> KMeans(n_clusters<span style="color:#f92672">=</span>n_clusters, random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, max_iter<span style="color:#f92672">=</span><span style="color:#ae81ff">10000</span>)
+    cluster_labels <span style="color:#f92672">=</span> clusterer<span style="color:#f92672">.</span>fit_predict(X_s)
 
-    clusterer = KMeans(n_clusters=n_clusters, random_state=2, max_iter=10000)
-    cluster_labels = clusterer.fit_predict(X_s)
+    silhouette_avg <span style="color:#f92672">=</span> silhouette_score(X_s, cluster_labels)
 
-    silhouette_avg = silhouette_score(X_s, cluster_labels)
+    <span style="color:#75715e"># Compute the silhouette scores for each sample</span>
+    sample_silhouette_values <span style="color:#f92672">=</span> silhouette_samples(X_s, cluster_labels)
 
-    # Compute the silhouette scores for each sample
-    sample_silhouette_values = silhouette_samples(X_s, cluster_labels)
+    y_lower <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n_clusters):
+        <span style="color:#75715e"># Aggregate the silhouette scores for samples belonging to</span>
+        <span style="color:#75715e"># cluster i, and sort them</span>
+        ith_silhouette <span style="color:#f92672">=</span> sample_silhouette_values[cluster_labels <span style="color:#f92672">==</span> i]
+        ith_silhouette<span style="color:#f92672">.</span>sort()
 
-    y_lower = 10
-    for i in range(n_clusters):
-        # Aggregate the silhouette scores for samples belonging to
-        # cluster i, and sort them
-        ith_silhouette = sample_silhouette_values[cluster_labels == i]
-        ith_silhouette.sort()
+        size_cluster_i <span style="color:#f92672">=</span> ith_silhouette<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]
+        y_upper <span style="color:#f92672">=</span> y_lower <span style="color:#f92672">+</span> size_cluster_i
 
-        size_cluster_i = ith_silhouette.shape[0]
-        y_upper = y_lower + size_cluster_i
+        color <span style="color:#f92672">=</span> cm<span style="color:#f92672">.</span>rainbow(i <span style="color:#f92672">/</span> n_clusters)
+        ax<span style="color:#f92672">.</span>fill_betweenx(np<span style="color:#f92672">.</span>arange(y_lower, y_upper),
+                         <span style="color:#ae81ff">0</span>, ith_silhouette,
+                         facecolor<span style="color:#f92672">=</span>color, edgecolor<span style="color:#f92672">=</span>color, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">0.8</span>)
 
-        color = cm.rainbow(i / n_clusters)
-        ax.fill_betweenx(np.arange(y_lower, y_upper),
-                         0, ith_silhouette,
-                         facecolor=color, edgecolor=color, alpha=0.8)
+        <span style="color:#75715e"># Label the silhouette plots with their cluster numbers at the middle</span>
+        ax<span style="color:#f92672">.</span>text(<span style="color:#f92672">-</span><span style="color:#ae81ff">0.05</span>, y_lower <span style="color:#f92672">+</span> <span style="color:#ae81ff">0.5</span> <span style="color:#f92672">*</span> size_cluster_i, str(i))
 
-        # Label the silhouette plots with their cluster numbers at the middle
-        ax.text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
+        <span style="color:#75715e"># Compute the new y_lower for next plot</span>
+        y_lower <span style="color:#f92672">=</span> y_upper <span style="color:#f92672">+</span> <span style="color:#ae81ff">10</span>
 
-        # Compute the new y_lower for next plot
-        y_lower = y_upper + 10
+    ax<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Silhouette coefficient (avg. {:.3f})</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(silhouette_avg))
+    ax<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Cluster label</span><span style="color:#e6db74">&#39;</span>)
 
-    ax.set_xlabel('Silhouette coefficient (avg. {:.3f})'.format(silhouette_avg))
-    ax.set_ylabel('Cluster label')
+    ax<span style="color:#f92672">.</span>axvline(x<span style="color:#f92672">=</span>silhouette_avg, color<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">red</span><span style="color:#e6db74">&#39;</span>, linestyle<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">--</span><span style="color:#e6db74">&#39;</span>)
 
-    ax.axvline(x=silhouette_avg, color='red', linestyle='--')
+    ax<span style="color:#f92672">.</span>set_yticks([])
+    ax<span style="color:#f92672">.</span>set_xticks([<span style="color:#f92672">-</span><span style="color:#ae81ff">0.1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0.2</span>, <span style="color:#ae81ff">0.4</span>])
 
-    ax.set_yticks([])
-    ax.set_xticks([-0.1, 0, 0.2, 0.4])
-
-fig.tight_layout(h_pad=2)
-plt.show(fig)
-</code></pre>
-
+fig<span style="color:#f92672">.</span>tight_layout(h_pad<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+plt<span style="color:#f92672">.</span>show(fig)</code></pre></div>
 <p><figure><img src="/TexasDeathRow_files/TexasDeathRow_88_0.png" alt="png"></figure></p>
 
 <p>The vertical axis in each subplot represents the statements, grouped by cluster label and sorted within each cluster by their silhouette score. The silhouette score of an element ranges between <span  class="math">\(-1\)</span> and <span  class="math">\(1\)</span>, where a value of <span  class="math">\(-1\)</span> means that the element is in the wrong cluster, while <span  class="math">\(1\)</span> indicates that it's perfectly clustered.</p>
@@ -1226,40 +1067,28 @@ plt.show(fig)
 <p>By comparing each cluster with the average silhouette score we can immediately discard some candidates: with two, three or even four clusters the result is unsatisfactory, since there are clusters almost completely below the average score. Not to mention the negative scores. Among the remaining ones, we choose the one with the fewest negative scores, and that appears to be the one with six clusters, which also has the highest average score.</p>
 
 <p>Let's see what are the most important words for each cluster.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_topics</span>(n_clusters):
+    km <span style="color:#f92672">=</span> KMeans(n_clusters<span style="color:#f92672">=</span>n_clusters, max_iter<span style="color:#f92672">=</span><span style="color:#ae81ff">10000</span>)
+    km<span style="color:#f92672">.</span>fit(X_s)
+    original_space_centroids <span style="color:#f92672">=</span> svd<span style="color:#f92672">.</span>inverse_transform(km<span style="color:#f92672">.</span>cluster_centers_)
+    order_centroids <span style="color:#f92672">=</span> original_space_centroids<span style="color:#f92672">.</span>argsort()[:, ::<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
 
-<pre><code class="language-python">def print_topics(n_clusters):
-    km = KMeans(n_clusters=n_clusters, max_iter=10000)
-    km.fit(X_s)
-    original_space_centroids = svd.inverse_transform(km.cluster_centers_)
-    order_centroids = original_space_centroids.argsort()[:, ::-1]
+    terms <span style="color:#f92672">=</span> vectorizer<span style="color:#f92672">.</span>get_feature_names()
+    clusters <span style="color:#f92672">=</span> [[terms[ind] <span style="color:#66d9ef">for</span> ind <span style="color:#f92672">in</span> order_centroids[i, :<span style="color:#ae81ff">8</span>]]
+                <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n_clusters)]
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n_clusters):
+        <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">{}) {}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(i, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74"> </span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>join(clusters[i])))
 
-    terms = vectorizer.get_feature_names()
-    clusters = [[terms[ind] for ind in order_centroids[i, :8]]
-                for i in range(n_clusters)]
-    for i in range(n_clusters):
-        print('{}) {}'.format(i, ' '.join(clusters[i])))
-
-print_topics(6)
-</code></pre>
-
-<pre><code>0) lord jesus amen god praise thank christ home
+print_topics(<span style="color:#ae81ff">6</span>)</code></pre></div><pre><code>0) lord jesus amen god praise thank christ home
 1) know say did want don just love innocent
 2) love thank tell family like friends want warden
 3) warden ready statement declined offender make let say
 4) ll ya love tell going family everybody kids
-5) sorry family hope forgive peace love like pain
-</code></pre>
-
+5) sorry family hope forgive peace love like pain</code></pre>
 <p>We can recognize the clusters I was talking about before: there's a cluster with religious statements, and another one which represents all the shorter statements. The other ones are not as clear. Some mention the word 'family', but not other key words like 'kids' or 'wife'. There's clearly some overlap between the clusters, and that reinforces the idea that our hypothesis might be more accurate. We may be tempted to disregard the silhouette analysis and proceed with three clusters, but we'll be met with disappointment:</p>
-
-<pre><code class="language-python">print_topics(3)
-</code></pre>
-
-<pre><code>0) love ll tell thank ya strong want family
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">print_topics(<span style="color:#ae81ff">3</span>)</code></pre></div><pre><code>0) love ll tell thank ya strong want family
 1) warden statement ready know did say want let
-2) sorry family love forgive hope like god thank
-</code></pre>
-
+2) sorry family love forgive hope like god thank</code></pre>
 <p>The topics are not at all like we envisioned, and there's too much overlap. It appears that six clusters is indeed a better model.</p>
 
 <h3 id="other-scikitlearn-models">Other <code>scikit-learn</code> models</h3>
@@ -1269,42 +1098,27 @@ print_topics(6)
 <h2 id="topic-modelling-with-gensim">Topic modelling with <code>gensim</code></h2>
 
 <p>Finally, I wanted to try out <code>gensim</code>, which is a package built specifically for topic modeling. The first thing to do is tokenization.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> gensim.utils <span style="color:#f92672">import</span> smart_open, simple_preprocess
+<span style="color:#f92672">from</span> gensim.parsing.preprocessing <span style="color:#f92672">import</span> STOPWORDS
 
-<pre><code class="language-python">from gensim.utils import smart_open, simple_preprocess
-from gensim.parsing.preprocessing import STOPWORDS
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">tokenize</span>(text):
+    <span style="color:#66d9ef">return</span> [token <span style="color:#66d9ef">for</span> token <span style="color:#f92672">in</span> simple_preprocess(text) <span style="color:#66d9ef">if</span> token <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> STOPWORDS]
 
-def tokenize(text):
-    return [token for token in simple_preprocess(text) if token not in STOPWORDS]
-
-tokens = people_with_stmt.last_statement.map(tokenize).values
-</code></pre>
-
+tokens <span style="color:#f92672">=</span> people_with_stmt<span style="color:#f92672">.</span>last_statement<span style="color:#f92672">.</span>map(tokenize)<span style="color:#f92672">.</span>values</code></pre></div>
 <p>Then we have to create a <code>Dictionary</code>, which contains all the unique words and provides the method <code>doc2bow</code> to convert a document to its bag-of-words representation: a list of tuples <code>(word_id, word_frequency)</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> gensim.corpora <span style="color:#f92672">import</span> Dictionary
 
-<pre><code class="language-python">from gensim.corpora import Dictionary
-
-dictionary = Dictionary(tokens)
-corpus = [dictionary.doc2bow(t) for t in tokens]
-</code></pre>
-
+dictionary <span style="color:#f92672">=</span> Dictionary(tokens)
+corpus <span style="color:#f92672">=</span> [dictionary<span style="color:#f92672">.</span>doc2bow(t) <span style="color:#66d9ef">for</span> t <span style="color:#f92672">in</span> tokens]</code></pre></div>
 <p>We can now build an LSI model, which stands for Latent Semantic Indexing and is equivalent to LSA, which we used before. We'll build the model with three clusters.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> gensim.models <span style="color:#f92672">import</span> TfidfModel, LsiModel
 
-<pre><code class="language-python">from gensim.models import TfidfModel, LsiModel
-
-tfidf_model = TfidfModel(corpus, id2word=dictionary)
-lsi_model = LsiModel(tfidf_model[corpus], id2word=dictionary, num_topics=3)
-</code></pre>
-
-<pre><code class="language-python">[(label, [word[0] for word in words])
- for label, words in lsi_model.show_topics(num_words=7, formatted=False)]
-</code></pre>
-
-<pre><code>[(0, ['ll', 'love', 'thank', 'ya', 'sorry', 'family', 'ready']),
+tfidf_model <span style="color:#f92672">=</span> TfidfModel(corpus, id2word<span style="color:#f92672">=</span>dictionary)
+lsi_model <span style="color:#f92672">=</span> LsiModel(tfidf_model[corpus], id2word<span style="color:#f92672">=</span>dictionary, num_topics<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">[(label, [word[<span style="color:#ae81ff">0</span>] <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> words])
+ <span style="color:#66d9ef">for</span> label, words <span style="color:#f92672">in</span> lsi_model<span style="color:#f92672">.</span>show_topics(num_words<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span>, formatted<span style="color:#f92672">=</span>False)]</code></pre></div><pre><code>[(0, ['ll', 'love', 'thank', 'ya', 'sorry', 'family', 'ready']),
  (1, ['ll', 'ya', 'tell', 'peace', 'kids', 'miss', 'lord']),
  (2,
-  ['statement', 'declined', 'offender', 'ready', 'warden', 'final', 'ahead'])]
-</code></pre>
-
+  ['statement', 'declined', 'offender', 'ready', 'warden', 'final', 'ahead'])]</code></pre>
 <p>The result is quite different from what we got from <code>KMeans</code>. Here, the clusters are slightly better defined: one for shorter statements directed to the Warden, one for the family and lastly one with mixed words (even from a religious lexicon).</p>
 
 <h1 id="wrapping-up">Wrapping up</h1>

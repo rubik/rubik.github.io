@@ -84,10 +84,7 @@
               </div>
         </div>
         <section>
-            
-
-<h2 id="preface">Preface</h2>
-
+            <h2 id="preface">Preface</h2>
 <p>The goal of this tutorial series is to allow the reader to start deploying on
 Kubernetes with a basic understanding of Kubernetes architectural principles.
 We assume zero previous knowledge about Kubernetes, the only prerequisite being
@@ -96,20 +93,16 @@ the sections in the order they are presented, because some sections build on
 concepts explained in the previous ones. This tutorial is not short, but it
 should give you a solid understanding to start deploying working applications
 on Kubernetes.</p>
-
 <p>This tutorial series is essentially what I would have wanted to read when I
 first approached Kubernetes, instead of searching and reading lots of different
-sources. The first part will only cover some theory, and then we&rsquo;ll dive into a
+sources. The first part will only cover some theory, and then we'll dive into a
 practical example. This is the structure of the series:</p>
-
 <ul>
 <li>Part I: Kubernetes basic concepts (this post)</li>
 <li>Part II: A practical and realistic example (still WIP)</li>
 <li>Part III: Best practices (still WIP)</li>
 </ul>
-
 <h4 id="table-of-contents">Table of contents</h4>
-
 <ul>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#pods">Pods</a></li>
@@ -120,16 +113,13 @@ practical example. This is the structure of the series:</p>
 <li><a href="#recap">Recap</a></li>
 <li><a href="#conclusion">Conclusion</a></li>
 </ul>
-
 <h2 id="introduction">Introduction</h2>
-
 <p><a href="https://kubernetes.io/">Kubernetes</a>, which translates from Grek to &ldquo;pilot&rdquo; or
 &ldquo;helmsman&rdquo;, is an open-source system for automating deployment, scaling, and
 managing containerized applications. It was born out of the necessity to
 automate the deployment and management of containers across all stages of the
 development cycle. Kubernetes is supported by the CNCF, a foundation created by
 Google and others to house Kubernetes and other open-source computing projects.</p>
-
 <p>A Kubernetes cluster consists of at least one master and multiple compute
 nodes. The master is responsible for exposing the application program interface
 (API), scheduling the deployments and managing the overall cluster. Each node
@@ -137,10 +127,8 @@ runs a container runtime, like Docker, and an agent that communicates with the
 master (kubelet). Nodes expose compute, networking and storage resources to
 applications. They can be virtual machines (VMs) running in a cloud or bare
 metal servers running within a data center.</p>
-
 <p>To learn how Kubernetes works, there are two related concepts you need to
 understand:</p>
-
 <ul>
 <li>Kubernetes implements an <strong>object model</strong>: everything Kubernetes manages is
 represented by an object, and you can view and change these objects&rsquo;
@@ -150,83 +138,60 @@ the state you want your cluster to be in through manifest files, and
 Kubernetes will work to bring that state into being and to preserve it. This
 is why Kubernetes is often described as a desired-state manager.</li>
 </ul>
-
 <p>An object is created by supplying Kubernetes with an object “spec”. With this
 spec, you define the desired state of the object by providing the
 characteristics that you want.</p>
-
 <p>The <strong>control plane</strong> is a term that collectively refers to the system
 processes that collaborate to make a Kubernetes cluster work. They constantly
 monitor the state of the cluster, and whenever the current state does not match
 the desired state, remediation actions are applied. These can include
 scheduling or unscheduling workloads, for example.</p>
-
-<figure>
-<img src="/static/images/kubernetes-Architecture.png" alt="Architecture of a Kubernetes cluster" />
-<figcaption>
-    <strong>Fig. 1</strong> A client, like kubectl, interacts with the
-    Kubernetes API. The master node takes care of managing pods on the worker
-    nodes. Each of these nodes runs the kubelet agent, which communicates with
-    the master, and a container runtime to execute the containers.
-</figcaption>
-</figure>
-
+<!-- raw HTML omitted -->
 <h2 id="pods">Pods</h2>
-
 <p>Each object is of a certain kind. The basic kind is <strong>Pod</strong>, which represents
 the smallest deployable unit within Kubernetes. This is often a source of
 confusion for beginners, who often expect to hear that the smallest Kubernetes
-object is the container. That&rsquo;s not the case, because containers need an
+object is the container. That's not the case, because containers need an
 environment that can execute them. A Pod embodies such an environment, and it
 can accommodate one or more containers. If there is more than one container in
 a Pod, they are tightly coupled and share resources including networking and
 storage.</p>
-
 <p>Kubernetes assigns each Pod a unique IP address. Every container within a Pod
 shares the network namespace including the IP address and network ports.
 Containers within the same Pod can communicate through localhost. A Pod can
 also mount a set of volumes that are shared among its containers.</p>
-
 <p>Objects are defined in YAML manifest files. As an example, this is a minimal
 YAML manifest with the spec for a Pod that runs
 <a href="https://hub.docker.com/_/nginx">nginx</a>:</p>
-
-<pre><code class="language-yaml">apiVersion: v1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: v1
 kind: Pod
 metadata:
   name: nginx
 spec:
   containers:
-  - image: nginx:1.17.5
+  - image: nginx:<span style="color:#ae81ff">1.17</span><span style="color:#ae81ff">.5</span>
     name: nginx
     ports:
-    - containerPort: 80
-</code></pre>
-
-<p>Manifest files have certain required fields. The field <code>apiVersion</code> specifies
+    - containerPort: <span style="color:#ae81ff">80</span>
+</code></pre></div><p>Manifest files have certain required fields. The field <code>apiVersion</code> specifies
 which API version is used to create the object; the Kubernetes API is
 versioned, and this helps to maintain backward compatibility. This file
 declares an object of Pod kind, which can be found in version v1. The spec
 block defines the container, which in this case is built from the nginx image
 and exposes port 80.</p>
-
 <p>When the above manifest is deployed (we’ll see how in part II of this series),
 the control plane determines that the desired state differs from the current
 state and schedules a Pod with a container running nginx on port 80 on an
 available node.</p>
-
 <p><a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/">Documentation</a></p>
-
 <h2 id="controller-objects">Controller objects</h2>
-
-<p>Pods don&rsquo;t heal or repair themselves and they&rsquo;re not meant to run forever. They
+<p>Pods don't heal or repair themselves and they're not meant to run forever. They
 are designed to be ephemeral and disposable. For these reasons, Pods are rarely
 deployed directly. There are better ways to manage your workloads, especially
 if you need to deploy multiple copies of the same Pod: instead of using
 multiple manifest files that define the same Pod object, one can make use of
 the so-called controller objects. One of the most commonly used ones is the
 Deployment object.</p>
-
 <p>A <strong>Deployment</strong> ensures that a defined set of Pods is running at any given
 time. Within its object specs, you specify how many replica Pods you want, how
 Pods should run, which containers should run within these Pods, and which
@@ -238,15 +203,13 @@ This allows Deployments to perform a rolling upgrade of the Pods it manages. To
 perform the upgrade, the Deployment object will create a second ReplicaSet
 object, and then increase the number of (upgraded) Pods in the second
 ReplicaSet while it decreases the number in the first ReplicaSet.</p>
-
 <p>This is how a Deployment manifest file looks like:</p>
-
-<pre><code class="language-yaml">apiVersion: apps/v1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-proxy
 spec:
-  replicas: 3
+  replicas: <span style="color:#ae81ff">3</span>
   template:
     metadata:
       labels:
@@ -254,12 +217,10 @@ spec:
     spec:
       containers:
       - name: nginx-proxy
-        image: nginx:1.17.5
+        image: nginx:<span style="color:#ae81ff">1.17</span><span style="color:#ae81ff">.5</span>
         ports:
-        - containerPort: 80
-</code></pre>
-
-<p>With this manifest, the nginx-proxy Deployment is created with three replicated
+        - containerPort: <span style="color:#ae81ff">80</span>
+</code></pre></div><p>With this manifest, the nginx-proxy Deployment is created with three replicated
 Pods. the Pod template defines some metadata and the spec of each of the Pods
 in this replica set. In this example, each Pod encapsulates one container that
 is built from the nginx:1.17.5 image, exposing port 80. In this the Deployment,
@@ -268,7 +229,6 @@ no requirement to keep the same name for all these objects. More importantly,
 Pod names have to be unique, and the name provided at
 <code>spec.template.metadata.labels.name</code> is the prefix of the final name, which
 contains an hash identifying the Pod and the ReplicaSet it belongs to.</p>
-
 <p>A Deployment is an abstraction that represents a stateless application. As
 such, its Pods are indistinguishable from one another. Applications that need
 to maintain state are better served by the <strong>StatefulSet</strong> controller, which is
@@ -278,9 +238,7 @@ identity and persistent storage. Pods created by a StatefulSet have a
 predictable name, whereas those created by a Deployment have a semi-random
 name. For example, Redis and Elasticsearch clusters would be deployed using a
 StatefulSet configuration.</p>
-
 <p>Finally, some less used controllers that are nonetheless important:</p>
-
 <ul>
 <li><strong>DaemonSets</strong> ensure that a specific Pod is always running on all or a
 subset of nodes. If new nodes are added to the cluster, this controller will
@@ -291,105 +249,61 @@ use-case for Jobs are database migrations;</li>
 <li>the <strong>CronJob</strong> controller acts like the Job controller, but runs according
 to a time-based schedule.</li>
 </ul>
-
 <p><a href="https://kubernetes.io/docs/concepts/architecture/controller/">Documentation</a></p>
-
 <h2 id="services">Services</h2>
-
 <p>Remember that Pods are created and destroyed dynamically. Although they can
 communicate using their assigned Pod IP addresses, these IP addresses are
-ephemeral. They&rsquo;re not guaranteed to remain constant when Pods are restarted or
+ephemeral. They're not guaranteed to remain constant when Pods are restarted or
 when scaling up and down. A <strong>Service</strong> is a static IP address that represents
-a service or a function in your infrastructure. It&rsquo;s a network abstraction for
+a service or a function in your infrastructure. It's a network abstraction for
 a set of Pods that deliver that service. These Pods are selected using a label
 selector. Here is an example of a Service:</p>
-
-<pre><code class="language-yaml">apiVersion: v1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: v1
 kind: Service
 metadata:
   name: backend-app-service
 spec:
   type: ClusterIP
   ports:
-  - name: &quot;80&quot;
-    port: 80
-    targetPort: 8080
+  - name: <span style="color:#e6db74">&#34;80&#34;</span>
+    port: <span style="color:#ae81ff">80</span>
+    targetPort: <span style="color:#ae81ff">8080</span>
   selector:
     app: backend
-</code></pre>
-
-<p>This Service exposes an IP, from which it forwards all traffic it receives at
+</code></pre></div><p>This Service exposes an IP, from which it forwards all traffic it receives at
 port 80 to port 8080 on the Pods that have a label <code>app: backend</code>.</p>
-
 <p>There are a few different types of Services, and they build on top of each
 other. The default and simplest one is <strong>CusterIP</strong>, as in the example above.
 This type exposes the Service on a cluster-internal IP address. This is useful
 for exposing Services running inside the same cluster to each other.</p>
-
-<figure>
-<img src="/static/images/kubernetes-ClusterIP.png" alt="A ClusterIP Service" />
-<figcaption>
-    <strong>Fig. 2</strong> A ClusterIP Service can be reached from inside the
-    cluster. It routes traffic to all Pods matching its label selector. In this
-    example, the Service matches all Pods having the label <code>app:
-    web</code>. The Service IP can be customized with the
-    <code>clusterIP</code> field.
-</figcaption>
-</figure>
-
+<!-- raw HTML omitted -->
 <p>The type <strong>NodePort</strong> exposes the Service on each node’s IP at a static port,
 and can be used to access the Pods from outside the cluster.  A ClusterIP
 Service, to which the NodePort Service routes, is automatically created.</p>
-
-<figure>
-<img src="/static/images/kubernetes-NodePort.png" alt="A NodePort Service" />
-<figcaption>
-    <strong>Fig. 3</strong> A NodePort Service exposes its Pods on each node at
-    a random port chosen in the range 30000-32767. This port can be customized
-    with the <code>nodePort</code> field. Traffic to this port is routed by
-    Kubernetes to the Service Pods, even if they are not on the same node that
-    receives the requests. Internally, the Service is also visible as a
-    ClusterIP service.
-</figcaption>
-</figure>
-
+<!-- raw HTML omitted -->
 <p>The type <strong>LoadBalancer</strong> exposes the Service externally using a cloud
 provider’s load balancer, e.g. Cloud Load Balancer on GCP or Elastic Load
 Balancing on AWS. Unless you run Kubernetes in a managed environment (like
 GKE), you will have to set up the load balancer manually. NodePort and
 ClusterIP Services, to which the external load balancer routes, are
 automatically created.</p>
-
-<figure>
-<img src="/static/images/kubernetes-LoadBalancer.png" alt="A NodePort Service" />
-<figcaption>
-    <strong>Fig. 4</strong> A LoadBalancer Service creates the corresponding
-    NodePort Service and provisions a cloud load balancer automatically.
-</figcaption>
-</figure>
-
+<!-- raw HTML omitted -->
 <p><a href="https://kubernetes.io/docs/concepts/services-networking/service/">Documentation</a></p>
-
 <h2 id="ingresses">Ingresses</h2>
-
 <p>Typically, you use Services to expose your Pods inside or outside the cluster
-to other components of your architecture, but you don&rsquo;t route HTTP(S) traffic
+to other components of your architecture, but you don't route HTTP(S) traffic
 to them directly. One exception to this are cloud load balancer, which can be
 configured to accept external traffic.</p>
-
 <p>For HTTP(S) traffic, an <strong>Ingress</strong> offers more flexibility and features. It
 can be configured to load balance traffic, do SSL/TLS termination, or to
 implement name-based virtual hosting.</p>
-
 <p>By itself, an Ingress only defines the configuration and has no additional
 effect. To fulfill it, you also need to deploy what is called an <strong>Ingress
 controller</strong>. At the time of writing, Kubernetes officially supports two:
 <a href="https://github.com/kubernetes/ingress-gce/blob/master/README.md">GCE</a> and
 <a href="https://github.com/kubernetes/ingress-nginx/blob/master/README.md">nginx</a>.</p>
-
 <p>As an example, here is a manifest file that defines an Ingress backed by nginx:</p>
-
-<pre><code class="language-yaml">apiVersion: extensions/v1beta1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: my-ingress
@@ -409,35 +323,29 @@ spec:
       - path: /
         backend:
           serviceName: web1
-          servicePort: 80
+          servicePort: <span style="color:#ae81ff">80</span>
   - host: web2.example.com
     http:
       paths:
       - path: /
         backend:
           serviceName: web2
-          servicePort: 80
+          servicePort: <span style="color:#ae81ff">80</span>
       - path: /api
         backend:
           serviceName: web2-api
-          servicePort: 3002
-</code></pre>
-
-<p>This manifest files defines an Ingress that serves HTTPS traffic for
+          servicePort: <span style="color:#ae81ff">3002</span>
+</code></pre></div><p>This manifest files defines an Ingress that serves HTTPS traffic for
 web1.example.com and web2.example.com. Traffic to the former host is entirely
 routed to the service <code>web1</code>, whereas traffic to web2.example.com is routed to
-the services <code>web2</code> and <code>web2-api</code> depending on the path. These services don&rsquo;t
+the services <code>web2</code> and <code>web2-api</code> depending on the path. These services don't
 need to be exposed, and they could be simple ClusterIP Services.</p>
-
 <p>The <code>tls</code> object defines the certificate secrets. You could manually provide
 them to Kubernetes or use a tool like
-<a href="https://docs.cert-manager.io/en/latest/">cert-manager</a>, but that&rsquo;s outside of
+<a href="https://docs.cert-manager.io/en/latest/">cert-manager</a>, but that's outside of
 the scope of this simple overview.</p>
-
 <p><a href="https://kubernetes.io/docs/concepts/services-networking/ingress/">Documentation</a></p>
-
 <h2 id="volumes">Volumes</h2>
-
 <p>A container application can write data to the read-write layer inside the
 container, but that is ephemeral. So when the container terminates, whatever
 was written will be lost. Secondly, when running multiple containers inside a
@@ -449,21 +357,18 @@ created, what storage medium should be used, and its initial contents. However,
 Pods themselves are also ephemeral. A failing node or a deleted Pod could cause
 its Volumes to be deleted too. To avoid this, you can configure Volumes to use
 network-based storage that is not lost when a Pod or node fails.</p>
-
 <p>An <strong>emptyDir</strong> volume is first created when a Pod is assigned to a Node, and
 exists as long as that Pod is running on that node. An emptyDir volume survives
 container crashes, because a Pod is not deleted if one of its container
 crashes. However, it is deleted if its Pod is unscheduled.</p>
-
 <p>Example:</p>
-
-<pre><code class="language-yaml">apiVersion: v1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: v1
 kind: Pod
 metadata:
   name: web
 spec:
   containers:
-  - image: nginx:1.17.5
+  - image: nginx:<span style="color:#ae81ff">1.17</span><span style="color:#ae81ff">.5</span>
     name: nginx
     volumeMounts:
     - mountPath: /cache
@@ -471,29 +376,25 @@ spec:
   volumes:
   - name: cache-volume
     emptyDir: {}
-</code></pre>
-
-<p>A <strong>secret</strong> Volume is used to pass sensitive information to a Pod. The secret
+</code></pre></div><p>A <strong>secret</strong> Volume is used to pass sensitive information to a Pod. The secret
 must exist before it can be mounted as a Volume (we’ll do this in part II of
 this series). These Volumes are backed by tmpfs and thus their contents are
 never written to disk.</p>
-
 <p>For example, a secret Volume could be use to pass htpasswd-hashed data to
 nginx. In the following example, the data stored in the <code>HTPASSWD</code> key of the
 secret named <code>htpasswd</code> is mounted at <code>/auth/htpasswd</code> as read-only:</p>
-
-<pre><code class="language-yaml">apiVersion: v1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: v1
 kind: Pod
 metadata:
   name: web
 spec:
   containers:
-  - image: nginx:1.17.5
+  - image: nginx:<span style="color:#ae81ff">1.17</span><span style="color:#ae81ff">.5</span>
     name: nginx
     volumeMounts:
     - mountPath: /auth
       name: htpasswd
-      readOnly: true
+      readOnly: <span style="color:#66d9ef">true</span>
   volumes:
   - name: htpasswd
     secret:
@@ -501,29 +402,22 @@ spec:
       items:
       - key: HTPASSWD
         path: htpasswd
-</code></pre>
-
-<p>There are also some cloud provider-specific types like
+</code></pre></div><p>There are also some cloud provider-specific types like
 <strong>awsElasticBlockStore</strong>, <strong>azureDisk</strong>, or <strong>gcePersistentDisk</strong> that supply
 persistent, network-based storage. There are limitations, as usually you can
 use these only your Kubernetes cluster is running on one of these cloud
 providers. Moreover, these disks must already exist before the Volume is
 mounted.</p>
-
 <p>As an example, after creating a GCE persistent disk with <code>gcloud</code>,</p>
-
-<pre><code class="language-shell">$ gcloud compute disks create --size 30GB --zone=us-east1-b static-data-disk
-</code></pre>
-
-<p>you can mount it in a Pod as follows:</p>
-
-<pre><code class="language-yaml">apiVersion: v1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ gcloud compute disks create --size 30GB --zone<span style="color:#f92672">=</span>us-east1-b static-data-disk
+</code></pre></div><p>you can mount it in a Pod as follows:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: v1
 kind: Pod
 metadata:
   name: web
 spec:
   containers:
-  - image: nginx:1.17.5
+  - image: nginx:<span style="color:#ae81ff">1.17</span><span style="color:#ae81ff">.5</span>
     name: nginx
     volumeMounts:
     - mountPath: /var/www/html
@@ -533,15 +427,10 @@ spec:
     gcePersistentDisk:
       pdName: static-data-disk
       fsType: ext4
-</code></pre>
-
-<p>There are additional restrictions: the Pod must be running on a GCE VM, and
+</code></pre></div><p>There are additional restrictions: the Pod must be running on a GCE VM, and
 this VM needs to be in the same GCP project and zone of the persistent disk.</p>
-
 <p><a href="https://kubernetes.io/docs/concepts/storage/volumes/">Documentation</a></p>
-
 <h2 id="recap">Recap</h2>
-
 <ul>
 <li>Kubernetes enforces the state you describes through manifest files;</li>
 <li>The desired state is abstracted by <strong>objects</strong>;</li>
@@ -557,9 +446,7 @@ or nginx.</li>
 <li>Persistence is achieved with the <strong>Volume</strong> abstraction &ndash; there are many
 different kinds depending on your use case.</li>
 </ul>
-
 <h2 id="conclusion">Conclusion</h2>
-
 <p>This tutorial was meant to give the reader a basic understanding of the most
 important concepts of Kubernetes. Most of these will be put into practice in
 part II of this series, where we will deploy a very simple application backed

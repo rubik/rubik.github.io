@@ -128,172 +128,133 @@ energy is minimized. We define the energy of the <span  class="math">\(i\)</span
 <h1 id="algorithm-implementation">Algorithm implementation</h1>
 
 <p>The Lloyd's algorithm requires initial estimates for the centroids. There are several ways to provide such values. We will simply take <span  class="math">\(k\)</span> samples from the data. Let's define a function for that:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
 
-<pre><code class="language-python">import numpy as np
-
-def random_sample(X, k):
-    return X[np.random.choice(X.shape[0], k, replace=False),:]
-</code></pre>
-
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">random_sample</span>(X, k):
+    <span style="color:#66d9ef">return</span> X[np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>choice(X<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>], k, replace<span style="color:#f92672">=</span>False),:]</code></pre></div>
 <p>Now we need a function to compute the distance between each point and all the centroids. We will keep track of the index of the centroid that yields the lowest distance.</p>
-
-<pre><code class="language-python">def pairwise_distances_argmin(X, y):
-    indices = np.empty(X.shape[0], dtype=np.intp)
-    for i in range(len(X)):
-        indices[i] = np.linalg.norm(X[i,np.newaxis] - y, axis=1).argmin()
-    return indices
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">pairwise_distances_argmin</span>(X, y):
+    indices <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>empty(X<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>], dtype<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>intp)
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(X)):
+        indices[i] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>linalg<span style="color:#f92672">.</span>norm(X[i,np<span style="color:#f92672">.</span>newaxis] <span style="color:#f92672">-</span> y, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>argmin()
+    <span style="color:#66d9ef">return</span> indices</code></pre></div>
 <p>As an example, consider the points <span  class="math">\(X = \{(0, 0), (5, 5)\}\)</span> and the centroids <span  class="math">\(\mu = \{(1, 1), (6, 6)\}\)</span>. The first point is then closer to the first centroid, while the second point is closer to the second centroid:</p>
-
-<pre><code class="language-python">X = np.array([[0, 0], [5, 5]])
-y = np.array([[1, 1], [6, 6]])
-pairwise_distances_argmin(X, y)
-</code></pre>
-
-<pre><code>array([0, 1])
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>], [<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">5</span>]])
+y <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>], [<span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">6</span>]])
+pairwise_distances_argmin(X, y)</code></pre></div><pre><code>array([0, 1])</code></pre>
 <p>The result is an array of indices, and we can effectively interpret it as a set of cluster labels: the first point belongs to cluster &quot;<span  class="math">\(0\)</span>&quot;, the second point to cluster &quot;<span  class="math">\(1\)</span>&quot;. This is the first step of Lloyd's algorithm. We can now implement the second step and wrap them together in a single function, which will execute a complete iteration of Lloyd's algorithm.</p>
-
-<pre><code class="language-python">def kmeans_iteration(X, m):
-    clusters = pairwise_distances_argmin(X, m)
-    centroids = np.empty(m.shape)
-    for i in range(len(m)):
-        centroids[i] = np.mean(X[clusters == i], axis=0)
-    return centroids, clusters
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">kmeans_iteration</span>(X, m):
+    clusters <span style="color:#f92672">=</span> pairwise_distances_argmin(X, m)
+    centroids <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>empty(m<span style="color:#f92672">.</span>shape)
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(m)):
+        centroids[i] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>mean(X[clusters <span style="color:#f92672">==</span> i], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+    <span style="color:#66d9ef">return</span> centroids, clusters</code></pre></div>
 <p>For each cluster, we simply compute the mean of the points belonging to that cluster. The results are the new clusters. To complete the implementation, we need to iterate the above until convergence is achieved and a local solution is found.</p>
-
-<pre><code class="language-python">def kmeans(X, k):
-    m = random_sample(X, k)
-    while True:
-        new_m, clusters = kmeans_iteration(X, m)
-        if np.isclose(m, new_m).all():
-            break
-        m = new_m
-    return new_m, clusters
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">kmeans</span>(X, k):
+    m <span style="color:#f92672">=</span> random_sample(X, k)
+    <span style="color:#66d9ef">while</span> True:
+        new_m, clusters <span style="color:#f92672">=</span> kmeans_iteration(X, m)
+        <span style="color:#66d9ef">if</span> np<span style="color:#f92672">.</span>isclose(m, new_m)<span style="color:#f92672">.</span>all():
+            <span style="color:#66d9ef">break</span>
+        m <span style="color:#f92672">=</span> new_m
+    <span style="color:#66d9ef">return</span> new_m, clusters</code></pre></div>
 <p>In the minimal implementation above, we chose to check whether the updated centroids are very close to each other: the <a href="https://docs.scipy.org/doc/numpy-dev/reference/generated/numpy.isclose.html"><code>np.isclose</code></a> function compares value with default tolerances of <span  class="math">\(10^{-5}\)</span> and <span  class="math">\(10^{-8}\)</span>. Those are, respectively, the relative tolerance and the absolute tolerance. We want to avoid strict equality because floating point math is not exact. I encourage you to read Goldberg's <a href="http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">&quot;What Every Computer Scientist Should Know About Floating-Point Arithmetic&quot;</a> if you want to examine this topic in greater depth.</p>
 
 <p>There are other ways in which we could have interrupted the algorithm: we can impose a maximum number of iterations, or stop once the total energy of the clusters has gone below a certain threshold.</p>
 
 <p>Now let's visualize the result of the algorithm.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+<span style="color:#f92672">import</span> matplotlib.cm <span style="color:#f92672">as</span> cm
+<span style="color:#f92672">from</span> matplotlib <span style="color:#f92672">import</span> rc
+<span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
 
-<pre><code class="language-python">import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-from matplotlib import rc
-import seaborn as sns
+plt<span style="color:#f92672">.</span>style<span style="color:#f92672">.</span>use(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">ggplot</span><span style="color:#e6db74">&#39;</span>)
+sns<span style="color:#f92672">.</span>set_style(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">whitegrid</span><span style="color:#e6db74">&#39;</span>)
+rc(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">figure</span><span style="color:#e6db74">&#39;</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">4</span>))
+cmap <span style="color:#f92672">=</span> cm<span style="color:#f92672">.</span>get_cmap(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">rainbow</span><span style="color:#e6db74">&#39;</span>)
 
-plt.style.use('ggplot')
-sns.set_style('whitegrid')
-rc('figure', figsize=(6, 4))
-cmap = cm.get_cmap('rainbow')
-
-def plot_clusters(X, m, clusters):
-    k = len(m)
-    for i in range(k):
-        group = X[clusters == i]
-        plt.scatter(group[:,0], group[:,1], marker='.', color=cmap(i / k))
-        plt.scatter(m[i,0], m[i,1], marker='*', color=cmap(i / k))
-    plt.show()
-</code></pre>
-
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">plot_clusters</span>(X, m, clusters):
+    k <span style="color:#f92672">=</span> len(m)
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(k):
+        group <span style="color:#f92672">=</span> X[clusters <span style="color:#f92672">==</span> i]
+        plt<span style="color:#f92672">.</span>scatter(group[:,<span style="color:#ae81ff">0</span>], group[:,<span style="color:#ae81ff">1</span>], marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#39;</span>, color<span style="color:#f92672">=</span>cmap(i <span style="color:#f92672">/</span> k))
+        plt<span style="color:#f92672">.</span>scatter(m[i,<span style="color:#ae81ff">0</span>], m[i,<span style="color:#ae81ff">1</span>], marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">*</span><span style="color:#e6db74">&#39;</span>, color<span style="color:#f92672">=</span>cmap(i <span style="color:#f92672">/</span> k))
+    plt<span style="color:#f92672">.</span>show()</code></pre></div>
 <p>We'll generate the data with the function <a href="http://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_blobs.html"><code>make_blobs</code></a> from <code>scikit-learn</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.datasets <span style="color:#f92672">import</span> make_blobs
 
-<pre><code class="language-python">from sklearn.datasets import make_blobs
-
-X, _ = make_blobs(n_samples=2000, centers=4, cluster_std=2)
-m, clusters = kmeans(X, 4)
-plot_clusters(X, m, clusters)
-</code></pre>
-
+X, _ <span style="color:#f92672">=</span> make_blobs(n_samples<span style="color:#f92672">=</span><span style="color:#ae81ff">2000</span>, centers<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>, cluster_std<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+m, clusters <span style="color:#f92672">=</span> kmeans(X, <span style="color:#ae81ff">4</span>)
+plot_clusters(X, m, clusters)</code></pre></div>
 <p><figure><img src="/KMeans_files/KMeans_15_0.png" alt="png"></figure></p>
 
 <p>Now let's generate an animation showing the steps of Lloyd's algorithm. We'll use the <code>FuncAnimation</code> class from Matplotlib. It requires a function to update the data repeatedly. Since each iteration of the algorithm depends upon the previous iteration, we'll create a class to keep track of the state.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.animation <span style="color:#f92672">as</span> animation
 
-<pre><code class="language-python">import matplotlib.animation as animation
-
-class KMeansAnimation:
-    def __init__(self, fig, ax, X, m=None, k=2):
-        self.X = X
-        self.fig = fig
-        self.m = m if m is not None else random_sample(X, k)
-        # We have to call plot for each cluster and its centroid
-        # because we want to distinguish the clusters by color
-        # and draw the centroid with a different marker
-        self.clusters, self.centroids = [], []
-        for i in range(k):
-            color = cmap(i / k)
-            self.clusters.append(
-                ax.plot([], [],
-                        linestyle='', marker='.',
-                        markeredgecolor=color, color=color)[0]
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">KMeansAnimation</span>:
+    <span style="color:#66d9ef">def</span> __init__(self, fig, ax, X, m<span style="color:#f92672">=</span>None, k<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>):
+        self<span style="color:#f92672">.</span>X <span style="color:#f92672">=</span> X
+        self<span style="color:#f92672">.</span>fig <span style="color:#f92672">=</span> fig
+        self<span style="color:#f92672">.</span>m <span style="color:#f92672">=</span> m <span style="color:#66d9ef">if</span> m <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> None <span style="color:#66d9ef">else</span> random_sample(X, k)
+        <span style="color:#75715e"># We have to call plot for each cluster and its centroid</span>
+        <span style="color:#75715e"># because we want to distinguish the clusters by color</span>
+        <span style="color:#75715e"># and draw the centroid with a different marker</span>
+        self<span style="color:#f92672">.</span>clusters, self<span style="color:#f92672">.</span>centroids <span style="color:#f92672">=</span> [], []
+        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(k):
+            color <span style="color:#f92672">=</span> cmap(i <span style="color:#f92672">/</span> k)
+            self<span style="color:#f92672">.</span>clusters<span style="color:#f92672">.</span>append(
+                ax<span style="color:#f92672">.</span>plot([], [],
+                        linestyle<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>, marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#39;</span>,
+                        markeredgecolor<span style="color:#f92672">=</span>color, color<span style="color:#f92672">=</span>color)[<span style="color:#ae81ff">0</span>]
             )
-            self.centroids.append(
-                ax.plot([], [],
-                        linestyle='', marker='o',
-                        markeredgewidth=0.5,
-                        markersize=10, color=color)[0]
+            self<span style="color:#f92672">.</span>centroids<span style="color:#f92672">.</span>append(
+                ax<span style="color:#f92672">.</span>plot([], [],
+                        linestyle<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>, marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">o</span><span style="color:#e6db74">&#39;</span>,
+                        markeredgewidth<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>,
+                        markersize<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, color<span style="color:#f92672">=</span>color)[<span style="color:#ae81ff">0</span>]
             )
 
-    def update(self, t):
-        self.m, clusters = kmeans_iteration(self.X, self.m)
-        self.fig.suptitle('n = {}, k = {} – Iteration {}'.format(
-                len(self.X), len(self.m), t + 1)
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">update</span>(self, t):
+        self<span style="color:#f92672">.</span>m, clusters <span style="color:#f92672">=</span> kmeans_iteration(self<span style="color:#f92672">.</span>X, self<span style="color:#f92672">.</span>m)
+        self<span style="color:#f92672">.</span>fig<span style="color:#f92672">.</span>suptitle(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">n = {}, k = {} – Iteration {}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(
+                len(self<span style="color:#f92672">.</span>X), len(self<span style="color:#f92672">.</span>m), t <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
         )
-        # To update the plot, we simply call set_data on the saved axes
-        for i in range(len(self.m)):
-            group = self.X[clusters == i]
-            self.clusters[i].set_data(group.T)
-            self.centroids[i].set_data(self.m[i])
-        return self.clusters + self.centroids
-</code></pre>
-
+        <span style="color:#75715e"># To update the plot, we simply call set_data on the saved axes</span>
+        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(self<span style="color:#f92672">.</span>m)):
+            group <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>X[clusters <span style="color:#f92672">==</span> i]
+            self<span style="color:#f92672">.</span>clusters[i]<span style="color:#f92672">.</span>set_data(group<span style="color:#f92672">.</span>T)
+            self<span style="color:#f92672">.</span>centroids[i]<span style="color:#f92672">.</span>set_data(self<span style="color:#f92672">.</span>m[i])
+        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>clusters <span style="color:#f92672">+</span> self<span style="color:#f92672">.</span>centroids</code></pre></div>
 <p>We create a convenience function that generate HTML code to embed the animation as a <code>&lt;video&gt;</code> element.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> IPython.display <span style="color:#f92672">import</span> HTML
 
-<pre><code class="language-python">from IPython.display import HTML
-
-def make_animation(X, k, m=None, frames=20):
-    fig = plt.figure(figsize=(6, 4))
-    (xmin, ymin), (xmax, ymax) = np.min(X, axis=0), np.max(X, axis=0)
-    ax = plt.axes(xlim=(xmin, xmax), ylim=(ymin, ymax))
-    control = KMeansAnimation(fig, ax, X, m=m, k=k)
-    anim = animation.FuncAnimation(
-        fig, control.update,
-        frames=frames, interval=700, blit=True,
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">make_animation</span>(X, k, m<span style="color:#f92672">=</span>None, frames<span style="color:#f92672">=</span><span style="color:#ae81ff">20</span>):
+    fig <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">4</span>))
+    (xmin, ymin), (xmax, ymax) <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>min(X, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>), np<span style="color:#f92672">.</span>max(X, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+    ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>axes(xlim<span style="color:#f92672">=</span>(xmin, xmax), ylim<span style="color:#f92672">=</span>(ymin, ymax))
+    control <span style="color:#f92672">=</span> KMeansAnimation(fig, ax, X, m<span style="color:#f92672">=</span>m, k<span style="color:#f92672">=</span>k)
+    anim <span style="color:#f92672">=</span> animation<span style="color:#f92672">.</span>FuncAnimation(
+        fig, control<span style="color:#f92672">.</span>update,
+        frames<span style="color:#f92672">=</span>frames, interval<span style="color:#f92672">=</span><span style="color:#ae81ff">700</span>, blit<span style="color:#f92672">=</span>True,
     )
-    # Necessary, otherwise the notebook will display the final figure
-    # along with the animation
-    plt.close(fig)
-    return HTML(anim.to_html5_video())
-</code></pre>
-
+    <span style="color:#75715e"># Necessary, otherwise the notebook will display the final figure</span>
+    <span style="color:#75715e"># along with the animation</span>
+    plt<span style="color:#f92672">.</span>close(fig)
+    <span style="color:#66d9ef">return</span> HTML(anim<span style="color:#f92672">.</span>to_html5_video())</code></pre></div>
 <p>For this we will generate some more blobs and use less clusters than the number of blobs to better see the algorithm in action.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.datasets <span style="color:#f92672">import</span> make_blobs
 
-<pre><code class="language-python">from sklearn.datasets import make_blobs
-
-X, _ = make_blobs(n_samples=2000, centers=6, cluster_std=2.2)
-</code></pre>
-
+X, _ <span style="color:#f92672">=</span> make_blobs(n_samples<span style="color:#f92672">=</span><span style="color:#ae81ff">2000</span>, centers<span style="color:#f92672">=</span><span style="color:#ae81ff">6</span>, cluster_std<span style="color:#f92672">=</span><span style="color:#ae81ff">2.2</span>)</code></pre></div>
 <p>Let's check the blobs first. They are not immediately recognizable due to the high variance we introduced.</p>
-
-<pre><code class="language-python">plt.plot(X[:,0], X[:,1],
-         linestyle='', marker='.',
-         color=cmap(0.2), markeredgecolor=cmap(0.25))
-plt.show()
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">plt<span style="color:#f92672">.</span>plot(X[:,<span style="color:#ae81ff">0</span>], X[:,<span style="color:#ae81ff">1</span>],
+         linestyle<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>, marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#39;</span>,
+         color<span style="color:#f92672">=</span>cmap(<span style="color:#ae81ff">0.2</span>), markeredgecolor<span style="color:#f92672">=</span>cmap(<span style="color:#ae81ff">0.25</span>))
+plt<span style="color:#f92672">.</span>show()</code></pre></div>
 <p><figure><img src="/KMeans_files/KMeans_23_0.png" alt="png"></figure></p>
 
 <p>We'll manually choose the starting centroids, and we will choose them in such a way that at least two of them are very close. This will make for a tougher problem for Lloyd's algorithm. This will represent an uncommon situation: usually choosing the initial centroids at random will give it much better chances to perform well.</p>
-
-<pre><code class="language-python">m = np.array([[0, 2.5], [3, 11], [4, 10], [5.5, 2]])
-make_animation(X, m=m, k=4, frames=20)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">m <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>array([[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2.5</span>], [<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">11</span>], [<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">10</span>], [<span style="color:#ae81ff">5.5</span>, <span style="color:#ae81ff">2</span>]])
+make_animation(X, m<span style="color:#f92672">=</span>m, k<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>, frames<span style="color:#f92672">=</span><span style="color:#ae81ff">20</span>)</code></pre></div>
 <video width="600.0" height="400.0" controls autoplay loop>
   <source type="video/mp4" src="data:video/mp4;base64,AAAAHGZ0eXBNNFYgAAACAGlzb21pc28yYXZjMQAAAAhmcmVlAAFKlG1kYXQAAAKtBgX//6ncRem9
 5tlIt5Ys2CDZI+7veDI2NCAtIGNvcmUgMTQ4IHIyNzA4IDg2YjcxOTggLSBILjI2NC9NUEVHLTQg
@@ -1806,11 +1767,8 @@ bHN0AAAAJal0b28AAAAdZGF0YQAAAAEAAAAATGF2ZjU3LjU2LjEwMA==
 <p>It's fascinating to observe the journey of the green (or 'seafoam green', <a href="https://xkcd.com/color/rgb/">according to XKCD</a>) centroid: since the algorithm tends to put some distance between the centroids, if two centroids start too close one of them will be eventually moved farther away.</p>
 
 <p>Let's see what happens when we run the algorithm on a uniformly populated area:</p>
-
-<pre><code class="language-python">X_dense = np.random.rand(2000, 2)
-make_animation(X_dense, k=11)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">X_dense <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>rand(<span style="color:#ae81ff">2000</span>, <span style="color:#ae81ff">2</span>)
+make_animation(X_dense, k<span style="color:#f92672">=</span><span style="color:#ae81ff">11</span>)</code></pre></div>
 <video width="600.0" height="400.0" controls autoplay loop>
   <source type="video/mp4" src="data:video/mp4;base64,AAAAHGZ0eXBNNFYgAAACAGlzb21pc28yYXZjMQAAAAhmcmVlAAINNG1kYXQAAAKtBgX//6ncRem9
 5tlIt5Ys2CDZI+7veDI2NCAtIGNvcmUgMTQ4IHIyNzA4IDg2YjcxOTggLSBILjI2NC9NUEVHLTQg
@@ -4237,98 +4195,80 @@ b) random sampling over a box aligned with the principal components of the data.
 <p>Finally, the optimal cluster size <span  class="math">\(\hat k\)</span> is the smallest <span  class="math">\(k\)</span> such that <span  class="math">\(\mathop{\mathrm{Gap}}(k) \geq \mathop{\mathrm{Gap}}(k + 1) - s_{k + 1}\)</span>, or <span  class="math">\(\mathop{\mathrm{Gap}}(k) - \mathop{\mathrm{Gap}}(k + 1) + s_{k + 1} \geq 0.\)</span></p>
 
 <p>Let's start by implementing a function to calculate the total energy of a clustering:</p>
-
-<pre><code class="language-python">def Wk(X, centroids, clusters):
-    return np.sum([np.linalg.norm(X[i] - centroids[clusters[i]]) ** 2
-                   for i in range(len(X))])
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">Wk</span>(X, centroids, clusters):
+    <span style="color:#66d9ef">return</span> np<span style="color:#f92672">.</span>sum([np<span style="color:#f92672">.</span>linalg<span style="color:#f92672">.</span>norm(X[i] <span style="color:#f92672">-</span> centroids[clusters[i]]) <span style="color:#f92672">*</span><span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>
+                   <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(X))])</code></pre></div>
 <p>We'll also need a function to take uniform samples from the observations <span  class="math">\(X\)</span>:</p>
-
-<pre><code class="language-python">def monte_carlo(X, xmin, xmax, ymin, ymax, n=None):
-    # n is the sample size
-    n = n if n is not None else len(X)
-    xs = np.random.uniform(xmin, xmax, size=(n, 1))
-    ys = np.random.uniform(ymin, ymax, size=(n, 1))
-    return np.concatenate([xs, ys], axis=1)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">monte_carlo</span>(X, xmin, xmax, ymin, ymax, n<span style="color:#f92672">=</span>None):
+    <span style="color:#75715e"># n is the sample size</span>
+    n <span style="color:#f92672">=</span> n <span style="color:#66d9ef">if</span> n <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> None <span style="color:#66d9ef">else</span> len(X)
+    xs <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>uniform(xmin, xmax, size<span style="color:#f92672">=</span>(n, <span style="color:#ae81ff">1</span>))
+    ys <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>uniform(ymin, ymax, size<span style="color:#f92672">=</span>(n, <span style="color:#ae81ff">1</span>))
+    <span style="color:#66d9ef">return</span> np<span style="color:#f92672">.</span>concatenate([xs, ys], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)</code></pre></div>
 <p>Now we can implement the rest of the algorithm.</p>
-
-<pre><code class="language-python">def gap_stats(X, K=8, B=10, n=None):
-    (xmin, ymin), (xmax, ymax) = np.min(X, axis=0), np.max(X, axis=0)
-    ks = np.arange(1, K + 1)
-    # Generate B Monte Carlo samples (uniform) from the bounding box of X
-    samples = [monte_carlo(X, xmin, xmax, ymin, ymax, n) for _ in range(B)]
-    # Total energy of X for each k
-    Wks = np.empty(K)
-    # Mean total energy of samples for each k
-    sample_Wks = np.empty(K)
-    # Corrected standard deviation for each k
-    sk = np.empty(K)
-    for k in ks:
-        Wks[k - 1] = np.log(Wk(X, *kmeans(X, k)))
-        # Total energy for each sample
-        current_Wks = np.empty(B)
-        for i in range(B):
-            sample = samples[i]
-            current_Wks[i] = np.log(Wk(sample, *kmeans(sample, k)))
-        sample_Wks[k - 1] = current_Wks.mean()
-        sk[k - 1] = np.sqrt(((current_Wks - sample_Wks[k - 1]) ** 2).mean())
-    # Correction factor
-    sk *= np.sqrt(1 + 1 / B)
-    gaps = sample_Wks - Wks
-    return ks, Wks, sample_Wks, gaps, sk
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">gap_stats</span>(X, K<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>, B<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, n<span style="color:#f92672">=</span>None):
+    (xmin, ymin), (xmax, ymax) <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>min(X, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>), np<span style="color:#f92672">.</span>max(X, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+    ks <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>arange(<span style="color:#ae81ff">1</span>, K <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+    <span style="color:#75715e"># Generate B Monte Carlo samples (uniform) from the bounding box of X</span>
+    samples <span style="color:#f92672">=</span> [monte_carlo(X, xmin, xmax, ymin, ymax, n) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(B)]
+    <span style="color:#75715e"># Total energy of X for each k</span>
+    Wks <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>empty(K)
+    <span style="color:#75715e"># Mean total energy of samples for each k</span>
+    sample_Wks <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>empty(K)
+    <span style="color:#75715e"># Corrected standard deviation for each k</span>
+    sk <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>empty(K)
+    <span style="color:#66d9ef">for</span> k <span style="color:#f92672">in</span> ks:
+        Wks[k <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>log(Wk(X, <span style="color:#f92672">*</span>kmeans(X, k)))
+        <span style="color:#75715e"># Total energy for each sample</span>
+        current_Wks <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>empty(B)
+        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(B):
+            sample <span style="color:#f92672">=</span> samples[i]
+            current_Wks[i] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>log(Wk(sample, <span style="color:#f92672">*</span>kmeans(sample, k)))
+        sample_Wks[k <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> current_Wks<span style="color:#f92672">.</span>mean()
+        sk[k <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>sqrt(((current_Wks <span style="color:#f92672">-</span> sample_Wks[k <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>]) <span style="color:#f92672">*</span><span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>)<span style="color:#f92672">.</span>mean())
+    <span style="color:#75715e"># Correction factor</span>
+    sk <span style="color:#f92672">*</span><span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>sqrt(<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">/</span> B)
+    gaps <span style="color:#f92672">=</span> sample_Wks <span style="color:#f92672">-</span> Wks
+    <span style="color:#66d9ef">return</span> ks, Wks, sample_Wks, gaps, sk</code></pre></div>
 <p>We want to test the above algorithm on different configurations of points. We'll first make a function to summarize the gap statistics for a certain distribution.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> matplotlib.ticker <span style="color:#f92672">as</span> ticker
 
-<pre><code class="language-python">import matplotlib.ticker as ticker
-
-def gaps_info(X, ks, Wks, sample_Wks, gaps, sk):
-    fig, axes = plt.subplots(2, 2, figsize=(8, 7))
-    axes[0,0].plot(X[:,0], X[:,1],
-                   linestyle='', marker='.',
-                   color=cmap(0.2), markeredgecolor=cmap(0.25))
-    line1, = axes[0,1].plot(ks, Wks, marker='.', markersize=10)
-    line2, = axes[0,1].plot(ks, sample_Wks, marker='.', markersize=10)
-    axes[0,1].legend(
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">gaps_info</span>(X, ks, Wks, sample_Wks, gaps, sk):
+    fig, axes <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">7</span>))
+    axes[<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>plot(X[:,<span style="color:#ae81ff">0</span>], X[:,<span style="color:#ae81ff">1</span>],
+                   linestyle<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>, marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#39;</span>,
+                   color<span style="color:#f92672">=</span>cmap(<span style="color:#ae81ff">0.2</span>), markeredgecolor<span style="color:#f92672">=</span>cmap(<span style="color:#ae81ff">0.25</span>))
+    line1, <span style="color:#f92672">=</span> axes[<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>plot(ks, Wks, marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#39;</span>, markersize<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>)
+    line2, <span style="color:#f92672">=</span> axes[<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>plot(ks, sample_Wks, marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#39;</span>, markersize<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>)
+    axes[<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>legend(
         (line1, line2),
-        (r'$$\log W_k$', r'$$\frac{1}{B}\sum_{b = 1}^B\,\log W_{kb}^*$')
+        (<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">$$</span><span style="color:#e6db74">\</span><span style="color:#e6db74">log W_k$</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">$$</span><span style="color:#e6db74">\</span><span style="color:#e6db74">frac{1}{B}</span><span style="color:#e6db74">\</span><span style="color:#e6db74">sum_{b = 1}^B</span><span style="color:#e6db74">\</span><span style="color:#e6db74">,</span><span style="color:#e6db74">\</span><span style="color:#e6db74">log W_{kb}^*$</span><span style="color:#e6db74">&#39;</span>)
     )
-    axes[1,0].plot(ks, gaps, marker='.', markersize=10)
-    axes[1,0].set_ylabel('$$\mathop{\mathrm{Gap}}(k)$')
-    gaps_diff = gaps[:-1] - gaps[1:] + sk[1:]
-    barlist = axes[1,1].bar(ks[:-1], gaps_diff,
-                            width=0.5, align='center')
-    barlist[np.argmax(gaps_diff &gt; 0)].set_color(sns.xkcd_rgb['pale red'])
-    axes[1,1].set_ylabel('$$\mathop{\mathrm{Gap}}(k) -'
-                         ' \mathop{\mathrm{Gap}}(k + 1) + s_{k + 1}$')
-    for (i, j) in ((0, 1), (1, 0), (1, 1)):
-        axes[i,j].set_xlabel('Clusters')
-        axes[i,j].xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
-    fig.tight_layout(w_pad=3)
-    plt.show()
-</code></pre>
-
+    axes[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>plot(ks, gaps, marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#39;</span>, markersize<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>)
+    axes[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">$$</span><span style="color:#e6db74">\</span><span style="color:#e6db74">mathop{</span><span style="color:#e6db74">\</span><span style="color:#e6db74">mathrm{Gap}}(k)$</span><span style="color:#e6db74">&#39;</span>)
+    gaps_diff <span style="color:#f92672">=</span> gaps[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">-</span> gaps[<span style="color:#ae81ff">1</span>:] <span style="color:#f92672">+</span> sk[<span style="color:#ae81ff">1</span>:]
+    barlist <span style="color:#f92672">=</span> axes[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>bar(ks[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], gaps_diff,
+                            width<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>, align<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">center</span><span style="color:#e6db74">&#39;</span>)
+    barlist[np<span style="color:#f92672">.</span>argmax(gaps_diff <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>)]<span style="color:#f92672">.</span>set_color(sns<span style="color:#f92672">.</span>xkcd_rgb[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">pale red</span><span style="color:#e6db74">&#39;</span>])
+    axes[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">$$</span><span style="color:#e6db74">\</span><span style="color:#e6db74">mathop{</span><span style="color:#e6db74">\</span><span style="color:#e6db74">mathrm{Gap}}(k) -</span><span style="color:#e6db74">&#39;</span>
+                         <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74"> </span><span style="color:#e6db74">\</span><span style="color:#e6db74">mathop{</span><span style="color:#e6db74">\</span><span style="color:#e6db74">mathrm{Gap}}(k + 1) + s_{k + 1}$</span><span style="color:#e6db74">&#39;</span>)
+    <span style="color:#66d9ef">for</span> (i, j) <span style="color:#f92672">in</span> ((<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>), (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>), (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>)):
+        axes[i,j]<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Clusters</span><span style="color:#e6db74">&#39;</span>)
+        axes[i,j]<span style="color:#f92672">.</span>xaxis<span style="color:#f92672">.</span>set_major_locator(ticker<span style="color:#f92672">.</span>MaxNLocator(integer<span style="color:#f92672">=</span>True))
+    fig<span style="color:#f92672">.</span>tight_layout(w_pad<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+    plt<span style="color:#f92672">.</span>show()</code></pre></div>
 <p>Let's start with an easy one. We'll use the <code>make_blobs</code> function from before to make three very distinguishable clusters.</p>
-
-<pre><code class="language-python">X, _ = make_blobs(n_samples=1000, centers=3, cluster_std=2)
-ks, Wks, sample_Wks, gaps, sk = gap_stats(X, K=5)
-gaps_info(X, ks, Wks, sample_Wks, gaps, sk)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">X, _ <span style="color:#f92672">=</span> make_blobs(n_samples<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>, centers<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, cluster_std<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>)
+ks, Wks, sample_Wks, gaps, sk <span style="color:#f92672">=</span> gap_stats(X, K<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>)
+gaps_info(X, ks, Wks, sample_Wks, gaps, sk)</code></pre></div>
 <p><figure><img src="/KMeans_files/KMeans_37_0.png" alt="png"></figure></p>
 
 <p>The value <span  class="math">\(k = 3\)</span> corresponds to the maximum <span  class="math">\(\mathop{\mathrm{Gap}}\)</span>, and we see that it's also the lowest value for which <span  class="math">\(\mathop{\mathrm{Gap}}(k) - \mathop{\mathrm{Gap}}(k + 1) + s_{k + 1}\)</span> is positive. This confirms that <span  class="math">\(k = 3\)</span> is indeed optimal.</p>
 
 <p>Let's see what happens when we increase the standard deviation when generating blobs.</p>
-
-<pre><code class="language-python">X, _ = make_blobs(n_samples=1000, centers=3, cluster_std=2.8)
-ks, Wks, sample_Wks, gaps, sk = gap_stats(X, K=5)
-gaps_info(X, ks, Wks, sample_Wks, gaps, sk)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">X, _ <span style="color:#f92672">=</span> make_blobs(n_samples<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>, centers<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, cluster_std<span style="color:#f92672">=</span><span style="color:#ae81ff">2.8</span>)
+ks, Wks, sample_Wks, gaps, sk <span style="color:#f92672">=</span> gap_stats(X, K<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>)
+gaps_info(X, ks, Wks, sample_Wks, gaps, sk)</code></pre></div>
 <p><figure><img src="/KMeans_files/KMeans_39_0.png" alt="png"></figure></p>
 
 <p>The clusters are close and slightly fused, that even though they were generated
@@ -4336,34 +4276,25 @@ from three centers, they could look like two clusters. The algorithm, though,
 correctly determines that <span  class="math">\(k = 3\)</span> is the best value.</p>
 
 <p>Until now we have only tried the algorithm up to <span  class="math">\(k = 5\)</span> candidate clusters. Let's see how the algorithm responds to a configuration with more blobs and more candidates.</p>
-
-<pre><code class="language-python">X, _ = make_blobs(n_samples=1000, centers=8)
-ks, Wks, sample_Wks, gaps, sk = gap_stats(X, K=12)
-gaps_info(X, ks, Wks, sample_Wks, gaps, sk)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">X, _ <span style="color:#f92672">=</span> make_blobs(n_samples<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>, centers<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>)
+ks, Wks, sample_Wks, gaps, sk <span style="color:#f92672">=</span> gap_stats(X, K<span style="color:#f92672">=</span><span style="color:#ae81ff">12</span>)
+gaps_info(X, ks, Wks, sample_Wks, gaps, sk)</code></pre></div>
 <p><figure><img src="/KMeans_files/KMeans_41_0.png" alt="png"></figure></p>
 
 <p>This was tricky. The blobs were generated from eight centers but some of them fused and in the end only four or five are visible. The algorithm determined that <span  class="math">\(k = 4\)</span> was indeed best.</p>
 
 <p>On the other hand, it's also very interesting to test the algorithm with one single cluster.</p>
-
-<pre><code class="language-python">X, _ = make_blobs(n_samples=600, centers=1, cluster_std=4)
-ks, Wks, sample_Wks, gaps, sk = gap_stats(X, K=5)
-gaps_info(X, ks, Wks, sample_Wks, gaps, sk)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">X, _ <span style="color:#f92672">=</span> make_blobs(n_samples<span style="color:#f92672">=</span><span style="color:#ae81ff">600</span>, centers<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, cluster_std<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>)
+ks, Wks, sample_Wks, gaps, sk <span style="color:#f92672">=</span> gap_stats(X, K<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>)
+gaps_info(X, ks, Wks, sample_Wks, gaps, sk)</code></pre></div>
 <p><figure><img src="/KMeans_files/KMeans_43_0.png" alt="png"></figure></p>
 
 <p>The algorithm concludes without problems that <span  class="math">\(k = 1\)</span> is best. Note that in the top rightmost plot, the energy of the observed data falls at roughly the same rate as the energy from the uniform samples. That makes sense, since a Gaussian distribution (the one from which the blobs are generated) can be approximated by the uniform distribution on an interval, progressively better as the standard deviation increases.</p>
 
 <p>As the last example, let's consider a uniform sample, to see what the algorithm decides.</p>
-
-<pre><code class="language-python">X = np.random.uniform(-10, 10, size=(600, 2))
-ks, Wks, sample_Wks, gaps, sk = gap_stats(X, K=4)
-gaps_info(X, ks, Wks, sample_Wks, gaps, sk)
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">X <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>random<span style="color:#f92672">.</span>uniform(<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">10</span>, size<span style="color:#f92672">=</span>(<span style="color:#ae81ff">600</span>, <span style="color:#ae81ff">2</span>))
+ks, Wks, sample_Wks, gaps, sk <span style="color:#f92672">=</span> gap_stats(X, K<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>)
+gaps_info(X, ks, Wks, sample_Wks, gaps, sk)</code></pre></div>
 <p><figure><img src="/KMeans_files/KMeans_45_0.png" alt="png"></figure></p>
 
 <p>This confirms what we anticipated in the last example: now the energy decay is almost identical. That's because the distribution of the observed data and the samples is exactly the same.</p>

@@ -86,30 +86,21 @@
               </div>
         </div>
         <section>
-            
-
-<div class="img-with-copyright">
-<img itemprop="image" title="A pipeline" src="/static/images/pipes.jpg" />
-<div class="copyright"><span>Copyright: <a href="http://www.istockphoto.com/portfolio/visualgo">visualgo</a><span style="clear:both"></span></span></div>
-</div>
-
+            <!-- raw HTML omitted -->
 <p>Machine learning models learn from data. It is crucial, however, that the data
 you feed them is specifically preprocessed and refined for the problem you want
 to solve. This includes data cleaning, preprocessing, feature engineering, and
 so on.</p>
-
 <p>Very often, when presented with a dataset, I would fire up a Jupyter notebook
 and start exploring it interactively. The notebook is great for that task, but
 after a while I ended up with code that is a total mess in the global
 namespace.</p>
-
-<p>Then I read about scikit-learn&rsquo;s <a href="http://scikit-learn.org/stable/modules/pipeline.html#pipeline"><code>Pipeline</code></a> object, a utility
+<p>Then I read about scikit-learn's <a href="http://scikit-learn.org/stable/modules/pipeline.html#pipeline"><code>Pipeline</code></a> object, a utility
 that provides a way to automate a machine learning workflow.  It works by
 allowing several transformers to be chained together. One can also add an
 estimator at the end of the pipeline. Data flows from the start of the pipeline
 to its end, and each time it is transformed and fed to the next component. A
 <code>Pipeline</code> object has two main methods:</p>
-
 <ul>
 <li><code>fit_transform</code>: this same method is called for each transformer and each time
 the result is fed into the next transformer;</li>
@@ -117,150 +108,129 @@ the result is fed into the next transformer;</li>
 data is transformed until it arrives at the last step, where it is fed into
 the estimator and <code>fit_predict</code> is called on the estimator.</li>
 </ul>
-
-<p>Sometimes data flow is not linear, and that&rsquo;s where <a href="http://scikit-learn.org/stable/modules/pipeline.html#featureunion-composite-feature-spaces"><code>FeatureUnion</code></a>
+<p>Sometimes data flow is not linear, and that's where <a href="http://scikit-learn.org/stable/modules/pipeline.html#featureunion-composite-feature-spaces"><code>FeatureUnion</code></a>
 comes in. A <code>FeatureUnion</code> is itself a transformer, which combines multiple
 transformers. During fitting, they are fitted independently, while for the
 transformation, each component of the union is applied in parallel. Where all
 the results have been collected, they are concatenated into a single vector.</p>
-
 <h3 id="example">Example</h3>
-
-<p>The excellent scikit-learn documentation has loads of examples. Let&rsquo;s take a
+<p>The excellent scikit-learn documentation has loads of examples. Let's take a
 look at the <a href="http://scikit-learn.org/stable/auto_examples/feature_selection/feature_selection_pipeline.html#sphx-glr-auto-examples-feature-selection-feature-selection-pipeline-py">Anova SVM pipeline</a>. The relevant part is the
 following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># ANOVA SVM-C</span>
+<span style="color:#75715e"># 1) anova filter, take 3 best ranked features</span>
+anova_filter <span style="color:#f92672">=</span> SelectKBest(f_regression, k<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+<span style="color:#75715e"># 2) svm</span>
+clf <span style="color:#f92672">=</span> svm<span style="color:#f92672">.</span>SVC(kernel<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">linear</span><span style="color:#e6db74">&#39;</span>)
 
-<pre><code class="language-python"># ANOVA SVM-C
-# 1) anova filter, take 3 best ranked features
-anova_filter = SelectKBest(f_regression, k=3)
-# 2) svm
-clf = svm.SVC(kernel='linear')
-
-anova_svm = make_pipeline(anova_filter, clf)
-anova_svm.fit(X, y)
-anova_svm.predict(X)
-</code></pre>
-
-<p>The function
+anova_svm <span style="color:#f92672">=</span> make_pipeline(anova_filter, clf)
+anova_svm<span style="color:#f92672">.</span>fit(X, y)
+anova_svm<span style="color:#f92672">.</span>predict(X)
+</code></pre></div><p>The function
 <a href="http://scikit-learn.org/stable/modules/generated/sklearn.pipeline.make_pipeline.html"><code>make_pipeline</code></a>
 is just a wrapper around the class, and it allows to compose transformers and
 estimators without specifying a name for each one. The above code is equivalent
 to the following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># ANOVA SVM-C</span>
+<span style="color:#75715e"># 1) anova filter, take 3 best ranked features</span>
+anova_filter <span style="color:#f92672">=</span> SelectKBest(f_regression, k<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
+<span style="color:#75715e"># 2) svm</span>
+clf <span style="color:#f92672">=</span> svm<span style="color:#f92672">.</span>SVC(kernel<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">linear</span><span style="color:#e6db74">&#39;</span>)
 
-<pre><code class="language-python"># ANOVA SVM-C
-# 1) anova filter, take 3 best ranked features
-anova_filter = SelectKBest(f_regression, k=3)
-# 2) svm
-clf = svm.SVC(kernel='linear')
-
-anova_filter.fit(X, y)
-X_ = anova_filter.transform(X)
-clf.fit(X_, y)
-clf.predict(X_)
-</code></pre>
-
-<p>In this little example, we only have one transformer and one estimator, but the
+anova_filter<span style="color:#f92672">.</span>fit(X, y)
+X_ <span style="color:#f92672">=</span> anova_filter<span style="color:#f92672">.</span>transform(X)
+clf<span style="color:#f92672">.</span>fit(X_, y)
+clf<span style="color:#f92672">.</span>predict(X_)
+</code></pre></div><p>In this little example, we only have one transformer and one estimator, but the
 difference in readability and clarity is significantly in favour of the first
-version. In what follows, I&rsquo;ll explain how I got scikit-learn and pandas
+version. In what follows, I'll explain how I got scikit-learn and pandas
 working together in a pipeline with many more transformers.</p>
-
 <h3 id="pipelines-and-pandas-dataframes">Pipelines and Pandas dataframes</h3>
-
-<p>Unfortunately, scikit-learn&rsquo;s API expects Numpy arrays. If you feed a dataframe
+<p>Unfortunately, scikit-learn's API expects Numpy arrays. If you feed a dataframe
 into a pipeline, you will get a Numpy array out of it. Other times, as it is
 the case with <code>FeatureUnion</code>, it will not work as expected. It would be much
 better if one could get a dataframe out of the pipeline. Right now various
 efforts are in place to allow a better sklearn/pandas integration, namely:</p>
-
 <ul>
 <li>the PR <a href="https://github.com/scikit-learn/scikit-learn/pull/3886"><code>scikit-learn/3886</code></a>,
 which at the time of writing is still a work in progress;</li>
 <li>the package <a href="https://github.com/paulgb/sklearn-pandas"><code>sklearn-pandas</code></a>.</li>
 </ul>
-
-<p>I tried <code>sklearn-pandas</code> but it doesn&rsquo;t quite do what I wanted: it provides a
+<p>I tried <code>sklearn-pandas</code> but it doesn't quite do what I wanted: it provides a
 way to map <code>DataFrame</code> columns to transformations. Most of the time, however, I
 construct a pipeline of transformers and I want to receive a <code>DataFrame</code> as
 input or output. For this reason I wrote a custom transformer that does
 precisely this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.base <span style="color:#f92672">import</span> TransformerMixin
 
-<pre><code class="language-python">from sklearn.base import TransformerMixin
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NoFitMixin</span>:
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fit</span>(self, X, y<span style="color:#f92672">=</span>None):
+        <span style="color:#66d9ef">return</span> self
 
-class NoFitMixin:
-    def fit(self, X, y=None):
-        return self
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DFTransform</span>(TransformerMixin, NoFitMixin):
+    <span style="color:#66d9ef">def</span> __init__(self, func, copy<span style="color:#f92672">=</span>False):
+        self<span style="color:#f92672">.</span>func <span style="color:#f92672">=</span> func
+        self<span style="color:#f92672">.</span>copy <span style="color:#f92672">=</span> copy
 
-class DFTransform(TransformerMixin, NoFitMixin):
-    def __init__(self, func, copy=False):
-        self.func = func
-        self.copy = copy
-
-    def transform(self, X):
-        X_ = X if not self.copy else X.copy()
-        return self.func(X_)
-</code></pre>
-
-<p>It accepts a function as argument and the transformed data is simply its return
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">transform</span>(self, X):
+        X_ <span style="color:#f92672">=</span> X <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> self<span style="color:#f92672">.</span>copy <span style="color:#66d9ef">else</span> X<span style="color:#f92672">.</span>copy()
+        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>func(X_)
+</code></pre></div><p>It accepts a function as argument and the transformed data is simply its return
 value. The <code>copy</code> keyword argument is there to prevent a double copying: if the
-function itself returns a new <code>DataFrame</code>, then there&rsquo;s no need to copy it.</p>
-
+function itself returns a new <code>DataFrame</code>, then there's no need to copy it.</p>
 <p>The only problem arises when using <code>FeatureUnion</code>: it does not concatenate the
 results into a <code>DataFrame</code>. I wrote a custom class for this case as well:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.pipeline <span style="color:#f92672">import</span> Pipeline, FeatureUnion, _transform_one
+<span style="color:#f92672">from</span> sklearn.externals.joblib <span style="color:#f92672">import</span> Parallel, delayed
 
-<pre><code class="language-python">from sklearn.pipeline import Pipeline, FeatureUnion, _transform_one
-from sklearn.externals.joblib import Parallel, delayed
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DFFeatureUnion</span>(FeatureUnion):
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fit_transform</span>(self, X, y<span style="color:#f92672">=</span>None, <span style="color:#f92672">*</span><span style="color:#f92672">*</span>fit_params):
+        <span style="color:#75715e"># non-optimized default implementation; override when a better</span>
+        <span style="color:#75715e"># method is possible</span>
+        <span style="color:#66d9ef">if</span> y <span style="color:#f92672">is</span> None:
+            <span style="color:#75715e"># fit method of arity 1 (unsupervised transformation)</span>
+            <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>fit(X, <span style="color:#f92672">*</span><span style="color:#f92672">*</span>fit_params)<span style="color:#f92672">.</span>transform(X)
+        <span style="color:#66d9ef">else</span>:
+            <span style="color:#75715e"># fit method of arity 2 (supervised transformation)</span>
+            <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>fit(X, y, <span style="color:#f92672">*</span><span style="color:#f92672">*</span>fit_params)<span style="color:#f92672">.</span>transform(X)
 
-class DFFeatureUnion(FeatureUnion):
-    def fit_transform(self, X, y=None, **fit_params):
-        # non-optimized default implementation; override when a better
-        # method is possible
-        if y is None:
-            # fit method of arity 1 (unsupervised transformation)
-            return self.fit(X, **fit_params).transform(X)
-        else:
-            # fit method of arity 2 (supervised transformation)
-            return self.fit(X, y, **fit_params).transform(X)
-
-    def transform(self, X):
-        Xs = Parallel(n_jobs=self.n_jobs)(
-            delayed(_transform_one)(trans, weight, X)
-            for _, trans, weight in self._iter())
-        return pd.concat(Xs, axis=1, join='inner')
-</code></pre>
-
-<p>This is an example showing how they can be used:</p>
-
-<pre><code class="language-python">pipeline = Pipeline([
-    ('ordinal_to_nums', DFTransform(_ordinal_to_nums, copy=True)),
-    ('union', DFFeatureUnion([
-        ('categorical', Pipeline([
-            ('select', DFTransform(lambda X: X.select_dtypes(include=['object']))),
-            ('fill_na', DFTransform(lambda X: X.fillna('NA'))),
-            ('one_hot', DFTransform(_one_hot_encode)),
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">transform</span>(self, X):
+        Xs <span style="color:#f92672">=</span> Parallel(n_jobs<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>n_jobs)(
+            delayed(_transform_one)(trans, X, None, weight)
+            <span style="color:#66d9ef">for</span> _, trans, weight <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>_iter())
+        <span style="color:#66d9ef">return</span> pd<span style="color:#f92672">.</span>concat(Xs, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, join<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">inner</span><span style="color:#e6db74">&#39;</span>)
+</code></pre></div><p>This is an example showing how they can be used:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">pipeline <span style="color:#f92672">=</span> Pipeline([
+    (<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">ordinal_to_nums</span><span style="color:#e6db74">&#39;</span>, DFTransform(_ordinal_to_nums, copy<span style="color:#f92672">=</span>True)),
+    (<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">union</span><span style="color:#e6db74">&#39;</span>, DFFeatureUnion([
+        (<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">categorical</span><span style="color:#e6db74">&#39;</span>, Pipeline([
+            (<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">select</span><span style="color:#e6db74">&#39;</span>, DFTransform(<span style="color:#66d9ef">lambda</span> X: X<span style="color:#f92672">.</span>select_dtypes(include<span style="color:#f92672">=</span>[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">object</span><span style="color:#e6db74">&#39;</span>]))),
+            (<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">fill_na</span><span style="color:#e6db74">&#39;</span>, DFTransform(<span style="color:#66d9ef">lambda</span> X: X<span style="color:#f92672">.</span>fillna(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">NA</span><span style="color:#e6db74">&#39;</span>))),
+            (<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">one_hot</span><span style="color:#e6db74">&#39;</span>, DFTransform(_one_hot_encode)),
         ])),
-        ('numerical', Pipeline([
-            ('select', DFTransform(lambda X: X.select_dtypes(exclude=['object']))),
-            ('fill_median', DFTransform(lambda X: X.fillna(X.median()))),
-            ('add_features', DFTransform(_add_features, copy=True)),
-            ('remove_skew', DFTransform(_remove_skew, copy=True)),
-            ('find_outliers', DFTransform(_find_outliers, copy=True)),
-            ('normalize', DFTransform(lambda X: X.div(X.max())))
+        (<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">numerical</span><span style="color:#e6db74">&#39;</span>, Pipeline([
+            (<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">select</span><span style="color:#e6db74">&#39;</span>, DFTransform(<span style="color:#66d9ef">lambda</span> X: X<span style="color:#f92672">.</span>select_dtypes(exclude<span style="color:#f92672">=</span>[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">object</span><span style="color:#e6db74">&#39;</span>]))),
+            (<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">fill_median</span><span style="color:#e6db74">&#39;</span>, DFTransform(<span style="color:#66d9ef">lambda</span> X: X<span style="color:#f92672">.</span>fillna(X<span style="color:#f92672">.</span>median()))),
+            (<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">add_features</span><span style="color:#e6db74">&#39;</span>, DFTransform(_add_features, copy<span style="color:#f92672">=</span>True)),
+            (<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">remove_skew</span><span style="color:#e6db74">&#39;</span>, DFTransform(_remove_skew, copy<span style="color:#f92672">=</span>True)),
+            (<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">find_outliers</span><span style="color:#e6db74">&#39;</span>, DFTransform(_find_outliers, copy<span style="color:#f92672">=</span>True)),
+            (<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">normalize</span><span style="color:#e6db74">&#39;</span>, DFTransform(<span style="color:#66d9ef">lambda</span> X: X<span style="color:#f92672">.</span>div(X<span style="color:#f92672">.</span>max())))
         ])),
     ])),
 ])
-</code></pre>
-
-<p>The above pipeline splits the <code>DataFrame</code> into categorical and numerical
+</code></pre></div><p>The above pipeline splits the <code>DataFrame</code> into categorical and numerical
 columns, applying different transformation to each. The columns are
 concatenated into a <code>DataFrame</code> at then end of the <code>DFFeatureUnion</code>.</p>
-
-<p>The resulting code is well organized and very easy to understand. It&rsquo;s also
+<p>The resulting code is well organized and very easy to understand. It's also
 extremely easy to add or remove steps to/from the pipeline.</p>
-
 <p><strong>UPDATE (Oct 28, 2017)</strong>: As of scikit-learn v0.19.0, the function signature
 of the undocumented function <code>_transform_one</code> changed, and the code of
 <code>DFFeatureUnion</code> was updated accordingly (thanks to Paulo Cheadi Haddad Filho
 for pointing it out).</p>
+<p><strong>UPDATE (Dec 02, 2019)</strong>: As of scikit-learn v0.21.0, the function signature
+of the function <code>_transform_one</code> changed once again, and the code of
+<code>DFFeatureUnion</code> was updated accordingly (thanks to Григорий Гусаров for
+pointing it out).</p>
 
         </section>
     </article>
