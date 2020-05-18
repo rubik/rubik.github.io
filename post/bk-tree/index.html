@@ -268,12 +268,12 @@ represent edges.</p>
         <span style="color:#66d9ef">while</span> candidates:
             candidate, children <span style="color:#f92672">=</span> candidates<span style="color:#f92672">.</span>popleft()
             dist <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>_distance_func(node, candidate)
-            <span style="color:#66d9ef">if</span> dist <span style="color:#f92672">&lt;</span><span style="color:#f92672">=</span> radius:
+            <span style="color:#66d9ef">if</span> dist <span style="color:#f92672">&lt;=</span> radius:
                 result<span style="color:#f92672">.</span>append((dist, candidate))
 
             low, high <span style="color:#f92672">=</span> dist <span style="color:#f92672">-</span> radius, dist <span style="color:#f92672">+</span> radius
             candidates<span style="color:#f92672">.</span>extend(c <span style="color:#66d9ef">for</span> d, c <span style="color:#f92672">in</span> children<span style="color:#f92672">.</span>items()
-                              <span style="color:#66d9ef">if</span> low <span style="color:#f92672">&lt;</span><span style="color:#f92672">=</span> d <span style="color:#f92672">&lt;</span><span style="color:#f92672">=</span> high)
+                              <span style="color:#66d9ef">if</span> low <span style="color:#f92672">&lt;=</span> d <span style="color:#f92672">&lt;=</span> high)
         <span style="color:#66d9ef">return</span> result</code></pre></div>
 <p>The implementation is pretty straightforward and adheres completely to the
 algorithm we explained above. A few comments:</p>
@@ -364,6 +364,7 @@ if (!doNotTrack) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js"></script>
     <script>renderMathInElement(document.body);</script>
 
+<script src="//instant.page/1.0.0" type="module" integrity="sha384-6w2SekMzCkuMQ9sEbq0cLviD/yR2HfA/+ekmKiBnFlsoSvb/VmQFSi/umVShadQI"></script>
 </body>
 </html>
 

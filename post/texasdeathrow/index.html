@@ -113,82 +113,82 @@
     <span style="color:#66d9ef">for</span> chart <span style="color:#f92672">in</span> charts:
         chart<span style="color:#f92672">.</span>configure_cell(width<span style="color:#f92672">=</span>width, height<span style="color:#f92672">=</span>height)<span style="color:#f92672">.</span>display()
 
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">pie</span>(ax, <span style="color:#f92672">*</span>args, <span style="color:#f92672">*</span><span style="color:#f92672">*</span>kwargs):
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">pie</span>(ax, <span style="color:#f92672">*</span>args, <span style="color:#f92672">**</span>kwargs):
     patches, _, _ <span style="color:#f92672">=</span> ax<span style="color:#f92672">.</span>pie(
         <span style="color:#f92672">*</span>args,
-        colors<span style="color:#f92672">=</span>[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">#BEE9E8</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">#62B6CB</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">#5FA8D3</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">#DCEDEC</span><span style="color:#e6db74">&#39;</span>],
-        autopct<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%1.1f</span><span style="color:#e6db74">%%</span><span style="color:#e6db74">&#39;</span>,
-        <span style="color:#f92672">*</span><span style="color:#f92672">*</span>kwargs
+        colors<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;#BEE9E8&#39;</span>, <span style="color:#e6db74">&#39;#62B6CB&#39;</span>, <span style="color:#e6db74">&#39;#5FA8D3&#39;</span>, <span style="color:#e6db74">&#39;#DCEDEC&#39;</span>],
+        autopct<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%1.1f%%</span><span style="color:#e6db74">&#39;</span>,
+        <span style="color:#f92672">**</span>kwargs
     )
     <span style="color:#66d9ef">for</span> p <span style="color:#f92672">in</span> patches:
         p<span style="color:#f92672">.</span>set_linewidth(<span style="color:#ae81ff">0.6</span>)
-    ax<span style="color:#f92672">.</span>axis(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">equal</span><span style="color:#e6db74">&#39;</span>)</code></pre></div>
+    ax<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;equal&#39;</span>)</code></pre></div>
 <h1 id="scraping-the-data">Scraping the data</h1>
 
 <p>I used <a href="https://scrapy.org/">Scrapy</a> to obtain all the data. In the first iteration of this project I was using <code>requests</code> and <code>BeautifulSoup</code>. However, the code quickly became messy and even though I was using <code>concurrent.futures</code> to send asynchronous requests it was unbearably slow. Hence my decision to switch to Scrapy. I had already used it, and it's really easy to setup. I won't post the complete code here, because Scrapy requires a whole project to run. The important part is the spider, which is contained in a single class. If you've already used Scrapy, the code is very easy to follow, with minor adjustments for errors in the original page (see people #416 and #419 for an example).</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> scrapy
 
 <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TexasDeathSpider</span>(scrapy<span style="color:#f92672">.</span>Spider):
-    name <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">texas_death</span><span style="color:#e6db74">&#39;</span>
-    allowed_domains <span style="color:#f92672">=</span> [<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">www.tdcj.state.tx.us</span><span style="color:#e6db74">&#39;</span>]
+    name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;texas_death&#39;</span>
+    allowed_domains <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;www.tdcj.state.tx.us&#39;</span>]
     start_urls <span style="color:#f92672">=</span> (
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">http://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html</span><span style="color:#e6db74">&#39;</span>,
+        <span style="color:#e6db74">&#39;http://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html&#39;</span>,
     )
 
     <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse</span>(self, response):
-        _, <span style="color:#f92672">*</span>rows <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">table tr</span><span style="color:#e6db74">&#39;</span>)
-        fields <span style="color:#f92672">=</span> [<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">execution</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">last_name</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">first_name</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">tdcj_number</span><span style="color:#e6db74">&#39;</span>,
-                  <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">age_execution</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">date_execution</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">county</span><span style="color:#e6db74">&#39;</span>]
+        _, <span style="color:#f92672">*</span>rows <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>css(<span style="color:#e6db74">&#39;table tr&#39;</span>)
+        fields <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;execution&#39;</span>, <span style="color:#e6db74">&#39;last_name&#39;</span>, <span style="color:#e6db74">&#39;first_name&#39;</span>, <span style="color:#e6db74">&#39;tdcj_number&#39;</span>,
+                  <span style="color:#e6db74">&#39;age_execution&#39;</span>, <span style="color:#e6db74">&#39;date_execution&#39;</span>, <span style="color:#e6db74">&#39;race&#39;</span>, <span style="color:#e6db74">&#39;county&#39;</span>]
         <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> rows:
             item <span style="color:#f92672">=</span> PersonItem()
-            values <span style="color:#f92672">=</span> row<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">td::text</span><span style="color:#e6db74">&#39;</span>)<span style="color:#f92672">.</span>extract()
+            values <span style="color:#f92672">=</span> row<span style="color:#f92672">.</span>css(<span style="color:#e6db74">&#39;td::text&#39;</span>)<span style="color:#f92672">.</span>extract()
             <span style="color:#66d9ef">if</span> len(values) <span style="color:#f92672">&gt;</span> len(fields):
                 <span style="color:#75715e"># Special cases: people #416 and #419</span>
                 <span style="color:#66d9ef">del</span> values[<span style="color:#ae81ff">1</span>]
             <span style="color:#66d9ef">for</span> field, value <span style="color:#f92672">in</span> zip(fields, values):
                 item[field] <span style="color:#f92672">=</span> value<span style="color:#f92672">.</span>strip()
 
-            info, last_stmt <span style="color:#f92672">=</span> row<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">td &gt; a::attr(href)</span><span style="color:#e6db74">&#39;</span>)<span style="color:#f92672">.</span>extract()
-            no_info <span style="color:#f92672">=</span> info<span style="color:#f92672">.</span>endswith((<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.jpg</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">no_info_available.html</span><span style="color:#e6db74">&#39;</span>))
-            no_stmt <span style="color:#f92672">=</span> last_stmt<span style="color:#f92672">.</span>endswith(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">no_last_statement.html</span><span style="color:#e6db74">&#39;</span>)
+            info, last_stmt <span style="color:#f92672">=</span> row<span style="color:#f92672">.</span>css(<span style="color:#e6db74">&#39;td &gt; a::attr(href)&#39;</span>)<span style="color:#f92672">.</span>extract()
+            no_info <span style="color:#f92672">=</span> info<span style="color:#f92672">.</span>endswith((<span style="color:#e6db74">&#39;.jpg&#39;</span>, <span style="color:#e6db74">&#39;no_info_available.html&#39;</span>))
+            no_stmt <span style="color:#f92672">=</span> last_stmt<span style="color:#f92672">.</span>endswith(<span style="color:#e6db74">&#39;no_last_statement.html&#39;</span>)
             <span style="color:#66d9ef">if</span> no_info:
-                item[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">gender</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>
+                item[<span style="color:#e6db74">&#39;gender&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
                 info <span style="color:#f92672">=</span> False
             <span style="color:#66d9ef">if</span> no_stmt:
-                item[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">last_statement</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>
+                item[<span style="color:#e6db74">&#39;last_statement&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
 
             <span style="color:#66d9ef">if</span> no_info <span style="color:#f92672">and</span> no_stmt:
                 <span style="color:#66d9ef">yield</span> item
             <span style="color:#66d9ef">elif</span> no_stmt:
                 <span style="color:#66d9ef">yield</span> scrapy<span style="color:#f92672">.</span>Request(response<span style="color:#f92672">.</span>urljoin(info),
                                      callback<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>parse_gender,
-                                     meta<span style="color:#f92672">=</span>{<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">item</span><span style="color:#e6db74">&#39;</span>: item})
+                                     meta<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#39;item&#39;</span>: item})
             <span style="color:#66d9ef">else</span>:
                 info_url <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>urljoin(info) <span style="color:#66d9ef">if</span> info <span style="color:#66d9ef">else</span> False
                 <span style="color:#66d9ef">yield</span> scrapy<span style="color:#f92672">.</span>Request(response<span style="color:#f92672">.</span>urljoin(last_stmt),
                                      callback<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>parse_last_stmt,
-                                     meta<span style="color:#f92672">=</span>{<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">item</span><span style="color:#e6db74">&#39;</span>: item,
-                                           <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">info_url</span><span style="color:#e6db74">&#39;</span>: info_url})
+                                     meta<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#39;item&#39;</span>: item,
+                                           <span style="color:#e6db74">&#39;info_url&#39;</span>: info_url})
 
     <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse_last_stmt</span>(self, response):
-        item <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">item</span><span style="color:#e6db74">&#39;</span>]
-        info_url <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">info_url</span><span style="color:#e6db74">&#39;</span>]
-        ps <span style="color:#f92672">=</span> [p<span style="color:#f92672">.</span>strip() <span style="color:#66d9ef">for</span> p <span style="color:#f92672">in</span> response<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">p::text</span><span style="color:#e6db74">&#39;</span>)<span style="color:#f92672">.</span>extract()
+        item <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>meta[<span style="color:#e6db74">&#39;item&#39;</span>]
+        info_url <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>meta[<span style="color:#e6db74">&#39;info_url&#39;</span>]
+        ps <span style="color:#f92672">=</span> [p<span style="color:#f92672">.</span>strip() <span style="color:#66d9ef">for</span> p <span style="color:#f92672">in</span> response<span style="color:#f92672">.</span>css(<span style="color:#e6db74">&#39;p::text&#39;</span>)<span style="color:#f92672">.</span>extract()
               <span style="color:#66d9ef">if</span> p<span style="color:#f92672">.</span>strip()]
-        item[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">last_statement</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> ps[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+        item[<span style="color:#e6db74">&#39;last_statement&#39;</span>] <span style="color:#f92672">=</span> ps[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
         <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> info_url:
             <span style="color:#66d9ef">yield</span> item
             <span style="color:#66d9ef">return</span>
         <span style="color:#66d9ef">yield</span> scrapy<span style="color:#f92672">.</span>Request(
                 info_url,
                 callback<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>parse_gender,
-                meta<span style="color:#f92672">=</span>{<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">item</span><span style="color:#e6db74">&#39;</span>: item},
+                meta<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#39;item&#39;</span>: item},
         )
 
     <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse_gender</span>(self, response):
-        item <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">item</span><span style="color:#e6db74">&#39;</span>]
-        rows <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">table tr</span><span style="color:#e6db74">&#39;</span>)
-        item[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">gender</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> rows[<span style="color:#ae81ff">10</span>]<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">td::text</span><span style="color:#e6db74">&#39;</span>)<span style="color:#f92672">.</span>extract()[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>strip()
+        item <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>meta[<span style="color:#e6db74">&#39;item&#39;</span>]
+        rows <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>css(<span style="color:#e6db74">&#39;table tr&#39;</span>)
+        item[<span style="color:#e6db74">&#39;gender&#39;</span>] <span style="color:#f92672">=</span> rows[<span style="color:#ae81ff">10</span>]<span style="color:#f92672">.</span>css(<span style="color:#e6db74">&#39;td::text&#39;</span>)<span style="color:#f92672">.</span>extract()[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>strip()
         <span style="color:#66d9ef">yield</span> item</code></pre></div>
 <p>The crawler is really fast compared to the previous approach and with Scrapy exporting the data to other formats is relatively painless. I saved all the data in the file <code>texas_death_itmes.csv</code>.
 If you read the spider code you'll have noticed that there are a few special cases. In some cases, there is no additional information. In others the additional information is not in an HTML page but in an image of a scanned document.</p>
@@ -200,7 +200,7 @@ If you read the spider code you'll have noticed that there are a few special cas
 <h1 id="cleaning-and-processing-the-data">Cleaning and processing the data</h1>
 
 <p>We'll now clean the data we have to see if there's anything interesting in it.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">texas_death_items.csv</span><span style="color:#e6db74">&#39;</span>)</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people<span style="color:#f92672">.</span>info()</code></pre></div><pre><code><class 'pandas.core.frame.DataFrame'>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#39;texas_death_items.csv&#39;</span>)</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people<span style="color:#f92672">.</span>info()</code></pre></div><pre><code>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
 RangeIndex: 538 entries, 0 to 537
 Data columns (total 10 columns):
 execution         538 non-null int64
@@ -316,70 +316,70 @@ Name: date_execution, dtype: object</code></pre>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> datetime
 
 <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_read_date</span>(date):
-    <span style="color:#66d9ef">return</span> datetime<span style="color:#f92672">.</span>datetime<span style="color:#f92672">.</span>strptime(date, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%</span><span style="color:#e6db74">m/</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">/</span><span style="color:#e6db74">%</span><span style="color:#e6db74">Y</span><span style="color:#e6db74">&#39;</span>)
+    <span style="color:#66d9ef">return</span> datetime<span style="color:#f92672">.</span>datetime<span style="color:#f92672">.</span>strptime(date, <span style="color:#e6db74">&#39;%m/</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">/%Y&#39;</span>)
 
 people<span style="color:#f92672">.</span>date_execution <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>date_execution<span style="color:#f92672">.</span>map(_read_date)</code></pre></div>
 <p>The gender column is a bit more complicated to fill, since in theory there are a few names that are considered 'unisex' (<a href="http://www.babynameguide.com/categoryunisex.asp?strCat=Unisex">this site</a> has a comprehensive list). Let's check the names of the people for which we are missing the gender.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people<span style="color:#f92672">.</span>gender<span style="color:#f92672">.</span>replace(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">male</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Male</span><span style="color:#e6db74">&#39;</span>, inplace<span style="color:#f92672">=</span>True)
-known_names <span style="color:#f92672">=</span> dict(people[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">first_name</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">gender</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>dropna()<span style="color:#f92672">.</span>values)</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">names <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>first_name[people[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">first_name</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">gender</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>any(axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)]
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people<span style="color:#f92672">.</span>gender<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;male&#39;</span>, <span style="color:#e6db74">&#39;Male&#39;</span>, inplace<span style="color:#f92672">=</span>True)
+known_names <span style="color:#f92672">=</span> dict(people[[<span style="color:#e6db74">&#39;first_name&#39;</span>, <span style="color:#e6db74">&#39;gender&#39;</span>]]<span style="color:#f92672">.</span>dropna()<span style="color:#f92672">.</span>values)</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">names <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>first_name[people[[<span style="color:#e6db74">&#39;first_name&#39;</span>, <span style="color:#e6db74">&#39;gender&#39;</span>]]<span style="color:#f92672">.</span>isnull()<span style="color:#f92672">.</span>any(axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)]
 len(names<span style="color:#f92672">.</span>unique()), len(names)</code></pre></div><pre><code>(204, 387)</code></pre>
 <p>First of all, we'll use the information we already have to infer the gender of the other people:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">known_names <span style="color:#f92672">=</span> dict(people[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">first_name</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">gender</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>dropna()<span style="color:#f92672">.</span>values)</code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">known_names <span style="color:#f92672">=</span> dict(people[[<span style="color:#e6db74">&#39;first_name&#39;</span>, <span style="color:#e6db74">&#39;gender&#39;</span>]]<span style="color:#f92672">.</span>dropna()<span style="color:#f92672">.</span>values)</code></pre></div>
 <p>For the remaining names we'll use the package <code>SexMachine</code>. Note that it does not work on Python 3, and I had to manually change a couple of lines of code.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sexmachine.detector <span style="color:#f92672">import</span> Detector
 d <span style="color:#f92672">=</span> Detector()</code></pre></div>
 <p>The detector returns <code>mostly_{gender}</code> when it's not sure. Since almost the totality of executed people are male, in our case we can safely interpret <code>mostly_male</code> as <code>male</code>. We have to manually check the rest. (Note: here <code>andy</code> means androgynous, i.e. what I called 'unisex' name before.)</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">remaining <span style="color:#f92672">=</span> set()
 <span style="color:#66d9ef">for</span> name <span style="color:#f92672">in</span> names<span style="color:#f92672">.</span>unique():
-    gender <span style="color:#f92672">=</span> d<span style="color:#f92672">.</span>get_gender(name)<span style="color:#f92672">.</span>split(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">_</span><span style="color:#e6db74">&#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
-    <span style="color:#66d9ef">if</span> gender <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">male</span><span style="color:#e6db74">&#39;</span>:
-        known_names[name] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Male</span><span style="color:#e6db74">&#39;</span>
+    gender <span style="color:#f92672">=</span> d<span style="color:#f92672">.</span>get_gender(name)<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;_&#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+    <span style="color:#66d9ef">if</span> gender <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;male&#39;</span>:
+        known_names[name] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Male&#39;</span>
         <span style="color:#66d9ef">continue</span>
     remaining<span style="color:#f92672">.</span>add(name)
-    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">{} -&gt; {}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(name, gender))</code></pre></div><pre><code>Marion -> female
-Jessie -> female
-Caruthers -> andy
-Ponchai -> andy
-Betty -> female
-Clydell -> andy
-Excell -> andy
-Lesley -> andy
-Esequel -> andy
-Kavin -> andy
-G.W. -> andy
-Markum -> andy
-Denton -> andy
-Hai -> andy
-Dorsie -> andy
-Irineo -> andy
-Jessel -> andy
-Aua -> andy
-Karla -> female
-Sammie -> andy
-Orien -> andy
-Stacey -> female
-Jermarr -> andy
-Ronford -> andy
-T.J. -> andy
-Toronto -> andy
-Alva -> andy
-Kia -> female
-Kelsey -> female
-Dominique -> andy
-Shannon -> andy
-Jaime -> andy
-Jackie -> andy
-Mauriceo -> andy
-Farley -> andy
-Lionell -> andy
-Daroyce -> andy
-Elkie -> andy
-Jamie -> female</code></pre>
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;{} -&gt; {}&#39;</span><span style="color:#f92672">.</span>format(name, gender))</code></pre></div><pre><code>Marion -&gt; female
+Jessie -&gt; female
+Caruthers -&gt; andy
+Ponchai -&gt; andy
+Betty -&gt; female
+Clydell -&gt; andy
+Excell -&gt; andy
+Lesley -&gt; andy
+Esequel -&gt; andy
+Kavin -&gt; andy
+G.W. -&gt; andy
+Markum -&gt; andy
+Denton -&gt; andy
+Hai -&gt; andy
+Dorsie -&gt; andy
+Irineo -&gt; andy
+Jessel -&gt; andy
+Aua -&gt; andy
+Karla -&gt; female
+Sammie -&gt; andy
+Orien -&gt; andy
+Stacey -&gt; female
+Jermarr -&gt; andy
+Ronford -&gt; andy
+T.J. -&gt; andy
+Toronto -&gt; andy
+Alva -&gt; andy
+Kia -&gt; female
+Kelsey -&gt; female
+Dominique -&gt; andy
+Shannon -&gt; andy
+Jaime -&gt; andy
+Jackie -&gt; andy
+Mauriceo -&gt; andy
+Farley -&gt; andy
+Lionell -&gt; andy
+Daroyce -&gt; andy
+Elkie -&gt; andy
+Jamie -&gt; female</code></pre>
 <p>I checked each one by hand on the TDCJ page, and as expected they're all male except two: <code>Betty</code> and <code>Karla</code>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">for</span> name <span style="color:#f92672">in</span> remaining:
-    known_names[name] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Male</span><span style="color:#e6db74">&#39;</span>
-known_names[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Betty</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Female</span><span style="color:#e6db74">&#39;</span>
-known_names[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Karla</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Female</span><span style="color:#e6db74">&#39;</span>
+    known_names[name] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Male&#39;</span>
+known_names[<span style="color:#e6db74">&#39;Betty&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Female&#39;</span>
+known_names[<span style="color:#e6db74">&#39;Karla&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Female&#39;</span>
 
 people<span style="color:#f92672">.</span>gender <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>apply(
     <span style="color:#66d9ef">lambda</span> row: known_names<span style="color:#f92672">.</span>get(row<span style="color:#f92672">.</span>first_name, row<span style="color:#f92672">.</span>gender),
@@ -387,7 +387,7 @@ people<span style="color:#f92672">.</span>gender <span style="color:#f92672">=</
 )
 people<span style="color:#f92672">.</span>gender<span style="color:#f92672">.</span>value_counts(dropna<span style="color:#f92672">=</span>False)</code></pre></div><pre><code>Male      533
 Female      5
-Name: gender, dtype: int64</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people<span style="color:#f92672">.</span>info()</code></pre></div><pre><code><class 'pandas.core.frame.DataFrame'>
+Name: gender, dtype: int64</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people<span style="color:#f92672">.</span>info()</code></pre></div><pre><code>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
 RangeIndex: 538 entries, 0 to 537
 Data columns (total 10 columns):
 execution         538 non-null int64
@@ -409,13 +409,13 @@ memory usage: 42.1+ KB</code></pre>
 <h2 id="distribution-of-race-age-and-sex">Distribution of race, age and sex</h2>
 
 <p>Let's start by plotting the race distribution as a pie chart.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">race_counts <span style="color:#f92672">=</span> people[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>]<span style="color:#f92672">.</span>value_counts()<span style="color:#f92672">.</span>reset_index()
-race_counts<span style="color:#f92672">.</span>columns <span style="color:#f92672">=</span> [<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count</span><span style="color:#e6db74">&#39;</span>]
-pop <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame({<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>: [<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">White</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Black</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Hispanic</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Other</span><span style="color:#e6db74">&#39;</span>], <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count</span><span style="color:#e6db74">&#39;</span>: [<span style="color:#ae81ff">196817552</span>, <span style="color:#ae81ff">37685848</span>, <span style="color:#ae81ff">50477594</span>, <span style="color:#ae81ff">23764544</span>]})</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">fig, (ax1, ax2) <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(ncols<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">6</span>))
-pie(ax1, race_counts[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count</span><span style="color:#e6db74">&#39;</span>], labels<span style="color:#f92672">=</span>race_counts[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>])
-pie(ax2, pop[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count</span><span style="color:#e6db74">&#39;</span>], labels<span style="color:#f92672">=</span>pop[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>])
-ax1<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Race distribution among executed people</span><span style="color:#e6db74">&#39;</span>)
-ax2<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Race distribution among U.S. population (2010)</span><span style="color:#e6db74">&#39;</span>)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">race_counts <span style="color:#f92672">=</span> people[<span style="color:#e6db74">&#39;race&#39;</span>]<span style="color:#f92672">.</span>value_counts()<span style="color:#f92672">.</span>reset_index()
+race_counts<span style="color:#f92672">.</span>columns <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;race&#39;</span>, <span style="color:#e6db74">&#39;count&#39;</span>]
+pop <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame({<span style="color:#e6db74">&#39;race&#39;</span>: [<span style="color:#e6db74">&#39;White&#39;</span>, <span style="color:#e6db74">&#39;Black&#39;</span>, <span style="color:#e6db74">&#39;Hispanic&#39;</span>, <span style="color:#e6db74">&#39;Other&#39;</span>], <span style="color:#e6db74">&#39;count&#39;</span>: [<span style="color:#ae81ff">196817552</span>, <span style="color:#ae81ff">37685848</span>, <span style="color:#ae81ff">50477594</span>, <span style="color:#ae81ff">23764544</span>]})</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">fig, (ax1, ax2) <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(ncols<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">6</span>))
+pie(ax1, race_counts[<span style="color:#e6db74">&#39;count&#39;</span>], labels<span style="color:#f92672">=</span>race_counts[<span style="color:#e6db74">&#39;race&#39;</span>])
+pie(ax2, pop[<span style="color:#e6db74">&#39;count&#39;</span>], labels<span style="color:#f92672">=</span>pop[<span style="color:#e6db74">&#39;race&#39;</span>])
+ax1<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Race distribution among executed people&#39;</span>)
+ax2<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Race distribution among U.S. population (2010)&#39;</span>)
 fig<span style="color:#f92672">.</span>subplots_adjust(wspace<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>)
 plt<span style="color:#f92672">.</span>show(fig)</code></pre></div>
 <p><figure><img src="/TexasDeathRow_files/TexasDeathRow_32_0.png" alt="png"></figure></p>
@@ -423,14 +423,14 @@ plt<span style="color:#f92672">.</span>show(fig)</code></pre></div>
 <p>The population data was taken from the <a href="http://www.census.gov/prod/cen2010/briefs/c2010br-02.pdf">2010 US Census</a> (PDF). It's pretty clear that White people are underrepresented in the death row data, while Black people are considerably overrepresented. People of Hispanic descent are roughly proportional. Although it would be very interesting to investigate into the causes of this disproportion, we have too little data and our main goal is to analyze the statements, so we will not venture further.</p>
 
 <p>Let's visualize the age with respect to race.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">show(Chart(people[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">age_execution</span><span style="color:#e6db74">&#39;</span>]])<span style="color:#f92672">.</span>mark_bar()<span style="color:#f92672">.</span>encode(
-        column<span style="color:#f92672">=</span>Column(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">age_execution</span><span style="color:#e6db74">&#39;</span>,
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">show(Chart(people[[<span style="color:#e6db74">&#39;race&#39;</span>, <span style="color:#e6db74">&#39;age_execution&#39;</span>]])<span style="color:#f92672">.</span>mark_bar()<span style="color:#f92672">.</span>encode(
+        column<span style="color:#f92672">=</span>Column(<span style="color:#e6db74">&#39;age_execution&#39;</span>,
                       bin<span style="color:#f92672">=</span>Bin(maxbins<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>)),
-        x<span style="color:#f92672">=</span>X(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>,
+        x<span style="color:#f92672">=</span>X(<span style="color:#e6db74">&#39;race&#39;</span>,
             axis<span style="color:#f92672">=</span>Axis(labels<span style="color:#f92672">=</span>False, tickSize<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, titleFontSize<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>),
             scale<span style="color:#f92672">=</span>Scale(bandSize<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>)),
-        y<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count(*)</span><span style="color:#e6db74">&#39;</span>,
-        color<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>,
+        y<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;count(*)&#39;</span>,
+        color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;race&#39;</span>,
     )<span style="color:#f92672">.</span>configure_facet_cell(strokeWidth<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))</code></pre></div>
 <div class="vega-embed" id="ee8d68e8-06d9-48b9-8be5-8233ebfe95ff"></div>
 
@@ -449,11 +449,11 @@ plt<span style="color:#f92672">.</span>show(fig)</code></pre></div>
 <p>It's very interesting to note that black people are generally younger than white people at the time of the execution. We could think that white people tend to commit violent crimes at an older age, compared with the crimes committed by black people. However, we have to remember that the age in the chart is the age at the time of execution, not the age at the time of the crime. Many inmates sit on the death row for quite a long time. The Texas Department of Criminal Justice has <a href="https://www.tdcj.state.tx.us/death_row/dr_facts.html">a page</a> with some statistics. We see that the average time on death row prior to execution is almost <code>11</code> years. The page doesn't provide the variance in the data, but lists the more extreme cases: <code>252</code> days is the shortest time, while <code>11 575</code> days (that is, <code>31</code> years) is the longest time recorded.</p>
 
 <p>Also interesting is the distribution of gender:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">show(Chart(people[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">gender</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>dropna())<span style="color:#f92672">.</span>mark_bar()<span style="color:#f92672">.</span>encode(
-        x<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count(*)</span><span style="color:#e6db74">&#39;</span>,
-        y<span style="color:#f92672">=</span>Y(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>,
-            sort<span style="color:#f92672">=</span>SortField(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count(*)</span><span style="color:#e6db74">&#39;</span>, op<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">mean</span><span style="color:#e6db74">&#39;</span>, order<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">descending</span><span style="color:#e6db74">&#39;</span>)),
-        color<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">gender</span><span style="color:#e6db74">&#39;</span>,
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">show(Chart(people[[<span style="color:#e6db74">&#39;race&#39;</span>, <span style="color:#e6db74">&#39;gender&#39;</span>]]<span style="color:#f92672">.</span>dropna())<span style="color:#f92672">.</span>mark_bar()<span style="color:#f92672">.</span>encode(
+        x<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;count(*)&#39;</span>,
+        y<span style="color:#f92672">=</span>Y(<span style="color:#e6db74">&#39;race&#39;</span>,
+            sort<span style="color:#f92672">=</span>SortField(<span style="color:#e6db74">&#39;count(*)&#39;</span>, op<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;mean&#39;</span>, order<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;descending&#39;</span>)),
+        color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gender&#39;</span>,
     ), width<span style="color:#f92672">=</span><span style="color:#ae81ff">600</span>)</code></pre></div>
 <div class="vega-embed" id="e40a9335-7c99-47cd-a135-d0fe6f744354"></div>
 
@@ -482,9 +482,9 @@ plt<span style="color:#f92672">.</span>show(fig)</code></pre></div>
 
 statements <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>last_statement<span style="color:#f92672">.</span>dropna()
 blobs <span style="color:#f92672">=</span> statements<span style="color:#f92672">.</span>map(<span style="color:#66d9ef">lambda</span> s: textblob<span style="color:#f92672">.</span>TextBlob(s))
-n_sentences <span style="color:#f92672">=</span> blobs<span style="color:#f92672">.</span>map(<span style="color:#66d9ef">lambda</span> b: len(b<span style="color:#f92672">.</span>sentences))</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">show(Chart(pd<span style="color:#f92672">.</span>DataFrame({<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Number of sentences</span><span style="color:#e6db74">&#39;</span>: n_sentences}))<span style="color:#f92672">.</span>mark_bar()<span style="color:#f92672">.</span>encode(
-        x<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Number of sentences:N</span><span style="color:#e6db74">&#39;</span>,
-        y<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count(*)</span><span style="color:#e6db74">&#39;</span>,
+n_sentences <span style="color:#f92672">=</span> blobs<span style="color:#f92672">.</span>map(<span style="color:#66d9ef">lambda</span> b: len(b<span style="color:#f92672">.</span>sentences))</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">show(Chart(pd<span style="color:#f92672">.</span>DataFrame({<span style="color:#e6db74">&#39;Number of sentences&#39;</span>: n_sentences}))<span style="color:#f92672">.</span>mark_bar()<span style="color:#f92672">.</span>encode(
+        x<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Number of sentences:N&#39;</span>,
+        y<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;count(*)&#39;</span>,
     ))</code></pre></div>
 <div class="vega-embed" id="befce099-a95c-4087-97f7-623fe66b1f73"></div>
 
@@ -501,7 +501,7 @@ n_sentences <span style="color:#f92672">=</span> blobs<span style="color:#f92672
 <p><figure><img src="/TexasDeathRow_files/TexasDeathRow_42_2.png" alt="png"></figure></p>
 
 <p>The distribution of the number of sentences is skewed to the left, favoring shorter statements. There's one statement that separates itself from the rest: it is much longer than all the others, at 138 sentences. Out of curiosity, let's investigate a bit:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">len(blobs[n_sentences<span style="color:#f92672">.</span>argmax()]<span style="color:#f92672">.</span>words)</code></pre></div><pre><code>1294</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">last_name</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">first_name</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">date_execution</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>ix[n_sentences<span style="color:#f92672">.</span>argmax()]</code></pre></div><pre><code>last_name                      Graham
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">len(blobs[n_sentences<span style="color:#f92672">.</span>argmax()]<span style="color:#f92672">.</span>words)</code></pre></div><pre><code>1294</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people[[<span style="color:#e6db74">&#39;last_name&#39;</span>, <span style="color:#e6db74">&#39;first_name&#39;</span>, <span style="color:#e6db74">&#39;race&#39;</span>, <span style="color:#e6db74">&#39;date_execution&#39;</span>]]<span style="color:#f92672">.</span>ix[n_sentences<span style="color:#f92672">.</span>argmax()]</code></pre></div><pre><code>last_name                      Graham
 first_name                       Gary
 race                            Black
 date_execution    2000-06-22 00:00:00
@@ -517,12 +517,12 @@ Name: 258, dtype: object</code></pre>
 <h2 id="number-of-executions-per-year">Number of executions per year</h2>
 
 <p>For this one, a line chart is a better fit.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">year_execution</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>date_execution<span style="color:#f92672">.</span>map(<span style="color:#66d9ef">lambda</span> d: d<span style="color:#f92672">.</span>year)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people[<span style="color:#e6db74">&#39;year_execution&#39;</span>] <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>date_execution<span style="color:#f92672">.</span>map(<span style="color:#66d9ef">lambda</span> d: d<span style="color:#f92672">.</span>year)
 show(Chart(people)<span style="color:#f92672">.</span>mark_line()<span style="color:#f92672">.</span>encode(
-        x<span style="color:#f92672">=</span>X(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">year_execution</span><span style="color:#e6db74">&#39;</span>,
-            axis<span style="color:#f92672">=</span>Axis(format<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;</span>),
+        x<span style="color:#f92672">=</span>X(<span style="color:#e6db74">&#39;year_execution&#39;</span>,
+            axis<span style="color:#f92672">=</span>Axis(format<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;f&#39;</span>),
             scale<span style="color:#f92672">=</span>Scale(zero<span style="color:#f92672">=</span>False)),
-        y<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count(*)</span><span style="color:#e6db74">&#39;</span>,
+        y<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;count(*)&#39;</span>,
     ))</code></pre></div>
 <div class="vega-embed" id="b4d1d94e-cf5d-47a3-b1fa-75296c9dc3ca"></div>
 
@@ -550,15 +550,15 @@ show(Chart(people)<span style="color:#f92672">.</span>mark_line()<span style="co
 
 counties <span style="color:#f92672">=</span> []
 body <span style="color:#f92672">=</span> scrapy<span style="color:#f92672">.</span>Selector(
-    text<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">https://en.wikipedia.org/wiki/User:Michael_J/County_table</span><span style="color:#e6db74">&#39;</span>)<span style="color:#f92672">.</span>text
+    text<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;https://en.wikipedia.org/wiki/User:Michael_J/County_table&#39;</span>)<span style="color:#f92672">.</span>text
 )
-_, <span style="color:#f92672">*</span>rows <span style="color:#f92672">=</span> body<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">table tr</span><span style="color:#e6db74">&#39;</span>)
+_, <span style="color:#f92672">*</span>rows <span style="color:#f92672">=</span> body<span style="color:#f92672">.</span>css(<span style="color:#e6db74">&#39;table tr&#39;</span>)
 <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> rows:
-    cols <span style="color:#f92672">=</span> row<span style="color:#f92672">.</span>css(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">td ::text</span><span style="color:#e6db74">&#39;</span>)<span style="color:#f92672">.</span>extract()
-    <span style="color:#66d9ef">if</span> cols[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">TX</span><span style="color:#e6db74">&#39;</span>:
-        lat, long <span style="color:#f92672">=</span> map(<span style="color:#66d9ef">lambda</span> i: i<span style="color:#f92672">.</span>strip(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">°</span><span style="color:#e6db74">&#39;</span>)<span style="color:#f92672">.</span>replace(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\u2013</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">-</span><span style="color:#e6db74">&#39;</span>), cols[<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>:])
+    cols <span style="color:#f92672">=</span> row<span style="color:#f92672">.</span>css(<span style="color:#e6db74">&#39;td ::text&#39;</span>)<span style="color:#f92672">.</span>extract()
+    <span style="color:#66d9ef">if</span> cols[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;TX&#39;</span>:
+        lat, long <span style="color:#f92672">=</span> map(<span style="color:#66d9ef">lambda</span> i: i<span style="color:#f92672">.</span>strip(<span style="color:#e6db74">&#39;°&#39;</span>)<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\u2013</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;-&#39;</span>), cols[<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>:])
         counties<span style="color:#f92672">.</span>append((cols[<span style="color:#ae81ff">3</span>], lat, long))
-counties <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(counties, columns<span style="color:#f92672">=</span>[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">county</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">lat</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">lon</span><span style="color:#e6db74">&#39;</span>])</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">counties<span style="color:#f92672">.</span>lat <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>to_numeric(counties<span style="color:#f92672">.</span>lat)
+counties <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(counties, columns<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;county&#39;</span>, <span style="color:#e6db74">&#39;lat&#39;</span>, <span style="color:#e6db74">&#39;lon&#39;</span>])</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">counties<span style="color:#f92672">.</span>lat <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>to_numeric(counties<span style="color:#f92672">.</span>lat)
 counties<span style="color:#f92672">.</span>lon <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>to_numeric(counties<span style="color:#f92672">.</span>lon)</code></pre></div>
 <p>Now we have the coordinates of each county:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">counties<span style="color:#f92672">.</span>head()</code></pre></div>
@@ -608,7 +608,7 @@ counties<span style="color:#f92672">.</span>lon <span style="color:#f92672">=</s
 </div>
 
 <p>We just have to group our data with respect to the county,</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">county_count <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>groupby(people<span style="color:#f92672">.</span>county)<span style="color:#f92672">.</span>size()<span style="color:#f92672">.</span>reset_index(name<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count</span><span style="color:#e6db74">&#39;</span>)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">county_count <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>groupby(people<span style="color:#f92672">.</span>county)<span style="color:#f92672">.</span>size()<span style="color:#f92672">.</span>reset_index(name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;count&#39;</span>)
 county_count<span style="color:#f92672">.</span>head()</code></pre></div>
 <div>
 <table border="1" class="dataframe">
@@ -650,7 +650,7 @@ county_count<span style="color:#f92672">.</span>head()</code></pre></div>
 </div>
 
 <p>and merge the two dataframes:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">county_data <span style="color:#f92672">=</span> county_count<span style="color:#f92672">.</span>merge(counties, on<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">county</span><span style="color:#e6db74">&#39;</span>)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">county_data <span style="color:#f92672">=</span> county_count<span style="color:#f92672">.</span>merge(counties, on<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;county&#39;</span>)
 county_data<span style="color:#f92672">.</span>head()</code></pre></div>
 <div>
 <table border="1" class="dataframe">
@@ -707,15 +707,15 @@ county_data<span style="color:#f92672">.</span>head()</code></pre></div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> os
 <span style="color:#f92672">import</span> gmaps
 
-gmaps<span style="color:#f92672">.</span>configure(api_key<span style="color:#f92672">=</span>os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">GMAPS_API_KEY</span><span style="color:#e6db74">&#39;</span>])</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">m <span style="color:#f92672">=</span> gmaps<span style="color:#f92672">.</span>Map()
-data <span style="color:#f92672">=</span> county_data[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">lat</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">lon</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>values<span style="color:#f92672">.</span>tolist()
+gmaps<span style="color:#f92672">.</span>configure(api_key<span style="color:#f92672">=</span>os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74">&#39;GMAPS_API_KEY&#39;</span>])</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">m <span style="color:#f92672">=</span> gmaps<span style="color:#f92672">.</span>Map()
+data <span style="color:#f92672">=</span> county_data[[<span style="color:#e6db74">&#39;lat&#39;</span>, <span style="color:#e6db74">&#39;lon&#39;</span>, <span style="color:#e6db74">&#39;count&#39;</span>]]<span style="color:#f92672">.</span>values<span style="color:#f92672">.</span>tolist()
 heatmap <span style="color:#f92672">=</span> gmaps<span style="color:#f92672">.</span>WeightedHeatmap(data<span style="color:#f92672">=</span>data, point_radius<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>)
 m<span style="color:#f92672">.</span>add_layer(heatmap)
 m</code></pre></div>
 <p><img src="/TexasDeathRow_files/heatmap.png" style="width: 100%"></p>
 
 <p>It's evident that violent crimes leading to death penalties peak in the largest cities. Comparing this data with the population in Texas, only Austin appears to be an exception It's the fourth largest city in Texas according to <a href="https://en.wikipedia.org/wiki/List_of_cities_in_Texas_by_population">this table</a>, but its county, Travis, isn't even in the top ten:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">county_count<span style="color:#f92672">.</span>sort_values(by<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">count</span><span style="color:#e6db74">&#39;</span>, ascending<span style="color:#f92672">=</span>False)<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">10</span>)</code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">county_count<span style="color:#f92672">.</span>sort_values(by<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;count&#39;</span>, ascending<span style="color:#f92672">=</span>False)<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">10</span>)</code></pre></div>
 <div>
 <table border="1" class="dataframe">
   <thead>
@@ -788,32 +788,32 @@ m</code></pre></div>
 
 <p>The statements contain some non-ASCII characters, which we will replace for easier processing. There is also spurious text in the form of <code>(Spanish)</code>, <code>(English)</code>, which is added to specify the language in which the statement was spoken.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">try</span>:
-    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">statements.txt</span><span style="color:#e6db74">&#39;</span>) <span style="color:#66d9ef">as</span> fobj:
+    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#39;statements.txt&#39;</span>) <span style="color:#66d9ef">as</span> fobj:
         all_text <span style="color:#f92672">=</span> fobj<span style="color:#f92672">.</span>read()
 <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">OSError</span>:
     to_replace <span style="color:#f92672">=</span> {
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\xa0</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>,
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">’</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#39;</span>,
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">‘</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#39;</span>,
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">“</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">&#39;</span>,
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">”</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">&#39;</span>,
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\u2013</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">-</span><span style="color:#e6db74">&#39;</span>,
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\u2026</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">...</span><span style="color:#e6db74">&#39;</span>,
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">(Spanish)</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>,
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">(English)</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>,
+        <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\xa0</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74">&#39;&#39;</span>,
+        <span style="color:#e6db74">&#39;’&#39;</span>: <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#39;</span>,
+        <span style="color:#e6db74">&#39;‘&#39;</span>: <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#39;</span>,
+        <span style="color:#e6db74">&#39;“&#39;</span>: <span style="color:#e6db74">&#39;&#34;&#39;</span>,
+        <span style="color:#e6db74">&#39;”&#39;</span>: <span style="color:#e6db74">&#39;&#34;&#39;</span>,
+        <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\u2013</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74">&#39;-&#39;</span>,
+        <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\u2026</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74">&#39;...&#39;</span>,
+        <span style="color:#e6db74">&#39;(Spanish)&#39;</span>: <span style="color:#e6db74">&#39;&#39;</span>,
+        <span style="color:#e6db74">&#39;(English)&#39;</span>: <span style="color:#e6db74">&#39;&#39;</span>,
     }
-    all_text <span style="color:#f92672">=</span> statements<span style="color:#f92672">.</span>str<span style="color:#f92672">.</span>cat(sep<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)
+    all_text <span style="color:#f92672">=</span> statements<span style="color:#f92672">.</span>str<span style="color:#f92672">.</span>cat(sep<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)
     <span style="color:#66d9ef">for</span> a, b <span style="color:#f92672">in</span> to_replace<span style="color:#f92672">.</span>items():
         all_text <span style="color:#f92672">=</span> all_text<span style="color:#f92672">.</span>replace(a, b)
-    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">statements.txt</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">w</span><span style="color:#e6db74">&#39;</span>) <span style="color:#66d9ef">as</span> fobj:
+    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#39;statements.txt&#39;</span>, <span style="color:#e6db74">&#39;w&#39;</span>) <span style="color:#66d9ef">as</span> fobj:
         fobj<span style="color:#f92672">.</span>write(all_text)</code></pre></div>
 <p>The first thing we'll do is use the amazing package <code>wordcloud</code> to generate a pretty visualization of the most used words. We'll also keep the words processed by <code>wordcloud</code> for later use. The packages conveniently processes the text for us, by lowercasing the text, splitting the words and removing the punctuation.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> wordcloud
 <span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
 <span style="color:#f92672">from</span> scipy.misc <span style="color:#f92672">import</span> imread
 
-colors <span style="color:#f92672">=</span> wordcloud<span style="color:#f92672">.</span>ImageColorGenerator(imread(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">colors.png</span><span style="color:#e6db74">&#39;</span>))
-wc <span style="color:#f92672">=</span> wordcloud<span style="color:#f92672">.</span>WordCloud(background_color<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">white</span><span style="color:#e6db74">&#39;</span>,
+colors <span style="color:#f92672">=</span> wordcloud<span style="color:#f92672">.</span>ImageColorGenerator(imread(<span style="color:#e6db74">&#39;colors.png&#39;</span>))
+wc <span style="color:#f92672">=</span> wordcloud<span style="color:#f92672">.</span>WordCloud(background_color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;white&#39;</span>,
                          scale<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>,
                          max_words<span style="color:#f92672">=</span><span style="color:#ae81ff">200</span>,
                          relative_scaling<span style="color:#f92672">=</span><span style="color:#ae81ff">0.6</span>)
@@ -821,7 +821,7 @@ words <span style="color:#f92672">=</span> wc<span style="color:#f92672">.</span
 wc<span style="color:#f92672">.</span>generate_from_frequencies(words)
 plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">6</span>))
 plt<span style="color:#f92672">.</span>imshow(wc<span style="color:#f92672">.</span>recolor(color_func<span style="color:#f92672">=</span>colors))
-plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">off</span><span style="color:#e6db74">&#39;</span>)
+plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
 plt<span style="color:#f92672">.</span>show()</code></pre></div>
 <p><figure><img src="/TexasDeathRow_files/TexasDeathRow_69_0.png" alt="png"></figure></p>
 
@@ -829,14 +829,14 @@ plt<span style="color:#f92672">.</span>show()</code></pre></div>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> collections
 
 counts <span style="color:#f92672">=</span> collections<span style="color:#f92672">.</span>Counter(dict(words))
-most_common <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(counts<span style="color:#f92672">.</span>most_common(<span style="color:#ae81ff">20</span>), columns<span style="color:#f92672">=</span>[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Word</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Count</span><span style="color:#e6db74">&#39;</span>])
+most_common <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(counts<span style="color:#f92672">.</span>most_common(<span style="color:#ae81ff">20</span>), columns<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;Word&#39;</span>, <span style="color:#e6db74">&#39;Count&#39;</span>])
 show(Chart(most_common)<span style="color:#f92672">.</span>mark_bar()<span style="color:#f92672">.</span>encode(
-        x<span style="color:#f92672">=</span>X(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Word</span><span style="color:#e6db74">&#39;</span>,
+        x<span style="color:#f92672">=</span>X(<span style="color:#e6db74">&#39;Word&#39;</span>,
             scale<span style="color:#f92672">=</span>Scale(bandSize<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>),
-            sort<span style="color:#f92672">=</span>SortField(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Count</span><span style="color:#e6db74">&#39;</span>)),
-        y<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Count</span><span style="color:#e6db74">&#39;</span>,
-        color<span style="color:#f92672">=</span>Color(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Count</span><span style="color:#e6db74">&#39;</span>,
-                    scale<span style="color:#f92672">=</span>Scale(range<span style="color:#f92672">=</span>[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">orange</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">darkred</span><span style="color:#e6db74">&#39;</span>]),
+            sort<span style="color:#f92672">=</span>SortField(<span style="color:#e6db74">&#39;Count&#39;</span>)),
+        y<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Count&#39;</span>,
+        color<span style="color:#f92672">=</span>Color(<span style="color:#e6db74">&#39;Count&#39;</span>,
+                    scale<span style="color:#f92672">=</span>Scale(range<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;orange&#39;</span>, <span style="color:#e6db74">&#39;darkred&#39;</span>]),
                     bin<span style="color:#f92672">=</span>Bin(maxbins<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)),
     ), height<span style="color:#f92672">=</span><span style="color:#ae81ff">350</span>)</code></pre></div>
 <div class="vega-embed" id="6056016c-dcdd-46f4-a18b-9685ac5ddeb6"></div>
@@ -872,20 +872,20 @@ show(Chart(most_common)<span style="color:#f92672">.</span>mark_bar()<span style
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> operator
 
 people_with_stmt <span style="color:#f92672">=</span> people<span style="color:#f92672">.</span>iloc[people<span style="color:#f92672">.</span>last_statement<span style="color:#f92672">.</span>dropna()<span style="color:#f92672">.</span>index]<span style="color:#f92672">.</span>copy()
-people_with_stmt[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_polarity</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> [s<span style="color:#f92672">.</span>polarity <span style="color:#66d9ef">for</span> s <span style="color:#f92672">in</span> all_sentiments]
-people_with_stmt[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_subjectivity</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> [s<span style="color:#f92672">.</span>subjectivity <span style="color:#66d9ef">for</span> s <span style="color:#f92672">in</span> all_sentiments]</code></pre></div>
+people_with_stmt[<span style="color:#e6db74">&#39;sentiment_polarity&#39;</span>] <span style="color:#f92672">=</span> [s<span style="color:#f92672">.</span>polarity <span style="color:#66d9ef">for</span> s <span style="color:#f92672">in</span> all_sentiments]
+people_with_stmt[<span style="color:#e6db74">&#39;sentiment_subjectivity&#39;</span>] <span style="color:#f92672">=</span> [s<span style="color:#f92672">.</span>subjectivity <span style="color:#66d9ef">for</span> s <span style="color:#f92672">in</span> all_sentiments]</code></pre></div>
 <p>We'll plot <code>polarity</code> against <code>subjectivity</code>, grouping the data by race. Why? Because usually culture and tradition correlate with race. Even thought the relation is somewhat blurry and there are a lot of other factors in play (for instance, where you grow up has considerable influence on your culture), that is the best we have.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">data <span style="color:#f92672">=</span> people_with_stmt[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_polarity</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_subjectivity</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">age_execution</span><span style="color:#e6db74">&#39;</span>]]
-data <span style="color:#f92672">=</span> data[data<span style="color:#f92672">.</span>race <span style="color:#f92672">!=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Other</span><span style="color:#e6db74">&#39;</span>]
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">data <span style="color:#f92672">=</span> people_with_stmt[[<span style="color:#e6db74">&#39;race&#39;</span>, <span style="color:#e6db74">&#39;sentiment_polarity&#39;</span>, <span style="color:#e6db74">&#39;sentiment_subjectivity&#39;</span>, <span style="color:#e6db74">&#39;age_execution&#39;</span>]]
+data <span style="color:#f92672">=</span> data[data<span style="color:#f92672">.</span>race <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;Other&#39;</span>]
 show(Chart(data)<span style="color:#f92672">.</span>mark_point()<span style="color:#f92672">.</span>encode(
-        x<span style="color:#f92672">=</span>X(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_polarity</span><span style="color:#e6db74">&#39;</span>,
+        x<span style="color:#f92672">=</span>X(<span style="color:#e6db74">&#39;sentiment_polarity&#39;</span>,
             scale<span style="color:#f92672">=</span>Scale(range<span style="color:#f92672">=</span>[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>])),
-        y<span style="color:#f92672">=</span>Y(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_subjectivity</span><span style="color:#e6db74">&#39;</span>,
+        y<span style="color:#f92672">=</span>Y(<span style="color:#e6db74">&#39;sentiment_subjectivity&#39;</span>,
             scale<span style="color:#f92672">=</span>Scale(range<span style="color:#f92672">=</span>[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>])),
-        color<span style="color:#f92672">=</span>Color(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">age_execution</span><span style="color:#e6db74">&#39;</span>,
-                    scale<span style="color:#f92672">=</span>Scale(range<span style="color:#f92672">=</span>[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">yellow</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">red</span><span style="color:#e6db74">&#39;</span>]),
+        color<span style="color:#f92672">=</span>Color(<span style="color:#e6db74">&#39;age_execution&#39;</span>,
+                    scale<span style="color:#f92672">=</span>Scale(range<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;yellow&#39;</span>, <span style="color:#e6db74">&#39;red&#39;</span>]),
                     bin<span style="color:#f92672">=</span>Bin(maxbins<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>)),
-        row<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>,
+        row<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;race&#39;</span>,
     ), width<span style="color:#f92672">=</span><span style="color:#ae81ff">590</span>)</code></pre></div>
 <div class="vega-embed" id="640d6b2f-babb-461c-8c4f-53ae4c0e4b1d"></div>
 
@@ -902,7 +902,7 @@ show(Chart(data)<span style="color:#f92672">.</span>mark_point()<span style="col
 <p><figure><img src="/TexasDeathRow_files/TexasDeathRow_78_2.png" alt="png"></figure></p>
 
 <p>Apart from the fact that black people are generally younger, which we had already found, it's quite evident that white people's statements have a polarity much more centered around zero, than the other two groups. Let's find the mean for each group:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people_with_stmt[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_polarity</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>groupby(people_with_stmt[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>])<span style="color:#f92672">.</span>mean()</code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people_with_stmt[[<span style="color:#e6db74">&#39;race&#39;</span>, <span style="color:#e6db74">&#39;sentiment_polarity&#39;</span>]]<span style="color:#f92672">.</span>groupby(people_with_stmt[<span style="color:#e6db74">&#39;race&#39;</span>])<span style="color:#f92672">.</span>mean()</code></pre></div>
 <div>
 <table border="1" class="dataframe">
   <thead>
@@ -937,7 +937,7 @@ show(Chart(data)<span style="color:#f92672">.</span>mark_point()<span style="col
 </div>
 
 <p>As we expected from the chart, statements from black people have the highest average polarity, almost double than those from white people! Instead, the subjectivity doesn't appear to be a very useful metric in this case. All the charts are very centered around <code>0.5</code>, which represents middle ground between objectivity and subjectivity, and the mean doesn't surprise us:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people_with_stmt[[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">sentiment_subjectivity</span><span style="color:#e6db74">&#39;</span>]]<span style="color:#f92672">.</span>groupby(people_with_stmt[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">race</span><span style="color:#e6db74">&#39;</span>])<span style="color:#f92672">.</span>mean()</code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">people_with_stmt[[<span style="color:#e6db74">&#39;race&#39;</span>, <span style="color:#e6db74">&#39;sentiment_subjectivity&#39;</span>]]<span style="color:#f92672">.</span>groupby(people_with_stmt[<span style="color:#e6db74">&#39;race&#39;</span>])<span style="color:#f92672">.</span>mean()</code></pre></div>
 <div>
 <table border="1" class="dataframe">
   <thead>
@@ -985,7 +985,7 @@ show(Chart(data)<span style="color:#f92672">.</span>mark_point()<span style="col
 <span style="color:#f92672">from</span> sklearn.decomposition <span style="color:#f92672">import</span> TruncatedSVD
 <span style="color:#f92672">from</span> sklearn.feature_extraction.text <span style="color:#f92672">import</span> TfidfVectorizer
 
-vectorizer <span style="color:#f92672">=</span> TfidfVectorizer(stop_words<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">english</span><span style="color:#e6db74">&#39;</span>, sublinear_tf<span style="color:#f92672">=</span>True, use_idf<span style="color:#f92672">=</span>True)
+vectorizer <span style="color:#f92672">=</span> TfidfVectorizer(stop_words<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;english&#39;</span>, sublinear_tf<span style="color:#f92672">=</span>True, use_idf<span style="color:#f92672">=</span>True)
 svd <span style="color:#f92672">=</span> TruncatedSVD(n_components<span style="color:#f92672">=</span><span style="color:#ae81ff">20</span>)
 pipe <span style="color:#f92672">=</span> make_pipeline(
     vectorizer,
@@ -1015,7 +1015,7 @@ result.</p>
 fig, axes <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">10</span>))
 
 <span style="color:#66d9ef">for</span> n_clusters <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">8</span>):
-    ax <span style="color:#f92672">=</span> axes[n_clusters <span style="color:#f92672">/</span><span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>, n_clusters <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">1</span>]
+    ax <span style="color:#f92672">=</span> axes[n_clusters <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>, n_clusters <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">1</span>]
     ax<span style="color:#f92672">.</span>set_xlim([<span style="color:#f92672">-</span><span style="color:#ae81ff">0.1</span>, <span style="color:#ae81ff">0.5</span>])
     <span style="color:#75715e"># The (n_clusters+1)*10 is for inserting blank space between silhouette</span>
     <span style="color:#75715e"># plots of individual clusters, to demarcate them clearly.</span>
@@ -1050,10 +1050,10 @@ fig, axes <span style="color:#f92672">=</span> plt<span style="color:#f92672">.<
         <span style="color:#75715e"># Compute the new y_lower for next plot</span>
         y_lower <span style="color:#f92672">=</span> y_upper <span style="color:#f92672">+</span> <span style="color:#ae81ff">10</span>
 
-    ax<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Silhouette coefficient (avg. {:.3f})</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(silhouette_avg))
-    ax<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Cluster label</span><span style="color:#e6db74">&#39;</span>)
+    ax<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#39;Silhouette coefficient (avg. {:.3f})&#39;</span><span style="color:#f92672">.</span>format(silhouette_avg))
+    ax<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#39;Cluster label&#39;</span>)
 
-    ax<span style="color:#f92672">.</span>axvline(x<span style="color:#f92672">=</span>silhouette_avg, color<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">red</span><span style="color:#e6db74">&#39;</span>, linestyle<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">--</span><span style="color:#e6db74">&#39;</span>)
+    ax<span style="color:#f92672">.</span>axvline(x<span style="color:#f92672">=</span>silhouette_avg, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;red&#39;</span>, linestyle<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;--&#39;</span>)
 
     ax<span style="color:#f92672">.</span>set_yticks([])
     ax<span style="color:#f92672">.</span>set_xticks([<span style="color:#f92672">-</span><span style="color:#ae81ff">0.1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0.2</span>, <span style="color:#ae81ff">0.4</span>])
@@ -1077,7 +1077,7 @@ plt<span style="color:#f92672">.</span>show(fig)</code></pre></div>
     clusters <span style="color:#f92672">=</span> [[terms[ind] <span style="color:#66d9ef">for</span> ind <span style="color:#f92672">in</span> order_centroids[i, :<span style="color:#ae81ff">8</span>]]
                 <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n_clusters)]
     <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n_clusters):
-        <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">{}) {}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(i, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74"> </span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>join(clusters[i])))
+        <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;{}) {}&#39;</span><span style="color:#f92672">.</span>format(i, <span style="color:#e6db74">&#39; &#39;</span><span style="color:#f92672">.</span>join(clusters[i])))
 
 print_topics(<span style="color:#ae81ff">6</span>)</code></pre></div><pre><code>0) lord jesus amen god praise thank christ home
 1) know say did want don just love innocent
@@ -1115,10 +1115,10 @@ corpus <span style="color:#f92672">=</span> [dictionary<span style="color:#f9267
 
 tfidf_model <span style="color:#f92672">=</span> TfidfModel(corpus, id2word<span style="color:#f92672">=</span>dictionary)
 lsi_model <span style="color:#f92672">=</span> LsiModel(tfidf_model[corpus], id2word<span style="color:#f92672">=</span>dictionary, num_topics<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">[(label, [word[<span style="color:#ae81ff">0</span>] <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> words])
- <span style="color:#66d9ef">for</span> label, words <span style="color:#f92672">in</span> lsi_model<span style="color:#f92672">.</span>show_topics(num_words<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span>, formatted<span style="color:#f92672">=</span>False)]</code></pre></div><pre><code>[(0, ['ll', 'love', 'thank', 'ya', 'sorry', 'family', 'ready']),
- (1, ['ll', 'ya', 'tell', 'peace', 'kids', 'miss', 'lord']),
+ <span style="color:#66d9ef">for</span> label, words <span style="color:#f92672">in</span> lsi_model<span style="color:#f92672">.</span>show_topics(num_words<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span>, formatted<span style="color:#f92672">=</span>False)]</code></pre></div><pre><code>[(0, [&#39;ll&#39;, &#39;love&#39;, &#39;thank&#39;, &#39;ya&#39;, &#39;sorry&#39;, &#39;family&#39;, &#39;ready&#39;]),
+ (1, [&#39;ll&#39;, &#39;ya&#39;, &#39;tell&#39;, &#39;peace&#39;, &#39;kids&#39;, &#39;miss&#39;, &#39;lord&#39;]),
  (2,
-  ['statement', 'declined', 'offender', 'ready', 'warden', 'final', 'ahead'])]</code></pre>
+  [&#39;statement&#39;, &#39;declined&#39;, &#39;offender&#39;, &#39;ready&#39;, &#39;warden&#39;, &#39;final&#39;, &#39;ahead&#39;])]</code></pre>
 <p>The result is quite different from what we got from <code>KMeans</code>. Here, the clusters are slightly better defined: one for shorter statements directed to the Warden, one for the family and lastly one with mixed words (even from a religious lexicon).</p>
 
 <h1 id="wrapping-up">Wrapping up</h1>
@@ -1190,6 +1190,7 @@ if (!doNotTrack) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js"></script>
     <script>renderMathInElement(document.body);</script>
 
+<script src="//instant.page/1.0.0" type="module" integrity="sha384-6w2SekMzCkuMQ9sEbq0cLviD/yR2HfA/+ekmKiBnFlsoSvb/VmQFSi/umVShadQI"></script>
 </body>
 </html>
 

@@ -168,17 +168,17 @@ pairwise_distances_argmin(X, y)</code></pre></div><pre><code>array([0, 1])</code
 <span style="color:#f92672">from</span> matplotlib <span style="color:#f92672">import</span> rc
 <span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
 
-plt<span style="color:#f92672">.</span>style<span style="color:#f92672">.</span>use(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">ggplot</span><span style="color:#e6db74">&#39;</span>)
-sns<span style="color:#f92672">.</span>set_style(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">whitegrid</span><span style="color:#e6db74">&#39;</span>)
-rc(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">figure</span><span style="color:#e6db74">&#39;</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">4</span>))
-cmap <span style="color:#f92672">=</span> cm<span style="color:#f92672">.</span>get_cmap(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">rainbow</span><span style="color:#e6db74">&#39;</span>)
+plt<span style="color:#f92672">.</span>style<span style="color:#f92672">.</span>use(<span style="color:#e6db74">&#39;ggplot&#39;</span>)
+sns<span style="color:#f92672">.</span>set_style(<span style="color:#e6db74">&#39;whitegrid&#39;</span>)
+rc(<span style="color:#e6db74">&#39;figure&#39;</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">4</span>))
+cmap <span style="color:#f92672">=</span> cm<span style="color:#f92672">.</span>get_cmap(<span style="color:#e6db74">&#39;rainbow&#39;</span>)
 
 <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">plot_clusters</span>(X, m, clusters):
     k <span style="color:#f92672">=</span> len(m)
     <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(k):
         group <span style="color:#f92672">=</span> X[clusters <span style="color:#f92672">==</span> i]
-        plt<span style="color:#f92672">.</span>scatter(group[:,<span style="color:#ae81ff">0</span>], group[:,<span style="color:#ae81ff">1</span>], marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#39;</span>, color<span style="color:#f92672">=</span>cmap(i <span style="color:#f92672">/</span> k))
-        plt<span style="color:#f92672">.</span>scatter(m[i,<span style="color:#ae81ff">0</span>], m[i,<span style="color:#ae81ff">1</span>], marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">*</span><span style="color:#e6db74">&#39;</span>, color<span style="color:#f92672">=</span>cmap(i <span style="color:#f92672">/</span> k))
+        plt<span style="color:#f92672">.</span>scatter(group[:,<span style="color:#ae81ff">0</span>], group[:,<span style="color:#ae81ff">1</span>], marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>, color<span style="color:#f92672">=</span>cmap(i <span style="color:#f92672">/</span> k))
+        plt<span style="color:#f92672">.</span>scatter(m[i,<span style="color:#ae81ff">0</span>], m[i,<span style="color:#ae81ff">1</span>], marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;*&#39;</span>, color<span style="color:#f92672">=</span>cmap(i <span style="color:#f92672">/</span> k))
     plt<span style="color:#f92672">.</span>show()</code></pre></div>
 <p>We'll generate the data with the function <a href="http://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_blobs.html"><code>make_blobs</code></a> from <code>scikit-learn</code>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.datasets <span style="color:#f92672">import</span> make_blobs
@@ -204,19 +204,19 @@ plot_clusters(X, m, clusters)</code></pre></div>
             color <span style="color:#f92672">=</span> cmap(i <span style="color:#f92672">/</span> k)
             self<span style="color:#f92672">.</span>clusters<span style="color:#f92672">.</span>append(
                 ax<span style="color:#f92672">.</span>plot([], [],
-                        linestyle<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>, marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#39;</span>,
+                        linestyle<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>, marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>,
                         markeredgecolor<span style="color:#f92672">=</span>color, color<span style="color:#f92672">=</span>color)[<span style="color:#ae81ff">0</span>]
             )
             self<span style="color:#f92672">.</span>centroids<span style="color:#f92672">.</span>append(
                 ax<span style="color:#f92672">.</span>plot([], [],
-                        linestyle<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>, marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">o</span><span style="color:#e6db74">&#39;</span>,
+                        linestyle<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>, marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;o&#39;</span>,
                         markeredgewidth<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>,
                         markersize<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>, color<span style="color:#f92672">=</span>color)[<span style="color:#ae81ff">0</span>]
             )
 
     <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">update</span>(self, t):
         self<span style="color:#f92672">.</span>m, clusters <span style="color:#f92672">=</span> kmeans_iteration(self<span style="color:#f92672">.</span>X, self<span style="color:#f92672">.</span>m)
-        self<span style="color:#f92672">.</span>fig<span style="color:#f92672">.</span>suptitle(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">n = {}, k = {} – Iteration {}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(
+        self<span style="color:#f92672">.</span>fig<span style="color:#f92672">.</span>suptitle(<span style="color:#e6db74">&#39;n = {}, k = {} – Iteration {}&#39;</span><span style="color:#f92672">.</span>format(
                 len(self<span style="color:#f92672">.</span>X), len(self<span style="color:#f92672">.</span>m), t <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
         )
         <span style="color:#75715e"># To update the plot, we simply call set_data on the saved axes</span>
@@ -247,7 +247,7 @@ plot_clusters(X, m, clusters)</code></pre></div>
 X, _ <span style="color:#f92672">=</span> make_blobs(n_samples<span style="color:#f92672">=</span><span style="color:#ae81ff">2000</span>, centers<span style="color:#f92672">=</span><span style="color:#ae81ff">6</span>, cluster_std<span style="color:#f92672">=</span><span style="color:#ae81ff">2.2</span>)</code></pre></div>
 <p>Let's check the blobs first. They are not immediately recognizable due to the high variance we introduced.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">plt<span style="color:#f92672">.</span>plot(X[:,<span style="color:#ae81ff">0</span>], X[:,<span style="color:#ae81ff">1</span>],
-         linestyle<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>, marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#39;</span>,
+         linestyle<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>, marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>,
          color<span style="color:#f92672">=</span>cmap(<span style="color:#ae81ff">0.2</span>), markeredgecolor<span style="color:#f92672">=</span>cmap(<span style="color:#ae81ff">0.25</span>))
 plt<span style="color:#f92672">.</span>show()</code></pre></div>
 <p><figure><img src="/KMeans_files/KMeans_23_0.png" alt="png"></figure></p>
@@ -4196,7 +4196,7 @@ b) random sampling over a box aligned with the principal components of the data.
 
 <p>Let's start by implementing a function to calculate the total energy of a clustering:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">Wk</span>(X, centroids, clusters):
-    <span style="color:#66d9ef">return</span> np<span style="color:#f92672">.</span>sum([np<span style="color:#f92672">.</span>linalg<span style="color:#f92672">.</span>norm(X[i] <span style="color:#f92672">-</span> centroids[clusters[i]]) <span style="color:#f92672">*</span><span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>
+    <span style="color:#66d9ef">return</span> np<span style="color:#f92672">.</span>sum([np<span style="color:#f92672">.</span>linalg<span style="color:#f92672">.</span>norm(X[i] <span style="color:#f92672">-</span> centroids[clusters[i]]) <span style="color:#f92672">**</span> <span style="color:#ae81ff">2</span>
                    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(X))])</code></pre></div>
 <p>We'll also need a function to take uniform samples from the observations <span  class="math">\(X\)</span>:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">monte_carlo</span>(X, xmin, xmax, ymin, ymax, n<span style="color:#f92672">=</span>None):
@@ -4225,9 +4225,9 @@ b) random sampling over a box aligned with the principal components of the data.
             sample <span style="color:#f92672">=</span> samples[i]
             current_Wks[i] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>log(Wk(sample, <span style="color:#f92672">*</span>kmeans(sample, k)))
         sample_Wks[k <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> current_Wks<span style="color:#f92672">.</span>mean()
-        sk[k <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>sqrt(((current_Wks <span style="color:#f92672">-</span> sample_Wks[k <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>]) <span style="color:#f92672">*</span><span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>)<span style="color:#f92672">.</span>mean())
+        sk[k <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>sqrt(((current_Wks <span style="color:#f92672">-</span> sample_Wks[k <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>]) <span style="color:#f92672">**</span> <span style="color:#ae81ff">2</span>)<span style="color:#f92672">.</span>mean())
     <span style="color:#75715e"># Correction factor</span>
-    sk <span style="color:#f92672">*</span><span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>sqrt(<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">/</span> B)
+    sk <span style="color:#f92672">*=</span> np<span style="color:#f92672">.</span>sqrt(<span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">/</span> B)
     gaps <span style="color:#f92672">=</span> sample_Wks <span style="color:#f92672">-</span> Wks
     <span style="color:#66d9ef">return</span> ks, Wks, sample_Wks, gaps, sk</code></pre></div>
 <p>We want to test the above algorithm on different configurations of points. We'll first make a function to summarize the gap statistics for a certain distribution.</p>
@@ -4236,24 +4236,24 @@ b) random sampling over a box aligned with the principal components of the data.
 <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">gaps_info</span>(X, ks, Wks, sample_Wks, gaps, sk):
     fig, axes <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">7</span>))
     axes[<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>plot(X[:,<span style="color:#ae81ff">0</span>], X[:,<span style="color:#ae81ff">1</span>],
-                   linestyle<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">&#39;</span>, marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#39;</span>,
+                   linestyle<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>, marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>,
                    color<span style="color:#f92672">=</span>cmap(<span style="color:#ae81ff">0.2</span>), markeredgecolor<span style="color:#f92672">=</span>cmap(<span style="color:#ae81ff">0.25</span>))
-    line1, <span style="color:#f92672">=</span> axes[<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>plot(ks, Wks, marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#39;</span>, markersize<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>)
-    line2, <span style="color:#f92672">=</span> axes[<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>plot(ks, sample_Wks, marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#39;</span>, markersize<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>)
+    line1, <span style="color:#f92672">=</span> axes[<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>plot(ks, Wks, marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>, markersize<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>)
+    line2, <span style="color:#f92672">=</span> axes[<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>plot(ks, sample_Wks, marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>, markersize<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>)
     axes[<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>legend(
         (line1, line2),
-        (<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">$$</span><span style="color:#e6db74">\</span><span style="color:#e6db74">log W_k$</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">$$</span><span style="color:#e6db74">\</span><span style="color:#e6db74">frac{1}{B}</span><span style="color:#e6db74">\</span><span style="color:#e6db74">sum_{b = 1}^B</span><span style="color:#e6db74">\</span><span style="color:#e6db74">,</span><span style="color:#e6db74">\</span><span style="color:#e6db74">log W_{kb}^*$</span><span style="color:#e6db74">&#39;</span>)
+        (<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;$$\log W_k$&#39;</span>, <span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;$$\frac{1}{B}\sum_{b = 1}^B\,\log W_{kb}^*$&#39;</span>)
     )
-    axes[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>plot(ks, gaps, marker<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">.</span><span style="color:#e6db74">&#39;</span>, markersize<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>)
-    axes[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">$$</span><span style="color:#e6db74">\</span><span style="color:#e6db74">mathop{</span><span style="color:#e6db74">\</span><span style="color:#e6db74">mathrm{Gap}}(k)$</span><span style="color:#e6db74">&#39;</span>)
+    axes[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>plot(ks, gaps, marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>, markersize<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>)
+    axes[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#39;$$\mathop{\mathrm{Gap}}(k)$&#39;</span>)
     gaps_diff <span style="color:#f92672">=</span> gaps[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">-</span> gaps[<span style="color:#ae81ff">1</span>:] <span style="color:#f92672">+</span> sk[<span style="color:#ae81ff">1</span>:]
     barlist <span style="color:#f92672">=</span> axes[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>bar(ks[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], gaps_diff,
-                            width<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>, align<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">center</span><span style="color:#e6db74">&#39;</span>)
-    barlist[np<span style="color:#f92672">.</span>argmax(gaps_diff <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>)]<span style="color:#f92672">.</span>set_color(sns<span style="color:#f92672">.</span>xkcd_rgb[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">pale red</span><span style="color:#e6db74">&#39;</span>])
-    axes[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">$$</span><span style="color:#e6db74">\</span><span style="color:#e6db74">mathop{</span><span style="color:#e6db74">\</span><span style="color:#e6db74">mathrm{Gap}}(k) -</span><span style="color:#e6db74">&#39;</span>
-                         <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74"> </span><span style="color:#e6db74">\</span><span style="color:#e6db74">mathop{</span><span style="color:#e6db74">\</span><span style="color:#e6db74">mathrm{Gap}}(k + 1) + s_{k + 1}$</span><span style="color:#e6db74">&#39;</span>)
+                            width<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>, align<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;center&#39;</span>)
+    barlist[np<span style="color:#f92672">.</span>argmax(gaps_diff <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>)]<span style="color:#f92672">.</span>set_color(sns<span style="color:#f92672">.</span>xkcd_rgb[<span style="color:#e6db74">&#39;pale red&#39;</span>])
+    axes[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#39;$$\mathop{\mathrm{Gap}}(k) -&#39;</span>
+                         <span style="color:#e6db74">&#39; \mathop{\mathrm{Gap}}(k + 1) + s_{k + 1}$&#39;</span>)
     <span style="color:#66d9ef">for</span> (i, j) <span style="color:#f92672">in</span> ((<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>), (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>), (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>)):
-        axes[i,j]<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Clusters</span><span style="color:#e6db74">&#39;</span>)
+        axes[i,j]<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#39;Clusters&#39;</span>)
         axes[i,j]<span style="color:#f92672">.</span>xaxis<span style="color:#f92672">.</span>set_major_locator(ticker<span style="color:#f92672">.</span>MaxNLocator(integer<span style="color:#f92672">=</span>True))
     fig<span style="color:#f92672">.</span>tight_layout(w_pad<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>)
     plt<span style="color:#f92672">.</span>show()</code></pre></div>
@@ -4368,6 +4368,7 @@ if (!doNotTrack) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js"></script>
     <script>renderMathInElement(document.body);</script>
 
+<script src="//instant.page/1.0.0" type="module" integrity="sha384-6w2SekMzCkuMQ9sEbq0cLviD/yR2HfA/+ekmKiBnFlsoSvb/VmQFSi/umVShadQI"></script>
 </body>
 </html>
 

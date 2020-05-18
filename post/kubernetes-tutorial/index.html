@@ -95,7 +95,7 @@ should give you a solid understanding to start deploying working applications
 on Kubernetes.</p>
 <p>This tutorial series is essentially what I would have wanted to read when I
 first approached Kubernetes, instead of searching and reading lots of different
-sources. The first part will only cover some theory, and then we'll dive into a
+sources. The first part will only cover some theory, and then we&rsquo;ll dive into a
 practical example. This is the structure of the series:</p>
 <ul>
 <li>Part I: Kubernetes basic concepts (this post)</li>
@@ -146,12 +146,20 @@ processes that collaborate to make a Kubernetes cluster work. They constantly
 monitor the state of the cluster, and whenever the current state does not match
 the desired state, remediation actions are applied. These can include
 scheduling or unscheduling workloads, for example.</p>
-<!-- raw HTML omitted -->
+<figure>
+<img src="/static/images/kubernetes-Architecture.png" alt="Architecture of a Kubernetes cluster" />
+<figcaption>
+    <strong>Fig. 1</strong> A client, like kubectl, interacts with the
+    Kubernetes API. The master node takes care of managing pods on the worker
+    nodes. Each of these nodes runs the kubelet agent, which communicates with
+    the master, and a container runtime to execute the containers.
+</figcaption>
+</figure>
 <h2 id="pods">Pods</h2>
 <p>Each object is of a certain kind. The basic kind is <strong>Pod</strong>, which represents
 the smallest deployable unit within Kubernetes. This is often a source of
 confusion for beginners, who often expect to hear that the smallest Kubernetes
-object is the container. That's not the case, because containers need an
+object is the container. That&rsquo;s not the case, because containers need an
 environment that can execute them. A Pod embodies such an environment, and it
 can accommodate one or more containers. If there is more than one container in
 a Pod, they are tightly coupled and share resources including networking and
@@ -163,16 +171,16 @@ also mount a set of volumes that are shared among its containers.</p>
 <p>Objects are defined in YAML manifest files. As an example, this is a minimal
 YAML manifest with the spec for a Pod that runs
 <a href="https://hub.docker.com/_/nginx">nginx</a>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx
-spec:
-  containers:
-  - image: nginx:<span style="color:#ae81ff">1.17</span><span style="color:#ae81ff">.5</span>
-    name: nginx
-    ports:
-    - containerPort: <span style="color:#ae81ff">80</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
+<span style="color:#66d9ef">kind</span>: Pod
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: nginx
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">containers</span>:
+  - <span style="color:#66d9ef">image</span>: nginx:<span style="color:#ae81ff">1.17.5</span>
+    <span style="color:#66d9ef">name</span>: nginx
+    <span style="color:#66d9ef">ports</span>:
+    - <span style="color:#66d9ef">containerPort</span>: <span style="color:#ae81ff">80</span>
 </code></pre></div><p>Manifest files have certain required fields. The field <code>apiVersion</code> specifies
 which API version is used to create the object; the Kubernetes API is
 versioned, and this helps to maintain backward compatibility. This file
@@ -185,7 +193,7 @@ state and schedules a Pod with a container running nginx on port 80 on an
 available node.</p>
 <p><a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/">Documentation</a></p>
 <h2 id="controller-objects">Controller objects</h2>
-<p>Pods don't heal or repair themselves and they're not meant to run forever. They
+<p>Pods don&rsquo;t heal or repair themselves and they&rsquo;re not meant to run forever. They
 are designed to be ephemeral and disposable. For these reasons, Pods are rarely
 deployed directly. There are better ways to manage your workloads, especially
 if you need to deploy multiple copies of the same Pod: instead of using
@@ -204,22 +212,22 @@ perform the upgrade, the Deployment object will create a second ReplicaSet
 object, and then increase the number of (upgraded) Pods in the second
 ReplicaSet while it decreases the number in the first ReplicaSet.</p>
 <p>This is how a Deployment manifest file looks like:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-proxy
-spec:
-  replicas: <span style="color:#ae81ff">3</span>
-  template:
-    metadata:
-      labels:
-        name: nginx-proxy
-    spec:
-      containers:
-      - name: nginx-proxy
-        image: nginx:<span style="color:#ae81ff">1.17</span><span style="color:#ae81ff">.5</span>
-        ports:
-        - containerPort: <span style="color:#ae81ff">80</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: apps/v1
+<span style="color:#66d9ef">kind</span>: Deployment
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: nginx-proxy
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">replicas</span>: <span style="color:#ae81ff">3</span>
+  <span style="color:#66d9ef">template</span>:
+    <span style="color:#66d9ef">metadata</span>:
+      <span style="color:#66d9ef">labels</span>:
+        <span style="color:#66d9ef">name</span>: nginx-proxy
+    <span style="color:#66d9ef">spec</span>:
+      <span style="color:#66d9ef">containers</span>:
+      - <span style="color:#66d9ef">name</span>: nginx-proxy
+        <span style="color:#66d9ef">image</span>: nginx:<span style="color:#ae81ff">1.17.5</span>
+        <span style="color:#66d9ef">ports</span>:
+        - <span style="color:#66d9ef">containerPort</span>: <span style="color:#ae81ff">80</span>
 </code></pre></div><p>With this manifest, the nginx-proxy Deployment is created with three replicated
 Pods. the Pod template defines some metadata and the spec of each of the Pods
 in this replica set. In this example, each Pod encapsulates one container that
@@ -253,45 +261,70 @@ to a time-based schedule.</li>
 <h2 id="services">Services</h2>
 <p>Remember that Pods are created and destroyed dynamically. Although they can
 communicate using their assigned Pod IP addresses, these IP addresses are
-ephemeral. They're not guaranteed to remain constant when Pods are restarted or
+ephemeral. They&rsquo;re not guaranteed to remain constant when Pods are restarted or
 when scaling up and down. A <strong>Service</strong> is a static IP address that represents
-a service or a function in your infrastructure. It's a network abstraction for
+a service or a function in your infrastructure. It&rsquo;s a network abstraction for
 a set of Pods that deliver that service. These Pods are selected using a label
 selector. Here is an example of a Service:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: v1
-kind: Service
-metadata:
-  name: backend-app-service
-spec:
-  type: ClusterIP
-  ports:
-  - name: <span style="color:#e6db74">&#34;80&#34;</span>
-    port: <span style="color:#ae81ff">80</span>
-    targetPort: <span style="color:#ae81ff">8080</span>
-  selector:
-    app: backend
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
+<span style="color:#66d9ef">kind</span>: Service
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: backend-app-service
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">type</span>: ClusterIP
+  <span style="color:#66d9ef">ports</span>:
+  - <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;80&#34;</span>
+    <span style="color:#66d9ef">port</span>: <span style="color:#ae81ff">80</span>
+    <span style="color:#66d9ef">targetPort</span>: <span style="color:#ae81ff">8080</span>
+  <span style="color:#66d9ef">selector</span>:
+    <span style="color:#66d9ef">app</span>: backend
 </code></pre></div><p>This Service exposes an IP, from which it forwards all traffic it receives at
 port 80 to port 8080 on the Pods that have a label <code>app: backend</code>.</p>
 <p>There are a few different types of Services, and they build on top of each
 other. The default and simplest one is <strong>CusterIP</strong>, as in the example above.
 This type exposes the Service on a cluster-internal IP address. This is useful
 for exposing Services running inside the same cluster to each other.</p>
-<!-- raw HTML omitted -->
+<figure>
+<img src="/static/images/kubernetes-ClusterIP.png" alt="A ClusterIP Service" />
+<figcaption>
+    <strong>Fig. 2</strong> A ClusterIP Service can be reached from inside the
+    cluster. It routes traffic to all Pods matching its label selector. In this
+    example, the Service matches all Pods having the label <code>app:
+    web</code>. The Service IP can be customized with the
+    <code>clusterIP</code> field.
+</figcaption>
+</figure>
 <p>The type <strong>NodePort</strong> exposes the Service on each node’s IP at a static port,
 and can be used to access the Pods from outside the cluster.  A ClusterIP
 Service, to which the NodePort Service routes, is automatically created.</p>
-<!-- raw HTML omitted -->
+<figure>
+<img src="/static/images/kubernetes-NodePort.png" alt="A NodePort Service" />
+<figcaption>
+    <strong>Fig. 3</strong> A NodePort Service exposes its Pods on each node at
+    a random port chosen in the range 30000-32767. This port can be customized
+    with the <code>nodePort</code> field. Traffic to this port is routed by
+    Kubernetes to the Service Pods, even if they are not on the same node that
+    receives the requests. Internally, the Service is also visible as a
+    ClusterIP service.
+</figcaption>
+</figure>
 <p>The type <strong>LoadBalancer</strong> exposes the Service externally using a cloud
 provider’s load balancer, e.g. Cloud Load Balancer on GCP or Elastic Load
 Balancing on AWS. Unless you run Kubernetes in a managed environment (like
 GKE), you will have to set up the load balancer manually. NodePort and
 ClusterIP Services, to which the external load balancer routes, are
 automatically created.</p>
-<!-- raw HTML omitted -->
+<figure>
+<img src="/static/images/kubernetes-LoadBalancer.png" alt="A NodePort Service" />
+<figcaption>
+    <strong>Fig. 4</strong> A LoadBalancer Service creates the corresponding
+    NodePort Service and provisions a cloud load balancer automatically.
+</figcaption>
+</figure>
 <p><a href="https://kubernetes.io/docs/concepts/services-networking/service/">Documentation</a></p>
 <h2 id="ingresses">Ingresses</h2>
 <p>Typically, you use Services to expose your Pods inside or outside the cluster
-to other components of your architecture, but you don't route HTTP(S) traffic
+to other components of your architecture, but you don&rsquo;t route HTTP(S) traffic
 to them directly. One exception to this are cloud load balancer, which can be
 configured to accept external traffic.</p>
 <p>For HTTP(S) traffic, an <strong>Ingress</strong> offers more flexibility and features. It
@@ -303,46 +336,46 @@ controller</strong>. At the time of writing, Kubernetes officially supports two:
 <a href="https://github.com/kubernetes/ingress-gce/blob/master/README.md">GCE</a> and
 <a href="https://github.com/kubernetes/ingress-nginx/blob/master/README.md">nginx</a>.</p>
 <p>As an example, here is a manifest file that defines an Ingress backed by nginx:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: my-ingress
-  annotations:
-    kubernetes.io/ingress.class: nginx
-spec:
-  tls:
-  - hosts:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: extensions/v1beta1
+<span style="color:#66d9ef">kind</span>: Ingress
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: my-ingress
+  <span style="color:#66d9ef">annotations</span>:
+    <span style="color:#66d9ef">kubernetes.io/ingress.class</span>: nginx
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">tls</span>:
+  - <span style="color:#66d9ef">hosts</span>:
     - web1.example.com
-    secretName: letsencrypt-web1-certificate-secret
+    <span style="color:#66d9ef">secretName</span>: letsencrypt-web1-certificate-secret
     - web2.example.com
-    secretName: letsencrypt-web2-certificate-secret
-  rules:
-  - host: web1.example.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: web1
-          servicePort: <span style="color:#ae81ff">80</span>
-  - host: web2.example.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: web2
-          servicePort: <span style="color:#ae81ff">80</span>
-      - path: /api
-        backend:
-          serviceName: web2-api
-          servicePort: <span style="color:#ae81ff">3002</span>
+    <span style="color:#66d9ef">secretName</span>: letsencrypt-web2-certificate-secret
+  <span style="color:#66d9ef">rules</span>:
+  - <span style="color:#66d9ef">host</span>: web1.example.com
+    <span style="color:#66d9ef">http</span>:
+      <span style="color:#66d9ef">paths</span>:
+      - <span style="color:#66d9ef">path</span>: /
+        <span style="color:#66d9ef">backend</span>:
+          <span style="color:#66d9ef">serviceName</span>: web1
+          <span style="color:#66d9ef">servicePort</span>: <span style="color:#ae81ff">80</span>
+  - <span style="color:#66d9ef">host</span>: web2.example.com
+    <span style="color:#66d9ef">http</span>:
+      <span style="color:#66d9ef">paths</span>:
+      - <span style="color:#66d9ef">path</span>: /
+        <span style="color:#66d9ef">backend</span>:
+          <span style="color:#66d9ef">serviceName</span>: web2
+          <span style="color:#66d9ef">servicePort</span>: <span style="color:#ae81ff">80</span>
+      - <span style="color:#66d9ef">path</span>: /api
+        <span style="color:#66d9ef">backend</span>:
+          <span style="color:#66d9ef">serviceName</span>: web2-api
+          <span style="color:#66d9ef">servicePort</span>: <span style="color:#ae81ff">3002</span>
 </code></pre></div><p>This manifest files defines an Ingress that serves HTTPS traffic for
 web1.example.com and web2.example.com. Traffic to the former host is entirely
 routed to the service <code>web1</code>, whereas traffic to web2.example.com is routed to
-the services <code>web2</code> and <code>web2-api</code> depending on the path. These services don't
+the services <code>web2</code> and <code>web2-api</code> depending on the path. These services don&rsquo;t
 need to be exposed, and they could be simple ClusterIP Services.</p>
 <p>The <code>tls</code> object defines the certificate secrets. You could manually provide
 them to Kubernetes or use a tool like
-<a href="https://docs.cert-manager.io/en/latest/">cert-manager</a>, but that's outside of
+<a href="https://docs.cert-manager.io/en/latest/">cert-manager</a>, but that&rsquo;s outside of
 the scope of this simple overview.</p>
 <p><a href="https://kubernetes.io/docs/concepts/services-networking/ingress/">Documentation</a></p>
 <h2 id="volumes">Volumes</h2>
@@ -362,20 +395,20 @@ exists as long as that Pod is running on that node. An emptyDir volume survives
 container crashes, because a Pod is not deleted if one of its container
 crashes. However, it is deleted if its Pod is unscheduled.</p>
 <p>Example:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: v1
-kind: Pod
-metadata:
-  name: web
-spec:
-  containers:
-  - image: nginx:<span style="color:#ae81ff">1.17</span><span style="color:#ae81ff">.5</span>
-    name: nginx
-    volumeMounts:
-    - mountPath: /cache
-      name: cache-volume
-  volumes:
-  - name: cache-volume
-    emptyDir: {}
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
+<span style="color:#66d9ef">kind</span>: Pod
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: web
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">containers</span>:
+  - <span style="color:#66d9ef">image</span>: nginx:<span style="color:#ae81ff">1.17.5</span>
+    <span style="color:#66d9ef">name</span>: nginx
+    <span style="color:#66d9ef">volumeMounts</span>:
+    - <span style="color:#66d9ef">mountPath</span>: /cache
+      <span style="color:#66d9ef">name</span>: cache-volume
+  <span style="color:#66d9ef">volumes</span>:
+  - <span style="color:#66d9ef">name</span>: cache-volume
+    <span style="color:#66d9ef">emptyDir</span>: {}
 </code></pre></div><p>A <strong>secret</strong> Volume is used to pass sensitive information to a Pod. The secret
 must exist before it can be mounted as a Volume (we’ll do this in part II of
 this series). These Volumes are backed by tmpfs and thus their contents are
@@ -383,25 +416,25 @@ never written to disk.</p>
 <p>For example, a secret Volume could be use to pass htpasswd-hashed data to
 nginx. In the following example, the data stored in the <code>HTPASSWD</code> key of the
 secret named <code>htpasswd</code> is mounted at <code>/auth/htpasswd</code> as read-only:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: v1
-kind: Pod
-metadata:
-  name: web
-spec:
-  containers:
-  - image: nginx:<span style="color:#ae81ff">1.17</span><span style="color:#ae81ff">.5</span>
-    name: nginx
-    volumeMounts:
-    - mountPath: /auth
-      name: htpasswd
-      readOnly: <span style="color:#66d9ef">true</span>
-  volumes:
-  - name: htpasswd
-    secret:
-      secretName: htpasswd
-      items:
-      - key: HTPASSWD
-        path: htpasswd
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
+<span style="color:#66d9ef">kind</span>: Pod
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: web
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">containers</span>:
+  - <span style="color:#66d9ef">image</span>: nginx:<span style="color:#ae81ff">1.17.5</span>
+    <span style="color:#66d9ef">name</span>: nginx
+    <span style="color:#66d9ef">volumeMounts</span>:
+    - <span style="color:#66d9ef">mountPath</span>: /auth
+      <span style="color:#66d9ef">name</span>: htpasswd
+      <span style="color:#66d9ef">readOnly</span>: <span style="color:#66d9ef">true</span>
+  <span style="color:#66d9ef">volumes</span>:
+  - <span style="color:#66d9ef">name</span>: htpasswd
+    <span style="color:#66d9ef">secret</span>:
+      <span style="color:#66d9ef">secretName</span>: htpasswd
+      <span style="color:#66d9ef">items</span>:
+      - <span style="color:#66d9ef">key</span>: HTPASSWD
+        <span style="color:#66d9ef">path</span>: htpasswd
 </code></pre></div><p>There are also some cloud provider-specific types like
 <strong>awsElasticBlockStore</strong>, <strong>azureDisk</strong>, or <strong>gcePersistentDisk</strong> that supply
 persistent, network-based storage. There are limitations, as usually you can
@@ -411,22 +444,22 @@ mounted.</p>
 <p>As an example, after creating a GCE persistent disk with <code>gcloud</code>,</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ gcloud compute disks create --size 30GB --zone<span style="color:#f92672">=</span>us-east1-b static-data-disk
 </code></pre></div><p>you can mount it in a Pod as follows:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: v1
-kind: Pod
-metadata:
-  name: web
-spec:
-  containers:
-  - image: nginx:<span style="color:#ae81ff">1.17</span><span style="color:#ae81ff">.5</span>
-    name: nginx
-    volumeMounts:
-    - mountPath: /var/www/html
-      name: static-data
-  volumes:
-  - name: static-data
-    gcePersistentDisk:
-      pdName: static-data-disk
-      fsType: ext4
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
+<span style="color:#66d9ef">kind</span>: Pod
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: web
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">containers</span>:
+  - <span style="color:#66d9ef">image</span>: nginx:<span style="color:#ae81ff">1.17.5</span>
+    <span style="color:#66d9ef">name</span>: nginx
+    <span style="color:#66d9ef">volumeMounts</span>:
+    - <span style="color:#66d9ef">mountPath</span>: /var/www/html
+      <span style="color:#66d9ef">name</span>: static-data
+  <span style="color:#66d9ef">volumes</span>:
+  - <span style="color:#66d9ef">name</span>: static-data
+    <span style="color:#66d9ef">gcePersistentDisk</span>:
+      <span style="color:#66d9ef">pdName</span>: static-data-disk
+      <span style="color:#66d9ef">fsType</span>: ext4
 </code></pre></div><p>There are additional restrictions: the Pod must be running on a GCE VM, and
 this VM needs to be in the same GCP project and zone of the persistent disk.</p>
 <p><a href="https://kubernetes.io/docs/concepts/storage/volumes/">Documentation</a></p>
@@ -512,6 +545,7 @@ if (!doNotTrack) {
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 
+<script src="//instant.page/1.0.0" type="module" integrity="sha384-6w2SekMzCkuMQ9sEbq0cLviD/yR2HfA/+ekmKiBnFlsoSvb/VmQFSi/umVShadQI"></script>
 </body>
 </html>
 
