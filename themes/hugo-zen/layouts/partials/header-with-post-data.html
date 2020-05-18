@@ -3,6 +3,8 @@
 <head>
 {{ partial "head.html" }}
 {{ $isHomePage := eq .Title .Site.Title }}
+<title>{{ .Title }}</title>
+<meta name="description" content="{{ .Params.summary }}">
 <script type="application/ld+json">
 {
   "@context": "http://schema.org",
@@ -32,13 +34,12 @@
 }
 </script>
 </head>
+
 <body>
-
-<div class="container">
-
-	<header role="banner">
-		<div class="header-logo">
-			<a href="/"><img src="{{ .Site.Params.logo }}" width="60" height="60" alt="{{ .Site.Title }}"></a>
-		</div>
-		{{ if eq $isHomePage true }}<h1 class="site-title">{{ .Site.Title }}</h1>{{ end }}
-	</header>
+  <div class="container">
+    <header role="banner">
+      <div class="header-logo">
+        <a href="/"><img src="{{ .Site.Params.logo }}" width="60" height="60" alt="{{ .Site.Title }}"></a>
+      </div>
+      {{ if eq $isHomePage true }}<h1 class="site-title">{{ .Site.Title }}</h1>{{ end }}
+    </header>

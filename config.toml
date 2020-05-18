@@ -1,6 +1,6 @@
 languageCode = "en-us"
 title = "Signal to Noise"
-baseURL = "http://signal-to-noise.xyz/"
+baseURL = "https://signal-to-noise.xyz/"
 theme = "hugo-zen"
 name = "Michele Lacchia"
 copyright = "Created by Michele Lacchia, built with Hugo"
@@ -13,9 +13,11 @@ tag = "tags"
 category = "categories"
 
 [params]
+author = "Michele Lacchia"
 publisherName = "Signal to Noise"
 logo = "/static/images/signal-to-noise.png"
 github = "https://github.com/rubik/"
+linkedin = "https://www.linkedin.com/in/michele-lacchia/"
 obfuscated_email = """
 document.write('<'+'a'+' '+'h'+'r'+'e'+'f'+'='+"'"+'m'+'a'+'i'+'&'+'#'+'1'+'0'+
 '8'+';'+'t'+'o'+'&'+'#'+'5'+'8'+';'+'&'+'#'+'1'+'0'+'9'+';'+'i'+'c'+'h'+'&'+

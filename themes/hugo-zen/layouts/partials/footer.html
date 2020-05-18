@@ -4,6 +4,7 @@
             <ul>
                 {{ with .Site.Params.obfuscated_email }}<li><script>{{ . | safeJS }}</script>{{ end }}</li>
                 {{ with .Site.Params.github }}<li><a href="{{ . }}" target="_blank">GitHub</a>{{ end }}</li>
+                {{ with .Site.Params.linkedin }}<li><a href="{{ . }}" target="_blank">LinkedIn</a>{{ end }}</li>
                 <li><a href="/page/about/">About me</a></li>
                 <li><a href="http://feeds.feedburner.com/signal-to-noise">RSS</a></li>
             </ul>
@@ -12,7 +13,9 @@
 		<div class="copyright">{{ .Site.Copyright | safeHTML }}</div>
 	</footer>
 </div>
+{{ if not (in (string .Site.BaseURL) "localhost") }}
 {{ template "_internal/google_analytics_async.html" . }}
+{{ end }}
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 {{ if .GetParam "hasMath"}}

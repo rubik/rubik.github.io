@@ -4,6 +4,8 @@
 </head>
 {{ partial "head.html" }}
 {{ $isHomePage := eq .Title .Site.Title }}
+<title>{{ .Title }}</title>
+<meta name="description" content="{{ .Params.summary }}">
 <body>
 
 <div class="container">
