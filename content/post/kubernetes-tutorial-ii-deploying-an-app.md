@@ -32,6 +32,8 @@ application is running on localhost:1323 and that we have
 [HTTPie](https://httpie.org/) installed (I prefer it over cURL):
 
 ```shell
+# the GET method is the default one and can be omitted;
+# localhost is also the default host
 $ http :1323/users/249  # user 249 is not in the database, so the we get 0
 0
 $ http POST :1323/users/249  # we increment the value associated with user 249
@@ -45,9 +47,6 @@ $ http :1323/users/249
 $ http :1323/users/32
 0
 ```
-
-(The GET method is the default one and can be omitted; localhost is also the
-default host.)
 
 The architecture of this web application is quite simple: an nginx instance
 proxies all the traffic to a Go web server, which communicates with a Redis
@@ -89,8 +88,8 @@ will pay for the Compute instances you use, as well as for any cloud load
 balancers you request.
 
 However, if you follow the tutorial and you delete the project when you are
-done, you should expect charges in the order of a few dollars. You can even use
-Google Cloud's own [Pricing
+done, you should expect charges in the order of a few dollars at most. You can
+even use Google Cloud's own [Pricing
 calculator](https://cloud.google.com/products/calculator/) to estimate the
 charges.
 
@@ -132,8 +131,10 @@ two components are both completely stateless: these instances don't need a
 stable network identity or persistent storage. They could be scaled up and down
 at any moment without issues.
 
-For these reasons, the **Deployment** controller is the right abstraction in
-this case. Let's create the manifest the nginx instance:
+For these reasons, the
+[**Deployment**](/post/kubernetes-tutorial/#controller-objects) controller is
+the right abstraction in this case. Let's create the manifest the nginx
+instance:
 
 ```yaml
 apiVersion: apps/v1
@@ -225,52 +226,6 @@ values are:
 * Unknown: if the state of the Pod is not known to the control plane; this
   could indicate the presence of communication issues.
 
-
-#### Health checks
-Note that Kubernetes reports that our Pods are fully ready: `1/1` means that one
-container (out of a total of one) in each Pod is ready. But how does Kubernetes
-know when the nginx container is ready to accept requests? By default,
-Kubernetes marks a Pod as ready and begins to send traffic when all its
-containers start, and restarts the containers when they crash. While this can
-be acceptable for some simpler deployments, a more robust approach is necessary
-for production deployments.
-
-For example, container might need some warm up time before it gets to an
-operational state. This could mean some requests are dropped if Kubernetes
-considers the container ready when it's not. To remedy, we can configure
-readiness and liveness probes.
-
-* **Readiness** probes are designed to let Kubernetes know when a Pod is ready
-  to accept traffic. A common misconception is that readiness probes are only
-  active during startup. This is not true: Kubernetes keeps testing for
-  readiness during the whole lifetime of the Pod, and pauses and resumes
-  routing to the Pod according to the readiness probe response.
-* **Liveness** probes indicate wheter a container is alive or not: if it's not
-  it will be restarted by Kubernetes. This probe can be used to detect
-  deadlocks or other broken states that don't necessarily result in a crash.
-
-There are three types of probes: HTTP checks, TCP checks, and checks performed
-by running commands inside the container. For our nginx container, we'll use
-the second one. This is accomplished by adding the following configuration in
-the `spec.template.spec.containers.0` object of our manifest:
-
-```yaml
-readinessProbe:
-  tcpSocket:
-    port. 80
-  periodSeconds: 2
-livenessProbe:
-  tcpSocket:
-    port: 80
-  initialDelaySeconds: 20
-  periodSeconds: 30
-```
-
-We configure the same health check in both cases, with a different frequency.
-If the container is unresponsive for a longer period of time, it will be
-restarted. More details on the probe types and all the options are found
-[here](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
-
 #### Deployment updates
 Finally, let's consider Deployment updates. If we make changes to the manifest
 file, we can push the update with `kubectl apply -f <manifest-file>`.
@@ -286,7 +241,7 @@ quite handy during development. It consists in terminating all the running
 instances and then recreating them with the newer version.
 
 While the **RollingUpdate** strategy can prevent downtime, if configured
-appropriately, with the **Recreate** one that's not possible. Let's configure
+appropriately, that's not possible with the **Recreate** one. Let's configure
 our update to prevent downtime. We'll add the following configuration to the
 `spec` object:
 
@@ -302,6 +257,15 @@ With the above parameters, the frontend Deployment will create one additional
 Pod during the update and it will ensure that no Pods are unavailable at any
 time. Additional update strategies are discussed
 [here](https://blog.container-solutions.com/kubernetes-deployment-strategies).
+
+
+> **Heads up!** The pods in the old replica sets are terminated and the traffic
+> switches to the new pods when they are ready. But how does Kubernetes know
+> when the new pods are ready to accept traffic? It actually doesn't, and it
+> will consider the new pods ready as soon as the container process starts. Of
+> course, that is rarely the desired behavior, so we can instruct Kubernetes to
+> poll the pods periodically in order to determine if they are ready or not,
+> alive or not. That is accomplished by setting up health checks.
 
 
 #### Final configuration
@@ -337,15 +301,6 @@ spec:
         name: nginx
         ports:
         - containerPort: 80
-        readinessProbe:
-          tcpSocket:
-            port: 80
-          periodSeconds: 2
-        livenessProbe:
-          tcpSocket:
-            port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 30
       restartPolicy: Always
 ```
 
@@ -395,23 +350,11 @@ spec:
         name: app
         ports:
         - containerPort: 1323
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: 1323
-          periodSeconds: 2
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 1323
-          initialDelaySeconds: 30
-          periodSeconds: 30
       restartPolicy: Always
 ```
 
-This manifest is almost identical to the previous one, with the only difference
-that in this case the health checks are performed by requesting a particular
-HTTP endpoint.
+This manifest is almost identical to the previous one, with the only
+differences being the container image and command.
 
 After deploying, this is the output of `kubectl get pods`:
 
@@ -421,6 +364,16 @@ backend-78d87dd74b-pk7tr    1/1     Running   0          14m
 backend-78d87dd74b-wth2f    1/1     Running   0          14m
 frontend-59f5cf4948-96drd   1/1     Running   0          23m
 frontend-59f5cf4948-gcrll   1/1     Running   0          23m
+```
+
+We didn't deploy those Pods directly. Instead, they are managed by the
+Deployment controllers. We can inspect the currently active deployments by
+running `kubectl get deployments`:
+
+```shell
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+frontend                    2/2     2            2           23m
+backend                     2/2     2            2           14m
 ```
 
 ## Networking between Pods

@@ -23,7 +23,7 @@ sources. The first part will only cover some theory, and then we'll dive into a
 practical example. This is the structure of the series:
 
 * Part I: Kubernetes basic concepts (this post)
-* Part II: [A practical and realistic example](/post/kubernetes-tutorial-ii/)
+* Part II: [A practical and realistic example](/post/kubernetes-tutorial-ii-deploying-an-app/)
 * Part III: Best practices (still WIP)
 
 #### Table of contents
@@ -124,9 +124,10 @@ block defines the container, which in this case is built from the nginx image
 and exposes port 80.
 
 When the above manifest is deployed (we’ll see how in [part
-II](/post/kubernetes-tutorial-ii/) of this series), the control plane
-determines that the desired state differs from the current state and schedules
-a Pod with a container running nginx on port 80 on an available node.
+II](/post/kubernetes-tutorial-ii-deploying-an-app/) of this series), the
+control plane determines that the desired state differs from the current state
+and schedules a Pod with a container running nginx on port 80 on an available
+node.
 
 [Documentation](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/)
 
@@ -388,8 +389,8 @@ spec:
 
 A **secret** Volume is used to pass sensitive information to a Pod. The secret
 must exist before it can be mounted as a Volume (we’ll do this in [part
-II](/post/kubernetes-tutorial-ii/) of this series). These Volumes are backed by
-tmpfs and thus their contents are never written to disk.
+II](/post/kubernetes-tutorial-ii-deploying-an-app/) of this series). These
+Volumes are backed by tmpfs and thus their contents are never written to disk.
 
 For example, a secret Volume could be use to pass htpasswd-hashed data to
 nginx. In the following example, the data stored in the `HTPASSWD` key of the
@@ -475,5 +476,5 @@ this VM needs to be in the same GCP project and zone of the persistent disk.
 ## Conclusion
 This tutorial was meant to give the reader a basic understanding of the most
 important concepts of Kubernetes. Most of these will be put into practice in
-[part II](/post/kubernetes-tutorial-ii/) of this series, where we will deploy a
-very simple application backed by Redis.
+[part II](/post/kubernetes-tutorial-ii-deploying-an-app/) of this series, where
+we will deploy a very simple application backed by Redis.
