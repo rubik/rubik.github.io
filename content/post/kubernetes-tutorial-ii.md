@@ -29,7 +29,7 @@ otherwise; the second one increments the value associated to a user.
 
 For example, the following could be a valid HTTP session, assuming that our
 application is running on localhost:1323 and that we have
-[HTTPie](https://httpie.org/) installed:
+[HTTPie](https://httpie.org/) installed (I prefer it over cURL):
 
 ```shell
 $ http :1323/users/249  # user 249 is not in the database, so the we get 0
@@ -66,7 +66,7 @@ instance to store and retrieve data.
 This application is of course a contrived example. In this case, an nginx
 instance isn't even strictly needed. However, nginx instances (or anything
 equivalent, for that matter) are frequently used to proxy the actual web
-applications in real scenarios, so I chose to include it. E.g. nginx could also
+applications in real scenarios, so I chose to include it. nginx could also
 serve static files, if your application needs them.
 
 The code for this web application, as well as the Dockerfile's and the manifest
@@ -97,15 +97,12 @@ charges.
 If you choose to do this, you will need to take the following steps to prepare
 your environment:
 
-1) install the [Google Cloud SDK](https://cloud.google.com/sdk/install);
-
-2) install the kubectl tool with `gcloud components install kubectl`;
-
-3) create a Kubernetes cluster from [the
+1. install the [Google Cloud SDK](https://cloud.google.com/sdk/install);
+2. install the kubectl tool with `gcloud components install kubectl`;
+3. create a Kubernetes cluster from [the
 console](https://console.cloud.google.com/kubernetes) --- note that it may take a
 few minutes for your cluster to become ready and operational;
-
-4) save the cluster credentials on your computer with `gcloud container
+4. save the cluster credentials on your computer with `gcloud container
 clusters get-credentials CLUSTER_NAME`, where `CLUSTER_NAME` is the name of the
 cluster you have created in step 3.
 
@@ -122,13 +119,11 @@ don't want to use GKE.
 
 You will need to take the following steps to prepare your environment:
 
-1) install `kubectl` --- [instructions
+1. install `kubectl` --- [instructions
 here](https://kubernetes.io/docs/tasks/tools/install-kubectl/);
-
-2) install Minikube --- [instructions
+2. install Minikube --- [instructions
 here](https://kubernetes.io/docs/tasks/tools/install-minikube/);
-
-3) run `minikube start` to create a local cluster.
+3. run `minikube start` to create a local cluster.
 
 
 ## Deployments
