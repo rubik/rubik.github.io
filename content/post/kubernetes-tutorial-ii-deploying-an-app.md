@@ -512,6 +512,15 @@ As we can see, our request was routed through the Pod
 <figcaption>
     <strong>Fig. 3</strong>&emsp;The cluster can now communicate with the
     external world and the pods are communicating between them. It's now a
-    functional cluster.
+    functional cluster. The user endpoints are not working yet, as they depend
+    on Redis.
 </figcaption>
 </figure>
+
+
+## Adding persistence
+The cluster is now functional, but to make the tutorial more realistic we are
+going to add persistence through Redis. That will enable us to use the users
+endpoints which we described at the start of this post.
+
+## Recap
