@@ -25,7 +25,9 @@ The application that we will deploy is a simple web application that, while
 minimal, is supposed to mimic a real-world architecture. It exposes two
 endpoints, `GET /users/:id` and `POST /users/:id`: the former returns the
 numeric value associated to a user, if present in the database, and 0
-otherwise; the second one increments the value associated to a user.
+otherwise; the second one increments the value associated to a user. There's an
+additional endpoint, `GET /healthz`, which simply returns a check mark and it's
+used to test the connectivity to the application.
 
 For example, the following could be a valid HTTP session, assuming that our
 application is running on localhost:1323 and that we have
@@ -379,6 +381,16 @@ frontend                    2/2     2            2           23m
 backend                     2/2     2            2           14m
 ```
 
+<figure>
+<img src="/static/images/kubernetes-tutorial-ii-Architecture - 1.png" alt="Status of the cluster after the deployments" />
+<figcaption>
+    <strong>Fig. 2</strong>&emsp;This is how the cluster looks like at this
+    point. We have deployed the frontend and backend components of our
+    architecture, but they are currently doing nothing as there is no
+    networking between them or the external world.
+</figcaption>
+</figure>
+
 ## Networking between Pods
 We are now ready to set up the Services that will allow our Pods to
 communicate. We will create a LoadBalancer Service for the nginx Pods, since
@@ -494,3 +506,12 @@ $
 
 As we can see, our request was routed through the Pod
 `frontend-99d9cfbc9-dbbdj`, while the other Pod hasn't served any traffic yet.
+
+<figure>
+<img src="/static/images/kubernetes-tutorial-ii-Architecture - 2.png" alt="Status of the cluster after the deployments" />
+<figcaption>
+    <strong>Fig. 3</strong>&emsp;The cluster can now communicate with the
+    external world and the pods are communicating between them. It's now a
+    functional cluster.
+</figcaption>
+</figure>
