@@ -521,6 +521,6 @@ As we can see, our request was routed through the Pod
 ## Adding persistence
 The cluster is now functional, but to make the tutorial more realistic we are
 going to add persistence through Redis. That will enable us to use the users
-endpoints which we described at the start of this post.
+endpoints which we described at the beginning of the post.
 
 ## Recap
