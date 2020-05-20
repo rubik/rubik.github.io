@@ -48,6 +48,9 @@ $ http :1323/users/32
 0
 ```
 
+We will not get into the details of how the Go application works, as that is
+completely orthogonal to the deployment, thanks to containers.
+
 The architecture of this web application is quite simple: an nginx instance
 proxies all the traffic to a Go web server, which communicates with a Redis
 instance to store and retrieve data.
