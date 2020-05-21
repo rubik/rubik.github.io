@@ -465,7 +465,7 @@ nginx        LoadBalancer   10.97.210.57    <pending>     80:31494/TCP   1m14
 ```
 
 As we can see, the ClusterIP has no external IP, while the LoadBalancer shows
-"pending". That's because my cluster is local and runs throuh Minikube. If we
+"pending". That's because my cluster is local and runs through Minikube. If we
 were communicating with a cloud Kubernetes installation (e.g. GKE), the load
 balancer would be provisioned automatically and the external IP would appear
 after a few seconds. In this case, howerver, we need to run `minikube tunnel`
