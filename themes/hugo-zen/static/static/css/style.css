@@ -9,7 +9,7 @@ h4,h5,h6{font-size:1.7rem}
 img{max-width:100%;height:auto;vertical-align:middle;border:0}
 header,footer{margin:4rem 0;text-align:center}
 main{margin:4rem 0}
-.container{width:90%;max-width:670px}
+.container{width:90%;max-width:760px}
 .header-logo img{width:60px;height:60px;border-radius:50%;border:4px solid #E1E1E1}
 .header-logo img:hover{border-color:#F1F1F1}
 .site-title{margin-top:2rem}
