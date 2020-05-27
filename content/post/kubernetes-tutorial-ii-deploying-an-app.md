@@ -523,4 +523,28 @@ The cluster is now functional, but to make the tutorial more realistic we are
 going to add persistence through Redis. That will enable us to use the users
 endpoints which we described at the beginning of the post.
 
+Before deploying the Redis container, we will take care of storage. In
+Kubernetes, storage resources are represented by **PersistentVolume** objects.
+These resources are consumed by **PersistentVolumeClaim** objects, just like
+Pods consume node compute resources. Therefore, we start by deploying the
+following PersistentVolumeClaim:
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    service: redis
+  name: redis-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+```
+
+In the above specification,
+resources request -- we ask for 10GB in this case,
+
 ## Recap
