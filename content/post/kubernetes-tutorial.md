@@ -458,7 +458,7 @@ this VM needs to be in the same GCP project and zone of the persistent disk.
 [Documentation](https://kubernetes.io/docs/concepts/storage/volumes/)
 
 ## Recap
-* Kubernetes enforces the state you describes through manifest files;
+* Kubernetes enforces the state you describe through manifest files;
 * The desired state is abstracted by **objects**;
 * Pods are managed directly by Kubernetes and they are ephemeral;
 * Your application will be usually deployed with a **Deployment** or a
