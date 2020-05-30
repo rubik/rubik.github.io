@@ -58,7 +58,7 @@ proxies all the traffic to a Go web server, which communicates with a Redis
 instance to store and retrieve data.
 
 <figure>
-<img src="/static/images/Kubernetes tutorial - Architecture.png" alt="Architecture of the application we will deploy" />
+<img src="/static/images/kubernetes-tutorial-ii-Architecture.png" alt="Architecture of the application we will deploy" />
 <figcaption>
     <strong>Fig. 1</strong>&emsp;An HTTP client interacts with the nginx instance,
     which proxies all the traffic to the web application. We will also set up
@@ -264,12 +264,12 @@ time. Additional update strategies are discussed
 [here](https://blog.container-solutions.com/kubernetes-deployment-strategies).
 
 
-> **Heads up!** The pods in the old replica sets are terminated and the traffic
-> switches to the new pods when they are ready. But how does Kubernetes know
-> when the new pods are ready to accept traffic? It actually doesn't, and it
-> will consider the new pods ready as soon as the container process starts. Of
-> course, that is rarely the desired behavior, so we can instruct Kubernetes to
-> poll the pods periodically in order to determine if they are ready or not,
+> **Heads up**&emsp;The pods in the old replica sets are terminated and the
+> traffic switches to the new pods when they are ready. But how does Kubernetes
+> know when the new pods are ready to accept traffic? It actually doesn't, and
+> it will consider the new pods ready as soon as the container process starts.
+> Of course, that is rarely the desired behavior, so we can instruct Kubernetes
+> to poll the pods periodically in order to determine if they are ready or not,
 > alive or not. That is accomplished by setting up health checks.
 
 
@@ -636,7 +636,7 @@ ReplicaSet. However, Pods controlled by a StatefulSet are not interchangeable:
 each Pod has a unique identifier that is maintained no matter where it is
 scheduled.
 
-> **Heads up** All replicas of a Deployment share the same
+> **Heads up**&emsp;All replicas of a Deployment share the same
 > PersistentVolumeClaim. Since the replica Pods created are identical to each
 > other, only volumes with modes ReadOnlyMany or ReadWriteMany can work in this
 > setting. Even Deployments with one replica using a ReadWriteOnce volume are
@@ -684,8 +684,8 @@ spec:
 
 Notably, we declare the volume `redis-data`, bound to the PersistentVolumeClaim
 `redis-data`, which is mounted at `/data`. The `redis` Docker image stores data
-at `/data` by default. The addional arguments in `args` just instruct Redis to
-save data at a certain frequency. The above configuration is saved in
+at `/data` by default. The additional arguments in `args` just instruct Redis
+to save data at a certain frequency. The above configuration is saved in
 `deploy/redis/20-statefulset.yaml` and applied with the usual command
 
 ```shell
@@ -714,6 +714,79 @@ spec:
 
 We call the Service `redis`, so that it can be reached by our backend
 application (recall that we defined the environment variable `REDIS_URL`).
+
+Finally! The cluster is now fully functional.
+
+<figure>
+<img src="/static/images/kubernetes-tutorial-ii-Architecture.png" alt="Final state of the cluster" />
+<figcaption>
+    <strong>Fig. 3</strong>&emsp;Final state of the cluster. Redis, backed by
+    persistent storage, is queried by the backend application. External traffic
+    to the backend application is proxied by nginx.
+</figcaption>
+</figure>
+
+We can test the application behavior by calling the /users endpoints:
+
+```shell
+$ http 10.103.127.182/healthz
+✓
+$ http 10.103.127.182/users/10  # user 10 does not exist, we get 0
+0
+$ http 10.103.127.182/users/10  # user 10 does not exist, we get 0
+0
+$ http POST 10.103.127.182/users/10  # increment user 10
+1
+$ http 10.103.127.182/users/10  # now we get 1
+1
+$ http POST 10.103.127.182/users/10  # increment user 10 again
+2
+$ http POST 10.103.127.182/users/10  # ...
+3
+$ http POST 10.103.127.182/users/10
+4
+$ http 10.103.127.182/users/10
+4
+```
+
+Remember that we are querying the external IP that we read from `kubectl get
+svc` (and running `minikube tunnel` as well).
+
+#### Aside: DNS resolution within the cluster
+You might be asking yourself, how does the backend app find the Redis service
+IP?  This is a good question. Kubernetes offers a DNS cluster addon Service
+that runs as the kube-dns Service in the `kube-system` namespace. You can check
+if your cluster is running kube-dns by running the following command:
+
+```shell
+$ kubectl get svc -n kube-system
+NAME       TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                  AGE
+kube-dns   ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP,9153/TCP   2h
+```
+
+If this Service is running, then it automatically assigns a DNS record to each
+Service name. Otherwise, the default A/AAAA record format for a Service is
+
+```
+{service name}.{namespace}.svc.{cluster domain}
+```
+
+where the default value for `{cluster domain}` is usually `cluster.local`. We
+can test the DNS resolution from a Pod with `nslookup`:
+
+```shell
+$ kubectl exec -it backend-78d87dd74b-pk7tr -- nslookup redis
+nslookup: can't resolve '(null)': Name does not resolve
+
+Name:      redis
+Address 1: 10.97.34.93 redis.default.svc.cluster.local
+```
+
+Do not pay attention to the first line of the nslookup output. It's
+weirdly-worded message that [doesn't actually indicate an
+error](https://stackoverflow.com/a/57066045/448496). The output tells us that
+indeed, the `redis` name resolves to 10.97.34.93, which is the ClusterIP of the
+Redis Service.
 
 ## Recap
 
