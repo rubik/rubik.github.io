@@ -469,8 +469,8 @@ As we can see, the ClusterIP has no external IP, while the LoadBalancer shows
 were communicating with a cloud Kubernetes installation (e.g. GKE), the load
 balancer would be provisioned automatically and the external IP would appear
 after a few seconds. In this case, howerver, we need to run `minikube tunnel`
-in order to obtain an external IP. After running that command separately, we
-can check the status of our Services again:
+in a separate shell in order to obtain an external IP. After launching that
+command separately, we can check the status of our Services again:
 
 ```shell
 $ kubectl get svc
@@ -506,6 +506,22 @@ $
 
 As we can see, our request was routed through the Pod
 `frontend-99d9cfbc9-dbbdj`, while the other Pod hasn't served any traffic yet.
+We can fetch the output of our backend pods too, although the Go application is
+configured not to log accesses, so we only see the program start output:
+
+```shell
+$ kubectl logs backend-78d87dd74b-pk7tr
+
+   ____    __
+  / __/___/ /  ___
+ / _// __/ _ \/ _ \
+/___/\__/_//_/\___/ v3.3.10-dev
+High performance, minimalist Go web framework
+https://echo.labstack.com
+____________________________________O/_______
+                                    O\
+⇨ http server started on [::]:1323
+```
 
 <figure>
 <img src="/static/images/kubernetes-tutorial-ii-Architecture - 2.png" alt="Status of the cluster after the deployments" />
@@ -544,7 +560,84 @@ spec:
       storage: 10Gi
 ```
 
-In the above specification,
-resources request -- we ask for 10GB in this case,
+In the above specification, there are two important configuration options.
+
+The **access mode** describes how the volume is mounted; the possible values
+are:
+
+1. `ReadWriteOnce` &ndash; the volume can be mounted as read-write by a
+ single node
+2. `ReadOnlyMany` &ndash; the volume can be mounted as read-only by many
+ nodes
+3. `ReadWriteMany` &ndash; the volume can be mounted as read-write by many
+ nodes
+
+Not every storage provider supports all the access modes. E.g. an
+[`awsElasticBlockStore`](https://kubernetes.io/docs/concepts/storage/volumes/#awselasticblockstore)
+volume only supports `ReadWriteOnce`, whereas a
+[`gcePersistentDisk`](https://kubernetes.io/docs/concepts/storage/volumes/#gcepersistentdisk)
+supports both `ReadWriteOnce` and `ReadOnlyMany`. Importantly, a volume can
+only be mounted using one access mode at a time, even if it supports many.
+
+The **resources request** specifies how much storage we request &mdash; we ask
+for 10GB in this case. If in the future we need more storage, we can request a
+larger volume for a PersistentVolumeClaim by editing the configuration and
+applying it again. Kubernetes will resize the existing volume instead of
+creating a new PersistentVolume.  Currently, one can only resize volumes
+containing a filesystem if the filesystem is XFS, ext3 or ext4.
+
+We save the PersistentVolumeClaim configuration in
+`deploy/redis/10-persistentvolumeclaim.yaml` and we apply it with the usual
+command:
+
+```shell
+$ kubectl apply -f deploy/redis/10-persistentvolumeclaim.yaml
+```
+
+We can verify that the volume was provisioned by inspecting the volume claims
+and the volumes:
+
+```shell
+$ kubectl get pvc
+NAME         STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+redis-data   Bound    pvc-75fc6d82-7b14-40b5-beb3-e50c6015323a   10Gi       RWO            standard       30s
+```
+
+The `STATUS` column indicates that the claim is bound to a volume, which is
+shown in the `VOLUME` column. We can request information about that particular
+volume as follows:
+
+```shell
+$ kubectl get pv pvc-75fc6d82-7b14-40b5-beb3-e50c6015323a
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                STORAGECLASS   REASON   AGE
+pvc-75fc6d82-7b14-40b5-beb3-e50c6015323a   10Gi       RWO            Delete           Bound    default/redis-data   standard
+```
+
+Note that the `RECLAIM POLICY` is set to `Delete`. That means that if the
+PersistentVolumeClaim is deleted, Kubernetes will remove both the Volume it is
+bound to, as well as the associated storage asset. The other option is
+`Retain`. With this mode, the PersistentVolume object will not be deleted, but
+the volume will be considered "released". The cluster administrator will need
+to perform [manual
+reclamation](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#retain)
+of the resource.
+
+We are finally ready to deploy Redis with persistence enabled. Since our Redis
+instance needs to save data to persistence storage, it's a stateful
+application. The correct abstraction for this kind of applications is the
+**StatefulSet** controller. Like a Deployment controller, it takes care of
+manageing Pods in a ReplicaSet. However, Pods controlled by a StatefulSet are
+not interchangeable: each Pod has a unique identifier that is maintained no
+matter where it is scheduled.
 
 ## Recap
+
+## What we didn't cover
+* If you don't want to use a managed solution like Google Kubernetes Engine
+  (GKE) or Amazon Elastic Kubernetes Service (EKS), you will have to set up
+  Kubernetes yourself on VMs or bare metal, and that is not simple.  If you are
+  interested, I recommend you read the
+  [`kubeadm`](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/)
+  documentation or the excellent [Kubernetes The Hard
+  Way](https://github.com/kelseyhightower/kubernetes-the-hard-way) series by
+  Kelsey Hightower.
