@@ -351,6 +351,9 @@ spec:
       containers:
       - args: ['/bin/app']
         image: c1524db4f1/kubernetes-tutorial-backend:v0.2.0
+        env:
+          - name: REDIS_URL
+            value: redis:6379
         imagePullPolicy: Always
         name: app
         ports:
@@ -359,7 +362,10 @@ spec:
 ```
 
 This manifest is almost identical to the previous one, with the only
-differences being the container image and command.
+differences being the container image and command, and the `env` field. As the
+name implies, the `env` field allows us to inject environment variables inside
+the container. In this case, we specify the variable `REDIS_URL` which we will
+need later.
 
 After deploying, this is the output of `kubectl get pods`:
 
@@ -623,12 +629,91 @@ reclamation](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#ret
 of the resource.
 
 We are finally ready to deploy Redis with persistence enabled. Since our Redis
-instance needs to save data to persistence storage, it's a stateful
-application. The correct abstraction for this kind of applications is the
-**StatefulSet** controller. Like a Deployment controller, it takes care of
-manageing Pods in a ReplicaSet. However, Pods controlled by a StatefulSet are
-not interchangeable: each Pod has a unique identifier that is maintained no
-matter where it is scheduled.
+instance needs to sync to persistence storage, it's a stateful application. The
+correct abstraction for this kind of applications is the **StatefulSet**
+controller. Like a Deployment controller, it takes care of managing Pods in a
+ReplicaSet. However, Pods controlled by a StatefulSet are not interchangeable:
+each Pod has a unique identifier that is maintained no matter where it is
+scheduled.
+
+> **Heads up** All replicas of a Deployment share the same
+> PersistentVolumeClaim. Since the replica Pods created are identical to each
+> other, only volumes with modes ReadOnlyMany or ReadWriteMany can work in this
+> setting. Even Deployments with one replica using a ReadWriteOnce volume are
+> not recommended. This is because the default Deployment strategy will create
+> a second Pod before bringing down the first pod on a recreate. The Deployment
+> may fail in a deadlock as the second Pod can't start because the
+> ReadWriteOnce volume is already in use, and the first Pod won't be removed
+> because the second Pod has not yet started. Instead, it's best to use a
+> StatefulSet with ReadWriteOnce volumes, which is what we are doing in this
+> case even if we only have a single Redis instance.
+
+A StatefulSet is configured almost identically to a Deployment:
+
+```yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+spec:
+  selector:
+    matchLabels:
+      service: redis
+  serviceName: redis
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:6.0.3-alpine
+        args: ["--appendonly", "no", "--save", "300", "1", "--save", "30", "1000"]
+        ports:
+          - containerPort: 6379
+            name: redis
+        volumeMounts:
+        - mountPath: /data
+          name: redis-data
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: redis-data
+```
+
+Notably, we declare the volume `redis-data`, bound to the PersistentVolumeClaim
+`redis-data`, which is mounted at `/data`. The `redis` Docker image stores data
+at `/data` by default. The addional arguments in `args` just instruct Redis to
+save data at a certain frequency. The above configuration is saved in
+`deploy/redis/20-statefulset.yaml` and applied with the usual command
+
+```shell
+$ kubectl apply -f deploy/redis/20-statefulset.yaml
+```
+
+Finally, we need to deploy a Service to ensure that our Redis instance can be
+reached. Since it only has to communicate with Pods inside the cluster, a
+ClusterIP service is sufficient:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    service: redis
+spec:
+  type: ClusterIP
+  selector:
+    service: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+```
+
+We call the Service `redis`, so that it can be reached by our backend
+application (recall that we defined the environment variable `REDIS_URL`).
 
 ## Recap
 
@@ -641,3 +726,9 @@ matter where it is scheduled.
   documentation or the excellent [Kubernetes The Hard
   Way](https://github.com/kelseyhightower/kubernetes-the-hard-way) series by
   Kelsey Hightower.
+* We defined the environment variable `REDIS_URL` directly in the backend
+  Deployment configuration. When configuration gets bigger, it's best to use
+  [`ConfigMaps`](https://kubernetes.io/docs/concepts/configuration/configmap/).
+* We didn't cover Ingresses or TLS termination. Personally I find the [nginx
+  Ingress controller](https://kubernetes.github.io/ingress-nginx/) and
+  [cert-manager](https://cert-manager.io/) quite powerful and easy to setup.
