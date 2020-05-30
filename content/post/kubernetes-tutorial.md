@@ -19,8 +19,10 @@ on Kubernetes.
 
 This tutorial series is essentially what I would have wanted to read when I
 first approached Kubernetes, instead of searching and reading lots of different
-sources. The first part will only cover some theory, and then we'll dive into a
-practical example. This is the structure of the series:
+sources. It is complete in the sense that covers all the basics. More advanced
+topics like RBAC, custom resource definitions, operators, etc. are not
+discussed. The first part will only cover some theory, and then we'll dive into
+a practical example. This is the structure of the series:
 
 * Part I: Kubernetes basic concepts (this post)
 * Part II: [A practical and realistic example](/post/kubernetes-tutorial-ii-deploying-an-app/)
