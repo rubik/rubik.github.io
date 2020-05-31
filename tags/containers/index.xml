@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Created by Michele Lacchia, built with Hugo</copyright>
-    <lastBuildDate>Mon, 11 Nov 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 30 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://signal-to-noise.xyz/tags/containers/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>A complete Kubernetes tutorial, part II: deploying an application</title>
+      <link>https://signal-to-noise.xyz/post/kubernetes-tutorial-ii-deploying-an-app/</link>
+      <pubDate>Sat, 30 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://signal-to-noise.xyz/post/kubernetes-tutorial-ii-deploying-an-app/</guid>
+      <description>A complete Kubernetes tutorial series covering all the basics.</description>
+    </item>
     
     <item>
       <title>A complete Kubernetes tutorial, part I: the basic concepts</title>

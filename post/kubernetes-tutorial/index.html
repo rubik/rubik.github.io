@@ -12,7 +12,7 @@
 <meta name="msapplication-config" content="/static/icons/browserconfig.xml">
 <meta name="theme-color" content="#ffffff">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="//fonts.googleapis.com/css?family=Open Sans:400" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Rubik&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/static/css/style.css">
 <link rel="stylesheet" href="">
 
@@ -95,11 +95,17 @@ should give you a solid understanding to start deploying working applications
 on Kubernetes.</p>
 <p>This tutorial series is essentially what I would have wanted to read when I
 first approached Kubernetes, instead of searching and reading lots of different
-sources. The first part will only cover some theory, and then we&rsquo;ll dive into a
-practical example. This is the structure of the series:</p>
+sources. It is complete in the sense that covers all the basics. More advanced
+topics like RBAC, custom resource definitions, operators, etc. are not
+discussed. This series is not meant to sell you Kubernetes: we will not compare
+it to the alternatives or dive deeply into its benefits. However, if you are
+curious and want to start deploying and orchestrating containers with
+Kubernetes, this series is for you. The first part will only cover some theory,
+and then we&rsquo;ll dive into a practical example. This is the structure of the
+series:</p>
 <ul>
 <li>Part I: Kubernetes basic concepts (this post)</li>
-<li>Part II: A practical and realistic example (still WIP)</li>
+<li>Part II: <a href="/post/kubernetes-tutorial-ii-deploying-an-app/">A practical and realistic example</a></li>
 <li>Part III: Best practices (still WIP)</li>
 </ul>
 <h4 id="table-of-contents">Table of contents</h4>
@@ -149,7 +155,7 @@ scheduling or unscheduling workloads, for example.</p>
 <figure>
 <img src="/static/images/kubernetes-Architecture.png" alt="Architecture of a Kubernetes cluster" />
 <figcaption>
-    <strong>Fig. 1</strong> A client, like kubectl, interacts with the
+    <strong>Fig. 1</strong>&emsp;A client, like kubectl, interacts with the
     Kubernetes API. The master node takes care of managing pods on the worker
     nodes. Each of these nodes runs the kubelet agent, which communicates with
     the master, and a container runtime to execute the containers.
@@ -187,10 +193,11 @@ versioned, and this helps to maintain backward compatibility. This file
 declares an object of Pod kind, which can be found in version v1. The spec
 block defines the container, which in this case is built from the nginx image
 and exposes port 80.</p>
-<p>When the above manifest is deployed (we’ll see how in part II of this series),
-the control plane determines that the desired state differs from the current
-state and schedules a Pod with a container running nginx on port 80 on an
-available node.</p>
+<p>When the above manifest is deployed (we’ll see how in <a href="/post/kubernetes-tutorial-ii-deploying-an-app/">part
+II</a> of this series), the
+control plane determines that the desired state differs from the current state
+and schedules a Pod with a container running nginx on port 80 on an available
+node.</p>
 <p><a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/">Documentation</a></p>
 <h2 id="controller-objects">Controller objects</h2>
 <p>Pods don&rsquo;t heal or repair themselves and they&rsquo;re not meant to run forever. They
@@ -218,6 +225,9 @@ ReplicaSet while it decreases the number in the first ReplicaSet.</p>
   <span style="color:#66d9ef">name</span>: nginx-proxy
 <span style="color:#66d9ef">spec</span>:
   <span style="color:#66d9ef">replicas</span>: <span style="color:#ae81ff">3</span>
+  <span style="color:#66d9ef">selector</span>:
+    <span style="color:#66d9ef">matchLabels</span>:
+      <span style="color:#66d9ef">name</span>: nginx-proxy
   <span style="color:#66d9ef">template</span>:
     <span style="color:#66d9ef">metadata</span>:
       <span style="color:#66d9ef">labels</span>:
@@ -236,7 +246,7 @@ each Pod and each container all have the same name “nginx-proxy”, but there 
 no requirement to keep the same name for all these objects. More importantly,
 Pod names have to be unique, and the name provided at
 <code>spec.template.metadata.labels.name</code> is the prefix of the final name, which
-contains an hash identifying the Pod and the ReplicaSet it belongs to.</p>
+contains a hash identifying the Pod and the ReplicaSet it belongs to.</p>
 <p>A Deployment is an abstraction that represents a stateless application. As
 such, its Pods are indistinguishable from one another. Applications that need
 to maintain state are better served by the <strong>StatefulSet</strong> controller, which is
@@ -287,7 +297,7 @@ for exposing Services running inside the same cluster to each other.</p>
 <figure>
 <img src="/static/images/kubernetes-ClusterIP.png" alt="A ClusterIP Service" />
 <figcaption>
-    <strong>Fig. 2</strong> A ClusterIP Service can be reached from inside the
+    <strong>Fig. 2</strong>&emsp;A ClusterIP Service can be reached from inside the
     cluster. It routes traffic to all Pods matching its label selector. In this
     example, the Service matches all Pods having the label <code>app:
     web</code>. The Service IP can be customized with the
@@ -300,7 +310,7 @@ Service, to which the NodePort Service routes, is automatically created.</p>
 <figure>
 <img src="/static/images/kubernetes-NodePort.png" alt="A NodePort Service" />
 <figcaption>
-    <strong>Fig. 3</strong> A NodePort Service exposes its Pods on each node at
+    <strong>Fig. 3</strong>&emsp;A NodePort Service exposes its Pods on each node at
     a random port chosen in the range 30000-32767. This port can be customized
     with the <code>nodePort</code> field. Traffic to this port is routed by
     Kubernetes to the Service Pods, even if they are not on the same node that
@@ -317,7 +327,7 @@ automatically created.</p>
 <figure>
 <img src="/static/images/kubernetes-LoadBalancer.png" alt="A NodePort Service" />
 <figcaption>
-    <strong>Fig. 4</strong> A LoadBalancer Service creates the corresponding
+    <strong>Fig. 4</strong>&emsp;A LoadBalancer Service creates the corresponding
     NodePort Service and provisions a cloud load balancer automatically.
 </figcaption>
 </figure>
@@ -410,10 +420,10 @@ crashes. However, it is deleted if its Pod is unscheduled.</p>
   - <span style="color:#66d9ef">name</span>: cache-volume
     <span style="color:#66d9ef">emptyDir</span>: {}
 </code></pre></div><p>A <strong>secret</strong> Volume is used to pass sensitive information to a Pod. The secret
-must exist before it can be mounted as a Volume (we’ll do this in part II of
-this series). These Volumes are backed by tmpfs and thus their contents are
-never written to disk.</p>
-<p>For example, a secret Volume could be use to pass htpasswd-hashed data to
+must exist before it can be mounted as a Volume (we’ll do this in <a href="/post/kubernetes-tutorial-ii-deploying-an-app/">part
+II</a> of this series). These
+Volumes are backed by tmpfs and thus their contents are never written to disk.</p>
+<p>For example, a secret Volume could be used to pass htpasswd-hashed data to
 nginx. In the following example, the data stored in the <code>HTPASSWD</code> key of the
 secret named <code>htpasswd</code> is mounted at <code>/auth/htpasswd</code> as read-only:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
@@ -465,7 +475,7 @@ this VM needs to be in the same GCP project and zone of the persistent disk.</p>
 <p><a href="https://kubernetes.io/docs/concepts/storage/volumes/">Documentation</a></p>
 <h2 id="recap">Recap</h2>
 <ul>
-<li>Kubernetes enforces the state you describes through manifest files;</li>
+<li>Kubernetes enforces the state you describe through manifest files;</li>
 <li>The desired state is abstracted by <strong>objects</strong>;</li>
 <li>Pods are managed directly by Kubernetes and they are ephemeral;</li>
 <li>Your application will be usually deployed with a <strong>Deployment</strong> or a
@@ -482,8 +492,8 @@ different kinds depending on your use case.</li>
 <h2 id="conclusion">Conclusion</h2>
 <p>This tutorial was meant to give the reader a basic understanding of the most
 important concepts of Kubernetes. Most of these will be put into practice in
-part II of this series, where we will deploy a very simple application backed
-by Redis.</p>
+<a href="/post/kubernetes-tutorial-ii-deploying-an-app/">part II</a> of this series, where
+we will deploy a very simple application backed by Redis.</p>
 
         </section>
     </article>

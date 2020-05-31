@@ -3,32 +3,37 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://signal-to-noise.xyz/post/kubernetes-tutorial/</loc>
-    <lastmod>2019-11-11T00:00:00+00:00</lastmod>
+    <loc>https://signal-to-noise.xyz/post/kubernetes-tutorial-ii-deploying-an-app/</loc>
+    <lastmod>2020-05-30T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://signal-to-noise.xyz/tags/containers/</loc>
-    <lastmod>2019-11-11T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-30T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://signal-to-noise.xyz/tags/kubernetes/</loc>
-    <lastmod>2019-11-11T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-30T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://signal-to-noise.xyz/post/</loc>
-    <lastmod>2019-11-11T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-30T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://signal-to-noise.xyz/</loc>
-    <lastmod>2019-11-11T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-30T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://signal-to-noise.xyz/tags/</loc>
+    <lastmod>2020-05-30T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://signal-to-noise.xyz/post/kubernetes-tutorial/</loc>
     <lastmod>2019-11-11T00:00:00+00:00</lastmod>
   </url>
   
