@@ -281,7 +281,8 @@ time. Additional update strategies are discussed
 > it will consider the new pods ready as soon as the container process starts.
 > Of course, that is rarely the desired behavior, so we can instruct Kubernetes
 > to poll the pods periodically to determine if they are ready or not, alive or
-> not. That is accomplished by setting up health checks.
+> not. That is accomplished by setting up [health
+> checks](/post/kubernetes-tutorial-iii-best-practices/#health-checks).
 
 
 #### Final configuration
