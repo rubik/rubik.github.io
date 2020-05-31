@@ -3,7 +3,7 @@ author = "Michele Lacchia"
 title = "A complete Kubernetes tutorial, part II: deploying an application"
 tags = ["kubernetes", "containers"]
 category = "posts"
-date = "2019-11-13"
+date = "2020-05-30"
 summary = "A complete Kubernetes tutorial series covering all the basics."
 +++
 
@@ -36,7 +36,7 @@ minimal, is supposed to mimic a real-world architecture. It exposes two
 endpoints, `GET /users/:id` and `POST /users/:id`: the former returns the
 numeric value associated to a user, if present in the database, and 0
 otherwise; the second one increments the value associated to a user. There's an
-additional endpoint, `GET /healthz`, which simply returns a check mark and it's
+additional endpoint, `GET /healthz`, which simply returns a checkmark and it's
 used to test the connectivity to the application.
 
 For example, the following could be a valid HTTP session, assuming that our
@@ -46,7 +46,7 @@ application is running on localhost:1323 and that we have
 ```shell
 # the GET method is the default one and can be omitted;
 # localhost is also the default host
-$ http :1323/users/249  # user 249 is not in the database, so the we get 0
+$ http :1323/users/249  # user 249 is not in the database, so we get 0
 0
 $ http POST :1323/users/249  # we increment the value associated with user 249
 1
@@ -77,20 +77,20 @@ instance to store and retrieve data.
 </figcaption>
 </figure>
 
-This application is of course a contrived example. In this case, an nginx
+This application is, of course, a contrived example. In this case, an nginx
 instance isn't even strictly needed. However, nginx instances (or anything
 equivalent, for that matter) are frequently used to proxy the actual web
 applications in real scenarios, so I chose to include it. nginx could also
 serve static files, if your application needs them.
 
-The code for this web application, as well as the Dockerfile's and the manifest
+The code for this web application, as well as the Dockerfiles and the manifest
 files are available at
 [rubik/kubernetes-tutorial](https://github.com/rubik/kubernetes-tutorial).
 
 
 ## Provisioning a Kubernetes cluster
 If you would like to follow along, and I highly recommend doing so, you need to
-be able to connect to a Kubernetes cluster. The are two easy ways.
+be able to connect to a Kubernetes cluster. There are two easy ways.
 
 #### Google Kubernetes Engine (GKE)
 The easiest way, which I recommend for this tutorial, is to create a brand new
@@ -104,7 +104,7 @@ balancers you request.
 
 However, if you follow the tutorial and you delete the project when you are
 done, you should expect charges in the order of a few dollars at most. You can
-even use Google Cloud's own [Pricing
+even use Google Cloud's [Pricing
 calculator](https://cloud.google.com/products/calculator/) to estimate the
 charges.
 
@@ -120,9 +120,10 @@ few minutes for your cluster to become ready and operational;
 clusters get-credentials CLUSTER_NAME`, where `CLUSTER_NAME` is the name of the
 cluster you have created in step 3.
 
-You are now ready to follow the tutorial. At end, don't forget to clean up by
-deleting your cluster, any resources associated to it (e.g. load balancers) and
-your project (if you have created a brand new one for this tutorial).
+You are now ready to follow the tutorial. At the end, don't forget to clean up
+by deleting your cluster, any resources associated with it (e.g. load
+balancers) and your project (if you have created a brand new one for this
+tutorial).
 
 #### Minikube
 Alternatively, you can also run a single-node cluster on your local machine
@@ -276,11 +277,11 @@ time. Additional update strategies are discussed
 
 > **Heads up**&emsp;The pods in the old replica sets are terminated and the
 > traffic switches to the new pods when they are ready. But how does Kubernetes
-> know when the new pods are ready to accept traffic? It actually doesn't, and
+> know when the new pods are ready to accept traffic? Actually, it doesn't, and
 > it will consider the new pods ready as soon as the container process starts.
 > Of course, that is rarely the desired behavior, so we can instruct Kubernetes
-> to poll the pods periodically in order to determine if they are ready or not,
-> alive or not. That is accomplished by setting up health checks.
+> to poll the pods periodically to determine if they are ready or not, alive or
+> not. That is accomplished by setting up health checks.
 
 
 #### Final configuration
@@ -328,7 +329,7 @@ $ kubectl apply -f deploy/frontend/20-deployment.yaml
 we see that the number of Pods immediately increases to three (due to
 `maxSurge: 1`). When the new Pod is ready, Kubernetes starts terminating the
 old Pods and creating new ones. This process happens gradually one by one,
-because we specified `maxUnavailable: 0`, which forces Kubernetes to maintaing
+because we specified `maxUnavailable: 0`, which forces Kubernetes to maintain
 two fully ready Pods at any time (as we set `replicas: 2`). Had we specified
 `maxUnavailable: 1`, Kubernetes would have upgraded two Pods at a time.
 
@@ -410,11 +411,12 @@ backend                     2/2     2            2           14m
 ## Networking between Pods
 We are now ready to set up the Services that will allow our Pods to
 communicate. We will create a LoadBalancer Service for the nginx Pods, since
-they need to be reached from outside the cluster, and a ClusterIP service for
+they need to be reached from outside the cluster, and a ClusterIP Service for
 the Go application. If you need to, you can refresh your knowledge about
-Kubernetes services [here](/post/kubernetes-tutorial/#services).
+Kubernetes Services [here](/post/kubernetes-tutorial/#services).
 
-This is the manifest that declares the LoadBalancer service for our nginx Pods:
+This is the manifest file that declares the LoadBalancer Service for our nginx
+Pods:
 
 ```yaml
 apiVersion: v1
@@ -444,7 +446,7 @@ submit it to the Kubernetes API with
 $ kubectl apply -f deploy/frontend/30-service.yaml
 ```
 
-As mentioned above, for the Go application we'll deploy a ClusterIP service.
+As mentioned above, for the Go application we'll deploy a ClusterIP Service.
 That's because it's proxied by nginx, so all its traffic comes from inside the
 cluster. The manifest file is quite simple like the previous one:
 
@@ -484,7 +486,7 @@ As we can see, the ClusterIP has no external IP, while the LoadBalancer shows
 "pending". That's because my cluster is local and runs through Minikube. If we
 were communicating with a cloud Kubernetes installation (e.g. GKE), the load
 balancer would be provisioned automatically and the external IP would appear
-after a few seconds. In this case, howerver, we need to run `minikube tunnel`
+after a few seconds. In this case, however, we need to run `minikube tunnel`
 in a separate shell in order to obtain an external IP. After launching that
 command separately, we can check the status of our Services again:
 
@@ -552,7 +554,7 @@ ____________________________________O/_______
 
 ## Adding persistence
 The cluster is now functional, but to make the tutorial more realistic we are
-going to add persistence through Redis. That will enable us to use the users
+going to add persistence through Redis. That will enable us to call the users
 endpoints which we described at the beginning of the post.
 
 Before deploying the Redis container, we will take care of storage. In
@@ -640,7 +642,7 @@ of the resource.
 
 We are finally ready to deploy Redis with persistence enabled. Since our Redis
 instance needs to sync to persistence storage, it's a stateful application. The
-correct abstraction for this kind of applications is the **StatefulSet**
+correct abstraction for this kind of application is the **StatefulSet**
 controller. Like a Deployment controller, it takes care of managing Pods in a
 ReplicaSet. However, Pods controlled by a StatefulSet are not interchangeable:
 each Pod has a unique identifier that is maintained no matter where it is
@@ -704,7 +706,7 @@ $ kubectl apply -f deploy/redis/20-statefulset.yaml
 
 Finally, we need to deploy a Service to ensure that our Redis instance can be
 reached. Since it only has to communicate with Pods inside the cluster, a
-ClusterIP service is sufficient:
+ClusterIP Service is sufficient:
 
 ```yaml
 apiVersion: v1
@@ -763,7 +765,7 @@ Remember that we are querying the external IP that we read from `kubectl get
 svc` (and running `minikube tunnel` as well).
 
 #### Aside: DNS resolution within the cluster
-You might be asking yourself, how does the backend app find the Redis service
+You might be asking yourself, how does the backend app find the Redis Service
 IP?  This is a good question. Kubernetes offers a DNS cluster addon Service
 that runs as the kube-dns Service in the `kube-system` namespace. You can check
 if your cluster is running kube-dns by running the following command:
@@ -792,20 +794,21 @@ Name:      redis
 Address 1: 10.97.34.93 redis.default.svc.cluster.local
 ```
 
-Do not pay attention to the first line of the nslookup output. It's
+Do not pay attention to the first line of the nslookup output. It's a
 weirdly-worded message that [doesn't actually indicate an
 error](https://stackoverflow.com/a/57066045/448496). The output tells us that
 indeed, the `redis` name resolves to 10.97.34.93, which is the ClusterIP of the
 Redis Service.
 
 ## Recap
-* We created Deployments, StatefulSets, Services and PersistentVolumeClaims
-  with `kubectl apply`. We also reviewed some differences between Deployments
-  and StatefulSets.
-* We set up persistent storage and reviewed the concept of
-  PersistentVolumeClaim and the storage abstractions offered by Kubernetes.
-* We used other useful `kubectl` commands: `kubectl get`, `kubectl describe`,
-  `kubectl logs`.
+* We created Deployments and StatefulSets to deploy the application layer,
+  Services to implement networking between Pods and a PersistentVolumeClaim to
+  configure storage.
+* We mentioned health checks, which should always be implemented and
+  configured.
+* We briefly touched the topic of DNS resolution.
+* Throughout the tutorial, we used several useful `kubectl` subcommands:
+  `kubectl apply`, `kubectl get`, `kubectl describe`, `kubectl logs`.
 
 ## What we didn't cover
 * If you don't want to use a managed solution like Google Kubernetes Engine
@@ -817,8 +820,14 @@ Redis Service.
   Way](https://github.com/kelseyhightower/kubernetes-the-hard-way) series by
   Kelsey Hightower.
 * We defined the environment variable `REDIS_URL` directly in the backend
-  Deployment configuration. When configuration gets bigger, it's best to use
+  Deployment configuration. When the configuration gets bigger, it's best to
+  use
   [`ConfigMaps`](https://kubernetes.io/docs/concepts/configuration/configmap/).
 * We didn't cover Ingresses or TLS termination. Personally I find the [nginx
   Ingress controller](https://kubernetes.github.io/ingress-nginx/) and
   [cert-manager](https://cert-manager.io/) quite powerful and easy to setup.
+  Cert-manager handles the provisioning and renewal of Let's Encrypt
+  certificates automatically.
+* If your Kubernetes cluster is accessed by multiple users, you should
+  configure [role-based access control
+  (RBAC)](https://kubernetes.io/docs/reference/access-authn-authz/rbac/).

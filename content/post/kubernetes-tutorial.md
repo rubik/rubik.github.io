@@ -22,10 +22,11 @@ first approached Kubernetes, instead of searching and reading lots of different
 sources. It is complete in the sense that covers all the basics. More advanced
 topics like RBAC, custom resource definitions, operators, etc. are not
 discussed. This series is not meant to sell you Kubernetes: we will not compare
-it to the alternatives or dive deeply in its benefits. However, if you are curious
-and want to start deploying and orchestrating containers with Kubernetes, this
-series is for you. The first part will only cover some theory, and then we'll
-dive into a practical example. This is the structure of the series:
+it to the alternatives or dive deeply into its benefits. However, if you are
+curious and want to start deploying and orchestrating containers with
+Kubernetes, this series is for you. The first part will only cover some theory,
+and then we'll dive into a practical example. This is the structure of the
+series:
 
 * Part I: Kubernetes basic concepts (this post)
 * Part II: [A practical and realistic example](/post/kubernetes-tutorial-ii-deploying-an-app/)
@@ -189,7 +190,7 @@ each Pod and each container all have the same name “nginx-proxy”, but there 
 no requirement to keep the same name for all these objects. More importantly,
 Pod names have to be unique, and the name provided at
 `spec.template.metadata.labels.name` is the prefix of the final name, which
-contains an hash identifying the Pod and the ReplicaSet it belongs to.
+contains a hash identifying the Pod and the ReplicaSet it belongs to.
 
 A Deployment is an abstraction that represents a stateless application. As
 such, its Pods are indistinguishable from one another. Applications that need
@@ -397,7 +398,7 @@ must exist before it can be mounted as a Volume (we’ll do this in [part
 II](/post/kubernetes-tutorial-ii-deploying-an-app/) of this series). These
 Volumes are backed by tmpfs and thus their contents are never written to disk.
 
-For example, a secret Volume could be use to pass htpasswd-hashed data to
+For example, a secret Volume could be used to pass htpasswd-hashed data to
 nginx. In the following example, the data stored in the `HTPASSWD` key of the
 secret named `htpasswd` is mounted at `/auth/htpasswd` as read-only:
 
