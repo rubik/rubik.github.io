@@ -19,11 +19,17 @@ on Kubernetes.
 
 This tutorial series is essentially what I would have wanted to read when I
 first approached Kubernetes, instead of searching and reading lots of different
-sources. The first part will only cover some theory, and then we'll dive into a
-practical example. This is the structure of the series:
+sources. It is complete in the sense that covers all the basics. More advanced
+topics like RBAC, custom resource definitions, operators, etc. are not
+discussed. This series is not meant to sell you Kubernetes: we will not compare
+it to the alternatives or dive deeply into its benefits. However, if you are
+curious and want to start deploying and orchestrating containers with
+Kubernetes, this series is for you. The first part will only cover some theory,
+and then we'll dive into a practical example. This is the structure of the
+series:
 
 * Part I: Kubernetes basic concepts (this post)
-* Part II: A practical and realistic example (still WIP)
+* Part II: [A practical and realistic example](/post/kubernetes-tutorial-ii-deploying-an-app/)
 * Part III: Best practices (still WIP)
 
 #### Table of contents
@@ -77,7 +83,7 @@ scheduling or unscheduling workloads, for example.
 <figure>
 <img src="/static/images/kubernetes-Architecture.png" alt="Architecture of a Kubernetes cluster" />
 <figcaption>
-    <strong>Fig. 1</strong> A client, like kubectl, interacts with the
+    <strong>Fig. 1</strong>&emsp;A client, like kubectl, interacts with the
     Kubernetes API. The master node takes care of managing pods on the worker
     nodes. Each of these nodes runs the kubelet agent, which communicates with
     the master, and a container runtime to execute the containers.
@@ -123,10 +129,11 @@ declares an object of Pod kind, which can be found in version v1. The spec
 block defines the container, which in this case is built from the nginx image
 and exposes port 80.
 
-When the above manifest is deployed (we’ll see how in part II of this series),
-the control plane determines that the desired state differs from the current
-state and schedules a Pod with a container running nginx on port 80 on an
-available node.
+When the above manifest is deployed (we’ll see how in [part
+II](/post/kubernetes-tutorial-ii-deploying-an-app/) of this series), the
+control plane determines that the desired state differs from the current state
+and schedules a Pod with a container running nginx on port 80 on an available
+node.
 
 [Documentation](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/)
 
@@ -160,6 +167,9 @@ metadata:
   name: nginx-proxy
 spec:
   replicas: 3
+  selector:
+    matchLabels:
+      name: nginx-proxy
   template:
     metadata:
       labels:
@@ -180,7 +190,7 @@ each Pod and each container all have the same name “nginx-proxy”, but there 
 no requirement to keep the same name for all these objects. More importantly,
 Pod names have to be unique, and the name provided at
 `spec.template.metadata.labels.name` is the prefix of the final name, which
-contains an hash identifying the Pod and the ReplicaSet it belongs to.
+contains a hash identifying the Pod and the ReplicaSet it belongs to.
 
 A Deployment is an abstraction that represents a stateless application. As
 such, its Pods are indistinguishable from one another. Applications that need
@@ -240,7 +250,7 @@ for exposing Services running inside the same cluster to each other.
 <figure>
 <img src="/static/images/kubernetes-ClusterIP.png" alt="A ClusterIP Service" />
 <figcaption>
-    <strong>Fig. 2</strong> A ClusterIP Service can be reached from inside the
+    <strong>Fig. 2</strong>&emsp;A ClusterIP Service can be reached from inside the
     cluster. It routes traffic to all Pods matching its label selector. In this
     example, the Service matches all Pods having the label <code>app:
     web</code>. The Service IP can be customized with the
@@ -255,7 +265,7 @@ Service, to which the NodePort Service routes, is automatically created.
 <figure>
 <img src="/static/images/kubernetes-NodePort.png" alt="A NodePort Service" />
 <figcaption>
-    <strong>Fig. 3</strong> A NodePort Service exposes its Pods on each node at
+    <strong>Fig. 3</strong>&emsp;A NodePort Service exposes its Pods on each node at
     a random port chosen in the range 30000-32767. This port can be customized
     with the <code>nodePort</code> field. Traffic to this port is routed by
     Kubernetes to the Service Pods, even if they are not on the same node that
@@ -274,7 +284,7 @@ automatically created.
 <figure>
 <img src="/static/images/kubernetes-LoadBalancer.png" alt="A NodePort Service" />
 <figcaption>
-    <strong>Fig. 4</strong> A LoadBalancer Service creates the corresponding
+    <strong>Fig. 4</strong>&emsp;A LoadBalancer Service creates the corresponding
     NodePort Service and provisions a cloud load balancer automatically.
 </figcaption>
 </figure>
@@ -384,11 +394,11 @@ spec:
 ```
 
 A **secret** Volume is used to pass sensitive information to a Pod. The secret
-must exist before it can be mounted as a Volume (we’ll do this in part II of
-this series). These Volumes are backed by tmpfs and thus their contents are
-never written to disk.
+must exist before it can be mounted as a Volume (we’ll do this in [part
+II](/post/kubernetes-tutorial-ii-deploying-an-app/) of this series). These
+Volumes are backed by tmpfs and thus their contents are never written to disk.
 
-For example, a secret Volume could be use to pass htpasswd-hashed data to
+For example, a secret Volume could be used to pass htpasswd-hashed data to
 nginx. In the following example, the data stored in the `HTPASSWD` key of the
 secret named `htpasswd` is mounted at `/auth/htpasswd` as read-only:
 
@@ -454,7 +464,7 @@ this VM needs to be in the same GCP project and zone of the persistent disk.
 [Documentation](https://kubernetes.io/docs/concepts/storage/volumes/)
 
 ## Recap
-* Kubernetes enforces the state you describes through manifest files;
+* Kubernetes enforces the state you describe through manifest files;
 * The desired state is abstracted by **objects**;
 * Pods are managed directly by Kubernetes and they are ephemeral;
 * Your application will be usually deployed with a **Deployment** or a
@@ -472,5 +482,5 @@ this VM needs to be in the same GCP project and zone of the persistent disk.
 ## Conclusion
 This tutorial was meant to give the reader a basic understanding of the most
 important concepts of Kubernetes. Most of these will be put into practice in
-part II of this series, where we will deploy a very simple application backed
-by Redis.
+[part II](/post/kubernetes-tutorial-ii-deploying-an-app/) of this series, where
+we will deploy a very simple application backed by Redis.
