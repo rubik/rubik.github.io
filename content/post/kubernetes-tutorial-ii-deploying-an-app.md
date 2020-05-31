@@ -20,6 +20,16 @@ explained in the first part of the series. This is the structure of the series:
 * Part II: A practical and realistic example (this post)
 * Part III: Best practices (still WIP)
 
+#### Table of contents
+
+* [Introduction](#introduction)
+* [Provisioning a Kubernetes cluster](#provisioning-a-kubernetes-cluster)
+* [Deploying the application](#deploying-the-application)
+* [Networking between Pods](#networking-between-pods)
+* [Adding persistence](#adding-persistence)
+* [Recap](#recap)
+* [What we didn't cover](#what-we-didnt-cover)
+
 ## Introduction
 The application that we will deploy is a simple web application that, while
 minimal, is supposed to mimic a real-world architecture. It exposes two
@@ -130,7 +140,7 @@ here](https://kubernetes.io/docs/tasks/tools/install-minikube/);
 3. run `minikube start` to create a local cluster.
 
 
-## Deployments
+## Deploying the application
 We'll start by writing the manifest files for the nginx and Go instances. These
 two components are both completely stateless: these instances don't need a
 stable network identity or persistent storage. They could be scaled up and down
@@ -789,6 +799,13 @@ indeed, the `redis` name resolves to 10.97.34.93, which is the ClusterIP of the
 Redis Service.
 
 ## Recap
+* We created Deployments, StatefulSets, Services and PersistentVolumeClaims
+  with `kubectl apply`. We also reviewed some differences between Deployments
+  and StatefulSets.
+* We set up persistent storage and reviewed the concept of
+  PersistentVolumeClaim and the storage abstractions offered by Kubernetes.
+* We used other useful `kubectl` commands: `kubectl get`, `kubectl describe`,
+  `kubectl logs`.
 
 ## What we didn't cover
 * If you don't want to use a managed solution like Google Kubernetes Engine
