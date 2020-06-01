@@ -76,7 +76,7 @@ livenessProbe:
 We configure the same health check in both cases, with a different frequency.
 If the container is unresponsive for a longer period of time, it will be
 restarted. More details on the probe types and all the options are found
-[here](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
+[here](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
 
 ### Graceful shutdown
 When a Pod is terminated, Kubernetes does two things in parallel:
@@ -180,8 +180,8 @@ Kubernetes supports several scaling strategies:
 * the [Vertical Pod
   Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler)
   scales the application by adding resources to single Pods, so it can be used
-  if the application cannot be scaled horizontally (however, it's still in beta
-  at this time);
+  if the application cannot be scaled horizontally (note that it's still in
+  beta at this time);
 * the [Cluster
   Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler)
   scales the whole cluster by adding or removing worker nodes. This scaling
@@ -190,6 +190,37 @@ Kubernetes supports several scaling strategies:
   should be preferred.
 
 ### Pod topology
-Anti-affinity rules, disruption budgets
+Multiple replicas are not enough to guarantee high availability. If all the
+replicas are scheduled on the same node, the node becomes the single point of
+failure. Inter-pod [affinity and
+anti-affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity)
+rules can be used to instruct Kubernetes to constrain which nodes are eligible
+for scheduling based on Pods that are already running on nodes rather than
+based on node labels.
+
+For example, we can use an anti-affinity rule to disallow scheduling on nodes
+that are already running Pods that match the specified label selector:
+
+```yaml
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchLabels:
+          app: web
+      topologyKey: 'kubernetes.io/hostname'
+```
+
+(Note that the requirement specified above is a *hard* requirement &mdash; the
+corresponding *soft* requirement can be specified with
+`preferredDuringSchedulingIgnoredDuringExecution`).
+
+For additional safety, it's recommended to set
+[PodDisruptionBudgets](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/)
+that limit the number of Pods of a replicated application that can be down
+simultaneously. This prevents voluntary disruptions from happening, e.g. a node
+drain request from the cluster administrator that would evict too many Pods.
+Disruption Budgets cannot prevent involontary disruptions but they do count
+against the budget.
 
 ## Security
