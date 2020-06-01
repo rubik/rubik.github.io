@@ -31,7 +31,7 @@ series. The other posts are listed below:
     * [Declarative management and versioning](#declarative-management-and-versioning)
 * [Cluster management](#cluster-management)
     * [Namespaces](#namespaces)
-    * [Resource requests](#resource-limits-and-requests)
+    * [Resource limits and requests](#resource-limits-and-requests)
     * [Scaling](#scaling)
     * [Pod topology](#pod-topology)
 * [Security](#security)
@@ -179,6 +179,11 @@ the container runtime might terminate containers which attempt to exceed the
 limits. CPU resources, for example, are compressible. When they are exahusted,
 the kernel will start throttling the processese. That might be a more desirable
 behavior than termination.
+
+If you are unsure about the resource usage of your Containers, you can run the
+[Vertical Pod
+Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler#quick-start)
+in the "Off" mode and inspect the recommendations.
 
 ### Scaling
 The local filesystem in a container should never be used to persist data. If
