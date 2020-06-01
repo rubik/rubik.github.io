@@ -241,6 +241,18 @@ that limit the number of Pods of a replicated application that can be down
 simultaneously. This prevents voluntary disruptions from happening, e.g. a node
 drain request from the cluster administrator that would evict too many Pods.
 Disruption Budgets cannot prevent involontary disruptions but they do count
-against the budget.
+against the budget. Note that at this time Disruption Budgets are in beta.
 
 ## Security
+### Role-based access control (RBAC)
+In a computer system, access should be regulated according to the security
+principle of least privilege: users and programs should not have any more
+permissions than they need to accomplish their tasks. In Kubernetes, that is
+accomplished with [RBAC
+policies](https://kubernetes.io/docs/reference/access-authn-authz/rbac/).
+Implementing RBAC policies properly can easily get out of hand, and that's
+where an operator like [RBAC
+Manager](https://github.com/FairwindsOps/rbac-manager) can help.
+
+### Container security
+There are a number of best practices regarding container secui
