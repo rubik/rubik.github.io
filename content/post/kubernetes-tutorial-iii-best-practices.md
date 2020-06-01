@@ -35,6 +35,8 @@ series. The other posts are listed below:
     * [Scaling](#scaling)
     * [Pod topology](#pod-topology)
 * [Security](#security)
+    * [Role-based access control](#role-based-access-control-rbac)
+    * [Container security](#container-security)
 
 ## Application development
 ### Health checks
@@ -255,4 +257,18 @@ where an operator like [RBAC
 Manager](https://github.com/FairwindsOps/rbac-manager) can help.
 
 ### Container security
-There are a number of best practices regarding container secui
+There are a number of best practices regarding container security:
+* disallow root user execution
+* disallow privileged containers
+* disallow changes to kernel parameters
+* disallow use of the host network
+* require read-only root filesystem
+
+All of these best practices can be enforced with [Pod Security
+Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/?utm_source=thenewstack&utm_medium=website),
+which at this time are still in beta. An alternative is to use a policy
+management framework like [Kyverno](https://kyverno.io/) to validate, mutate
+and generate workload configurations. Kyverno works by installing an admission
+controller webhook receiver. The GitHub repository contains a lot of [sample
+resources](https://github.com/nirmata/kyverno/tree/master/samples) that enforce
+the above best practices and many more.
