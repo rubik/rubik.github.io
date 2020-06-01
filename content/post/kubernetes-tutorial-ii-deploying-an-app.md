@@ -806,7 +806,7 @@ Redis Service.
   configure storage.
 * We mentioned health checks, which should always be implemented and
   configured.
-* We briefly touched the topic of DNS resolution.
+* We briefly touched on the topic of DNS resolution.
 * Throughout the tutorial, we used several useful `kubectl` subcommands:
   `kubectl apply`, `kubectl get`, `kubectl describe`, `kubectl logs`.
 
