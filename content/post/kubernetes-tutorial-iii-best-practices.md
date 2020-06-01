@@ -166,6 +166,28 @@ policies.
 ### Resource requests
 
 ### Scaling
+The local filesystem in a container should never be used to persist data. If
+you do that, each Pod in a ReplicaSet will have a potentially different states.
+As a consequence, it won't be possible to leverage horizontal scaling
+strategies in a consistent way.
+
+Kubernetes supports several scaling strategies:
+
+* the [Horizontal Pod
+  Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+  scales the applications across Pods, so it's usually a good fit for stateless
+  applications and should be the preferred scaling strategy;
+* the [Vertical Pod
+  Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler)
+  scales the application by adding resources to single Pods, so it can be used
+  if the application cannot be scaled horizontally (however, it's still in beta
+  at this time);
+* the [Cluster
+  Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler)
+  scales the whole cluster by adding or removing worker nodes. This scaling
+  strategy makes sense when the workloads are highly variable and can see rapid
+  demand spikes. When demand changes gradually the other scaling strategies
+  should be preferred.
 
 ### Pod topology
 Anti-affinity rules, disruption budgets
