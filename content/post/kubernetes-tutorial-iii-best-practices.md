@@ -26,7 +26,14 @@ series. The other posts are listed below:
 
 #### Table of contents
 * [Application development](#application-development)
+    * [Health checks](#health-checks)
+    * [Graceful shutdown](#graceful-shutdown)
+    * [Declarative management and versioning](#declarative-management-and-versioning)
 * [Cluster management](#cluster-management)
+    * [Namespaces](#namespaces)
+    * [Resource requests](#resource-requests)
+    * [Scaling](#scaling)
+    * [Pod topology](#pod-topology)
 * [Security](#security)
 
 ## Application development
@@ -72,7 +79,56 @@ restarted. More details on the probe types and all the options are found
 [here](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
 
 ### Graceful shutdown
-### YAML configuration
+When a Pod is terminated, Kubernetes does two things in parallel:
+
+1. it sends the SIGTERM signal to the containers in the Pod, so it's important
+   that they handle it correctly and start shutting down the application;
+2. it invokes the [preStop
+   hook](https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#hook-details)
+   inside the containers that define it. This hook should be implemented if the
+   containers cannot handle SIGTERM for some reason, or if there are multiple
+   containers in the Pod and the order in which they shut down matters.
+
+It's also important to ensure that the application does not shut down
+immediately upon receiving SIGTERM. It might take some time before kube-proxy
+or the Ingress controller are notified of the endpoint change, and traffic
+could still reach the Pod even though it's marked as terminated.
+
+### Declarative management and versioning
+Kubernetes objects can be created, updated, and deleted by storing multiple
+object configuration files in a directory and using `kubectl apply` to
+recursively create and update those objects as needed. The `kubectl diff`
+command gives a preview of the changes that the `apply` subcommand will make.
+The `kubectl delete` command also accepts manifest files.
+
+The configuration can be written in JSON or YAML files, with the latter being
+the preferred format if humans have to read and update the configuration. This
+object management is called "declarative", and it's the opposite of the
+"imperative" style in which changes are requested directly with the `run`,
+`create`, `scale` and `patch` subcommands. The declarative management has
+several advantages over the imperative methodology:
+
+* object configuration can be stored and versioned in source control system
+  like Git, making reviewing, debugging and auditing much easier;
+* object configuration can be integrated with other processes like Git hooks or
+  CI/CD pipelines;
+* existing configuration can be used as a template for new objects, ensuring
+  consistency and making the process quicker.
+
+Lastly, it's recommended to annotate the objects with the
+`kubernetes.io/change-cause` annotation at each configuration update, or at
+least the most important ones. By doing that, one can review the revision
+history of any object with the command `kubectl rollout history`. For example:
+
+```shell
+$ kubectl rollout history deployment/api
+deployment.extensions/api
+REVISION  CHANGE-CAUSE
+1         v0.1.0 - 9ffcfee
+2         v0.2.0 - 4f2f949
+3         v0.2.1 - 011d68f
+4         v0.2.2 - b9806cc
+```
 
 ## Cluster management
 ### Namespaces
