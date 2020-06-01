@@ -45,7 +45,7 @@ its containers start, and restarts the containers when they crash. While this
 can be acceptable for some simpler deployments, a more robust approach is
 necessary for production deployments.
 
-For example, container might need some warm up time before it gets to an
+For example, a container might need some warm-up time before it gets to an
 operational state. This could mean some requests are dropped if Kubernetes
 considers the container ready when it's not. To remedy, we can configure
 readiness and liveness probes.
@@ -55,7 +55,7 @@ readiness and liveness probes.
   active during startup. This is not true: Kubernetes keeps testing for
   readiness during the whole lifetime of the Pod, and pauses and resumes
   routing to the Pod according to the readiness probe response.
-* **Liveness** probes indicate wheter a container is alive or not: if it's not
+* **Liveness** probes indicate whether a container is alive or not: if it's not
   it will be restarted by Kubernetes. This probe can be used to detect
   deadlocks or other broken states that don't necessarily result in a crash.
 
@@ -107,8 +107,8 @@ The configuration can be written in JSON or YAML files, with the latter being
 the preferred format if humans have to read and update the configuration. This
 object management is called "declarative", and it's the opposite of the
 "imperative" style in which changes are requested directly with the `run`,
-`create`, `scale` and `patch` subcommands. The declarative management has
-several advantages over the imperative methodology:
+`create`, `scale` and `patch` subcommands. Declarative management has several
+advantages over the imperative methodology:
 
 * object configuration can be stored and versioned in source control system
   like Git, making reviewing, debugging and auditing much easier;
@@ -155,9 +155,9 @@ possible to deploy to them, but it's best not to do that.
 
 In bigger projects, Namespaces are useful to separate different teams or
 projects into separate environments. In small clusters (e.g. a single
-small application), I personally find them very useful to split different
-environments (e.g. staging, production). Namespaces can be isolated at the
-network level with
+small application), I find them very useful to split different environments
+(e.g. staging, production). Namespaces can be isolated at the network level
+with
 [NetworkPolicies](https://github.com/ahmetb/kubernetes-network-policy-recipes).
 Furthermore, a cluster administrator can restrict resource consumption and
 creation on a Namespace basis, using
@@ -173,13 +173,13 @@ consult the
 It's best to always specify those with the minimum requirements. If resource
 requests are not specified, Kubernetes assumes that a Container has a memory
 and CPU utilization of zero. That could potentially lead Kubernetes to schedule
-too many Pods on the same node and exahust all the resources.
+too many Pods on the same node and exhaust all the resources.
 
 It's also possible to specify resource limits that containers cannot exceed.
 Whether it's better to specify them or not should be decided case by case, as
 the container runtime might terminate containers which attempt to exceed the
-limits. CPU resources, for example, are compressible. When they are exahusted,
-the kernel will start throttling the processese. That might be a more desirable
+limits. CPU resources, for example, are compressible. When they are exhausted,
+the kernel will start throttling the processes. That might be a more desirable
 behavior than termination.
 
 If you are unsure about the resource usage of your Containers, you can run the
@@ -189,7 +189,7 @@ in the "Off" mode and inspect the recommendations.
 
 ### Scaling
 The local filesystem in a container should never be used to persist data. If
-you do that, each Pod in a ReplicaSet will have a potentially different states.
+you do that, each Pod in a ReplicaSet will potentially have a different state.
 As a consequence, it won't be possible to leverage horizontal scaling
 strategies in a consistent way.
 
@@ -242,7 +242,7 @@ For additional safety, it's recommended to set
 that limit the number of Pods of a replicated application that can be down
 simultaneously. This prevents voluntary disruptions from happening, e.g. a node
 drain request from the cluster administrator that would evict too many Pods.
-Disruption Budgets cannot prevent involontary disruptions but they do count
+Disruption Budgets cannot prevent involuntary disruptions but they do count
 against the budget. Note that at this time Disruption Budgets are in beta.
 
 ## Security
@@ -257,11 +257,11 @@ where an operator like [RBAC
 Manager](https://github.com/FairwindsOps/rbac-manager) can help.
 
 ### Container security
-There are a number of best practices regarding container security:
+There are several best practices regarding container security:
 * disallow root user execution
 * disallow privileged containers
 * disallow changes to kernel parameters
-* disallow use of the host network
+* disallow the use of the host network
 * require read-only root filesystem
 
 All of these best practices can be enforced with [Pod Security
@@ -272,3 +272,12 @@ and generate workload configurations. Kyverno works by installing an admission
 controller webhook receiver. The GitHub repository contains a lot of [sample
 resources](https://github.com/nirmata/kyverno/tree/master/samples) that enforce
 the above best practices and many more.
+
+## Conclusion
+This post concludes the tutorial series. I hope this list of best practices did
+not overwhelm you. I also wrote this as a reference for myself. By all means,
+do not start implementing everything immediately, but use this list as a
+starting point to learn new Kubernetes concepts and workflows. Some of them, on
+the other hand, are quite critical (e.g. keeping all your configuration in
+versioned YAML files), and you should definitely start adopting them
+immediately.
