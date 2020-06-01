@@ -275,9 +275,9 @@ the above best practices and many more.
 
 ## Conclusion
 This post concludes the tutorial series. I hope this list of best practices did
-not overwhelm you. I also wrote this as a reference for myself. By all means,
-do not start implementing everything immediately, but use this list as a
-starting point to learn new Kubernetes concepts and workflows. Some of them, on
-the other hand, are quite critical (e.g. keeping all your configuration in
+not overwhelm you. I also wrote it as a reference for myself. By all means, do
+not start implementing everything immediately, but use this list as a starting
+point to learn new Kubernetes concepts and workflows. Some of them, on the
+other hand, are quite critical (e.g. keeping all your configuration in
 versioned YAML files), and you should definitely start adopting them
 immediately.
