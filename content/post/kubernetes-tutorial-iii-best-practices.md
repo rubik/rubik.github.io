@@ -31,7 +31,7 @@ series. The other posts are listed below:
     * [Declarative management and versioning](#declarative-management-and-versioning)
 * [Cluster management](#cluster-management)
     * [Namespaces](#namespaces)
-    * [Resource requests](#resource-requests)
+    * [Resource requests](#resource-limits-and-requests)
     * [Scaling](#scaling)
     * [Pod topology](#pod-topology)
 * [Security](#security)
@@ -163,7 +163,22 @@ creation on a Namespace basis, using
 [ResourceQuota](https://kubernetes.io/docs/concepts/policy/resource-quotas/)
 policies.
 
-### Resource requests
+### Resource limits and requests
+Resource requests indicate how much of each resource a Container needs to run.
+The most common resources to specify are CPU and memory. For a complete list,
+consult the
+[documentation](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits).
+It's best to always specify those with the minimum requirements. If resource
+requests are not specified, Kubernetes assumes that a Container has a memory
+and CPU utilization of zero. That could potentially lead Kubernetes to schedule
+too many Pods on the same node and exahust all the resources.
+
+It's also possible to specify resource limits that containers cannot exceed.
+Whether it's better to specify them or not should be decided case by case, as
+the container runtime might terminate containers which attempt to exceed the
+limits. CPU resources, for example, are compressible. When they are exahusted,
+the kernel will start throttling the processese. That might be a more desirable
+behavior than termination.
 
 ### Scaling
 The local filesystem in a container should never be used to persist data. If
