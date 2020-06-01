@@ -18,7 +18,7 @@ explained in the first part of the series. This is the structure of the series:
 
 * Part I: [Kubernetes basic concepts](/post/kubernetes-tutorial/)
 * Part II: A practical and realistic example (this post)
-* Part III: Best practices (still WIP)
+* Part III: [Best practices](/post/kubernetes-tutorial-iii-best-practices/)
 
 #### Table of contents
 
