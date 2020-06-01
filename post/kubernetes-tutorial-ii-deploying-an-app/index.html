@@ -311,7 +311,8 @@ know when the new pods are ready to accept traffic? Actually, it doesn&rsquo;t, 
 it will consider the new pods ready as soon as the container process starts.
 Of course, that is rarely the desired behavior, so we can instruct Kubernetes
 to poll the pods periodically to determine if they are ready or not, alive or
-not. That is accomplished by setting up health checks.</p>
+not. That is accomplished by setting up <a href="/post/kubernetes-tutorial-iii-best-practices/#health-checks">health
+checks</a>.</p>
 </blockquote>
 <h4 id="final-configuration">Final configuration</h4>
 <p>With those improvements, the configuration for our frontend Deployment looks
