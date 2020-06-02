@@ -148,17 +148,19 @@ deadlocks or other broken states that don&rsquo;t necessarily result in a crash.
 by running commands inside the container. The following is an example
 configuration of Readiness and Liveness probes:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">readinessProbe</span>:
-  <span style="color:#66d9ef">tcpSocket</span>:
-    port. <span style="color:#ae81ff">80</span>
+  <span style="color:#66d9ef">httpGet</span>:
+    <span style="color:#66d9ef">path</span>: /check
+    <span style="color:#66d9ef">port</span>: <span style="color:#ae81ff">80</span>
   <span style="color:#66d9ef">periodSeconds</span>: <span style="color:#ae81ff">2</span>
 <span style="color:#66d9ef">livenessProbe</span>:
-  <span style="color:#66d9ef">tcpSocket</span>:
+  <span style="color:#66d9ef">httpGet</span>:
+    <span style="color:#66d9ef">path</span>: /healthz
     <span style="color:#66d9ef">port</span>: <span style="color:#ae81ff">80</span>
   <span style="color:#66d9ef">initialDelaySeconds</span>: <span style="color:#ae81ff">20</span>
   <span style="color:#66d9ef">periodSeconds</span>: <span style="color:#ae81ff">30</span>
-</code></pre></div><p>We configure the same health check in both cases, with a different frequency.
-If the container is unresponsive for a longer period of time, it will be
-restarted. More details on the probe types and all the options are found
+</code></pre></div><p>We configure two different health check, with a different frequency. If the
+container is unresponsive for a longer period of time, it will be restarted.
+More details on the probe types and all the options are found
 <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/">here</a>.</p>
 <h3 id="graceful-shutdown">Graceful shutdown</h3>
 <p>When a Pod is terminated, Kubernetes does two things in parallel:</p>
