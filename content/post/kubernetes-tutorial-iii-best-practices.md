@@ -65,19 +65,21 @@ configuration of Readiness and Liveness probes:
 
 ```yaml
 readinessProbe:
-  tcpSocket:
-    port. 80
+  httpGet:
+    path: /check
+    port: 80
   periodSeconds: 2
 livenessProbe:
-  tcpSocket:
+  httpGet:
+    path: /healthz
     port: 80
   initialDelaySeconds: 20
   periodSeconds: 30
 ```
 
-We configure the same health check in both cases, with a different frequency.
-If the container is unresponsive for a longer period of time, it will be
-restarted. More details on the probe types and all the options are found
+We configure two different health check, with a different frequency. If the
+container is unresponsive for a longer period of time, it will be restarted.
+More details on the probe types and all the options are found
 [here](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
 
 ### Graceful shutdown
