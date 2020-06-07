@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/static/icons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/static/icons/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="/static/icons/manifest.json">
+<link rel="mask-icon" href="/static/icons/safari-pinned-tab.svg" color="#2ae2b1">
+<link rel="shortcut icon" href="/static/icons/favicon.ico">
+<meta name="msapplication-config" content="/static/icons/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css?family=Rubik&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="">
+
+
+
+
+<style>
+.hljs{display:block;overflow-x:auto;background:#191f26;color:#e6e1cf;padding:.5em}.hljs-comment,.hljs-meta,.hljs-quote{color:#5c6773;font-style:italic}.hljs-attr,.hljs-attribute,.hljs-link,.hljs-regexp,.hljs-selector-class,.hljs-selector-id,.hljs-template-variable,.hljs-variable{color:#f73}.hljs-builtin-name,.hljs-literal,.hljs-number,.hljs-params,.hljs-type{color:#fe9}.hljs-bullet,.hljs-string{color:#b8cc52}.hljs-built_in,.hljs-section,.hljs-title{color:#ffb454}.hljs-keyword,.hljs-selector-tag,.hljs-symbol{color:#f73}.hljs-name{color:#36a3d9}.hljs-tag{color:#00568d}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}.hljs-addition{color:#91b362}.hljs-deletion{color:#d96c75}
+</style>
+
+
+
+<title>Kubernetes tools and plugins for enhanced productivity</title>
+<meta name="description" content="A list of useful Kubernetes tools for enhanced productivity.">
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https:\/\/signal-to-noise.xyz\/post\/kubernetes-tools\/"
+  },
+  "headline": "Kubernetes tools and plugins for enhanced productivity",
+  "name": "Kubernetes tools and plugins for enhanced productivity",
+  "datePublished": "2020-06-07",
+  "dateModified": "20200607-00:00:00.000",
+  "author": {
+    "@type": "Person",
+    "name": "Michele Lacchia"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Signal to Noise",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https:\/\/signal-to-noise.xyz\/static\/images\/signal-to-noise.png"
+    }
+  },
+  "description": "A list of useful Kubernetes tools for enhanced productivity.",
+  "keywords": "kubernetes,containers,big-list"
+}
+</script>
+</head>
+
+<body>
+  <div class="container">
+    <header role="banner">
+      <div class="header-logo">
+        <a href="/"><img src="/static/images/signal-to-noise.png" width="60" height="60" alt="Signal to Noise"></a>
+      </div>
+      
+    </header>
+
+
+
+
+<main role="main">
+    <article>
+        <h1 class="entry-title">Kubernetes tools and plugins for enhanced productivity</h1>
+        <span class="entry-meta"><time datetime="2020-06-07">June 07, 2020</time></span>,
+        <span class="entry-meta">Michele Lacchia</span>
+        <div class="post-after">
+              <div class="tags">
+                
+                    <a href="https://signal-to-noise.xyz//tags/kubernetes">kubernetes</a>
+                
+                    <a href="https://signal-to-noise.xyz//tags/containers">containers</a>
+                
+                    <a href="https://signal-to-noise.xyz//tags/big-list">big-list</a>
+                
+              </div>
+        </div>
+        <section>
+            <div class="img-with-copyright">
+<img itemprop="image" title="A pipeline" src="/static/images/port-containers.jpg" />
+<div class="copyright"><span>Photo by <a href="https://unsplash.com/@timelabpro?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Timelab Pro</a> on <a href="https://unsplash.com/s/photos/port-containers?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>.<span style="clear:both"></span></span></div>
+</div>
+<p><code>kubectl</code> is a great tool, but when the clusters start to multiply and each one
+has several namespaces, staying productive can become a challenge. In this
+short post I present some tools that I consider very useful when managing
+Kubernetes clusters. The first three (kubectx, kubens, stern) are absolutely
+essential, and I could not do without them anymore.</p>
+<h3 id="kubectx-and-kubens">kubectx and kubens</h3>
+<p>If you have multiple clusters, you can switch between them using the command</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl config use-context &lt;name&gt;
+</code></pre></div><p>This procedure quickly becomes annoying when you start managing many different
+clusters or the context names are not short. E.g. in GKE, the default context
+name has the form <code>gke_&lt;project id&gt;_&lt;region&gt;-&lt;zone&gt;_&lt;cluster name&gt;</code>.</p>
+<p>The <a href="https://github.com/ahmetb/kubectx"><code>kubectx</code></a> command allows you to
+accomplish this task and related ones much more quickly and efficiently:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Command</th>
+<th align="left">Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>kubectx &lt;name&gt;</code></td>
+<td align="left">switch to the context <code>&lt;name&gt;</code></td>
+</tr>
+<tr>
+<td align="left"><code>kubectx -</code></td>
+<td align="left">switch to the previous context</td>
+</tr>
+<tr>
+<td align="left"><code>kubectx &lt;new&gt;=&lt;old&gt;</code></td>
+<td align="left">rename <code>&lt;old&gt;</code> to <code>&lt;new&gt;</code></td>
+</tr>
+<tr>
+<td align="left"><code>kubectx &lt;new&gt;=.</code></td>
+<td align="left">rename the current context to <code>&lt;new&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p>If you install <a href="https://github.com/junegunn/fzf"><code>fzf</code></a>, kubectx becomes
+interactive:</p>
+<img src="/static/images/kubectx-interactive.gif" style="margin-bottom:2em">
+<p>The companion command <a href="https://github.com/ahmetb/kubectx"><code>kubens</code></a>, allows you
+to switch between namespaces:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Command</th>
+<th align="left">Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>kubens &lt;name&gt;</code></td>
+<td align="left">switch to the namespace <code>&lt;name&gt;</code></td>
+</tr>
+<tr>
+<td align="left"><code>kubens -</code></td>
+<td align="left">switch to the previous namespace</td>
+</tr>
+<tr>
+<td align="left"><code>kubens -c</code></td>
+<td align="left">show the current namespace</td>
+</tr>
+</tbody>
+</table>
+<p>With <code>fzf</code>, kubens becomes interactive too. Both tools also support tab
+completion.</p>
+<h3 id="stern">stern</h3>
+<p>The built-in command to tail logs, <code>kubectl logs</code>, has two significant
+limitations:</p>
+<ol>
+<li>it can only tail logs from one Pod at a time, and the Pod name has to be
+specified exactly — this is inconvenient when applications are
+deployed with multiple replicas; the Pod name will also change every time
+it&rsquo;s recreated.</li>
+<li>If multiple containers are present within a Pod, the container name has to
+be specified exactly. It&rsquo;s not possible to tail logs from multiple
+containers at the same time.</li>
+</ol>
+<p>To work around those limitations, <a href="https://github.com/wercker/stern"><code>stern</code></a>
+was created. It makes log-tailing a breeze, allowing to tail logs from multiple
+containers and Pods at the same time. Pods and containers are included and
+excluded with regular expressions, and that makes stern incredibly flexible. It
+can even filter on the message timestamps and output in several different
+formats.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stern &quot;web-\w&quot;</code></td>
+<td>tail logs from all containers in Pods matching the <code>web-\w</code> regex</td>
+</tr>
+<tr>
+<td><code>stern web -c nginx</code></td>
+<td>tail logs from the <code>nginx</code> container in Pods matching the &ldquo;web&rdquo; query</td>
+</tr>
+<tr>
+<td><code>stern -s 15min backend</code></td>
+<td>tail logs newer than a relative duration like &ldquo;2m&rdquo; or &ldquo;3h&rdquo;</td>
+</tr>
+<tr>
+<td><code>stern --tail 10 backend</code></td>
+<td>show at most 10 lines from the backend Pods</td>
+</tr>
+<tr>
+<td><code>stern --all-namespaces -l app=nginx</code></td>
+<td>tail Pods from all namespaces matching the label selector <code>app=nginx</code></td>
+</tr>
+<tr>
+<td><code>stern web -o json</code></td>
+<td>output logs in JSON format</td>
+</tr>
+</tbody>
+</table>
+<h3 id="polaris">Polaris</h3>
+<p><a href="https://github.com/FairwindsOps/polaris">Polaris</a> is a static analysis tool
+that ensures that a variety of best practices are respected. Notably, it also
+includes a <a href="https://github.com/FairwindsOps/polaris#webhook">validating
+webhook</a> that can be installed
+in your cluster to automatically check all workloads and reject those that
+don&rsquo;t adhere to your policies.</p>
+<h3 id="popeye">Popeye</h3>
+<p><a href="https://github.com/derailed/popeye">Popeye</a> scans your cluster for best
+practices and potential issues. It aims to detect misconfigurations, like port
+mismatches, dead or unused resources, metrics utilization, probes, container
+images, RBAC rules, naked resources, etc. It should be noted that it&rsquo;s not a
+static analysis tool, as it actually inspects the live cluster. For that
+reason, the user running Popeye must have enough RBAC privileges to get/list
+the resources that Popeye checks. Overall, Popeye is a good complement to
+Polaris.</p>
+<h3 id="krew">krew</h3>
+<p><a href="https://github.com/kubernetes-sigs/krew"><code>krew</code></a> is a plugin manager for
+kubectl. As of the date of this post, there are more than <a href="https://github.com/kubernetes-sigs/krew-index/blob/master/plugins.md">70
+plugins</a>
+available through krew. Many of the tool mentioned in this post are also
+installable with krew. Installing new plugins is very easy and straightforward.</p>
+<h3 id="rbac-manager-and-rbac-lookup">RBAC manager and rbac-lookup</h3>
+<p>When RBAC policies start to become unmanageable, a tool like <a href="https://github.com/FairwindsOps/rbac-manager">RBAC
+Manager</a> becomes essential. The
+RBAC Manager operator introduces new custom resources that allow a declarative
+management style of RBAC policies. Instead of managing role bindings directly,
+one can specify the desired RBAC state and the operator will take the necessary
+actions to achieve that state.</p>
+<p><a href="https://github.com/FairwindsOps/rbac-manager#an-example">The example</a> in the
+README is clearer than any explanation. Suppose that we want to grant our user
+Joe <code>edit</code> access to the <code>web</code> namespace and <code>view</code> access to <code>api</code> namespace.
+With RBAC, that requires creating two role bindings. The first grants <code>edit</code>
+access to the <code>web</code> namespace:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">kind</span>: RoleBinding
+<span style="color:#66d9ef">apiVersion</span>: rbac.authorization.k8s.io/v1
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: joe-web
+  <span style="color:#66d9ef">namespace</span>: web
+<span style="color:#66d9ef">subjects</span>:
+- <span style="color:#66d9ef">kind</span>: User
+  <span style="color:#66d9ef">name</span>: joe@example.com
+<span style="color:#66d9ef">roleRef</span>:
+  <span style="color:#66d9ef">kind</span>: ClusterRole
+  <span style="color:#66d9ef">name</span>: edit
+  <span style="color:#66d9ef">apiGroup</span>: rbac.authorization.k8s.io
+</code></pre></div><p>The second grants <code>view</code> access to the <code>api</code> namespace:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">kind</span>: RoleBinding
+<span style="color:#66d9ef">apiVersion</span>: rbac.authorization.k8s.io/v1
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: joe-api
+  <span style="color:#66d9ef">namespace</span>: api
+<span style="color:#66d9ef">subjects</span>:
+- <span style="color:#66d9ef">kind</span>: User
+  <span style="color:#66d9ef">name</span>: joe@example.com
+<span style="color:#66d9ef">roleRef</span>:
+  <span style="color:#66d9ef">kind</span>: ClusterRole
+  <span style="color:#66d9ef">name</span>: view
+  <span style="color:#66d9ef">apiGroup</span>: rbac.authorization.k8s.io
+</code></pre></div><p>One can easily see how this approach can quickly grow out of control with many
+users and many namespaces. With RBAC Manager, one can use a single custom
+resource to achieve the same result:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: rbacmanager.reactiveops.io/v1beta1
+<span style="color:#66d9ef">kind</span>: RBACDefinition
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: joe-access
+<span style="color:#66d9ef">rbacBindings</span>:
+  - <span style="color:#66d9ef">name</span>: joe
+    <span style="color:#66d9ef">subjects</span>:
+      - <span style="color:#66d9ef">kind</span>: User
+        <span style="color:#66d9ef">name</span>: joe@example.com
+    <span style="color:#66d9ef">roleBindings</span>:
+      - <span style="color:#66d9ef">namespace</span>: api
+        <span style="color:#66d9ef">clusterRole</span>: view
+      - <span style="color:#66d9ef">namespace</span>: web
+        <span style="color:#66d9ef">clusterRole</span>: edit
+</code></pre></div><p>The companion tool <a href="https://github.com/FairwindsOps/rbac-lookup"><code>rbac-lookup</code></a>
+is very useful to inspect roles bound to any user or service account. When run
+on GKE clusters, it can also show IAM roles.</p>
+
+        </section>
+    </article>
+</main>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+      
+      
+      if (window.location.hostname == "localhost")
+                return;
+
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      var disqus_shortname = 'signal-to-noise';
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+	<footer role="contentinfo">
+		<div class="hr"></div>
+		<div class="footer-link">
+            <ul>
+                <li><script>document.write('<'+'a'+' '+'h'+'r'+'e'+'f'+'='+"'"+'m'+'a'+'i'+'&'+'#'+'1'+'0'+
+'8'+';'+'t'+'o'+'&'+'#'+'5'+'8'+';'+'&'+'#'+'1'+'0'+'9'+';'+'i'+'c'+'h'+'&'+
+'#'+'1'+'0'+'1'+';'+'&'+'#'+'1'+'0'+'8'+';'+'%'+'6'+'5'+'l'+'%'+'6'+'1'+'c'+
+'c'+'%'+'6'+'8'+'i'+'a'+'%'+'&'+'#'+'5'+'2'+';'+'0'+'%'+'6'+'&'+'#'+'5'+'5'+
+';'+'&'+'#'+'1'+'0'+'9'+';'+'&'+'#'+'9'+'7'+';'+'&'+'#'+'1'+'0'+'5'+';'+'l'+
+'%'+'&'+'#'+'5'+'0'+';'+'E'+'%'+'6'+'3'+'o'+'m'+"'"+'>'+'E'+'m'+'a'+'i'+'&'+
+'#'+'1'+'0'+'8'+';'+'<'+'/'+'a'+'>');</script></li>
+                <li><a href="https://github.com/rubik/" target="_blank" rel="noopener">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/michele-lacchia/" target="_blank" rel="noopener">LinkedIn</a></li>
+                <li><a href="/page/about/">About me</a></li>
+                <li><a href="http://feeds.feedburner.com/signal-to-noise">RSS</a></li>
+            </ul>
+
+		</div>
+		<div class="copyright">Created by Michele Lacchia, built with Hugo</div>
+	</footer>
+</div>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-86380700-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="//instant.page/1.0.0" type="module" integrity="sha384-6w2SekMzCkuMQ9sEbq0cLviD/yR2HfA/+ekmKiBnFlsoSvb/VmQFSi/umVShadQI"></script>
+</body>
+</html>
+
