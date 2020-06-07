@@ -116,7 +116,7 @@ we can change the first one into the other by deleting the leading <strong>s</st
 then substituting the two central <strong>c</strong>'s with two <strong>t</strong>'s.</p>
 
 <p>Let's use the dictionary</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-no-highlight" data-lang="no-highlight">{&#39;some&#39;, &#39;soft&#39;, &#39;same&#39;, &#39;mole&#39;, &#39;soda&#39;, &#39;salmon&#39;}</code></pre></div>
+<pre><code>{&#39;some&#39;, &#39;soft&#39;, &#39;same&#39;, &#39;mole&#39;, &#39;soda&#39;, &#39;salmon&#39;}</code></pre>
 <p>To construct the tree, we first choose any word as the root node, and then
 add the other words by calculating their distance from the root. In our case,
 we can choose &quot;some&quot; to be the root element. Then, after adding the two
@@ -172,7 +172,7 @@ satisfy this condition. Moving on, we compute</p>
 that have a distance between <span  class="math">\(D - N = -1\)</span> and <span  class="math">\(D + N = 3\)</span>. Again, all of
 them, but only &quot;soda&quot; is a valid result. Finally, &quot;salmon&quot; is not acceptable.
 If we sort our results by distance we end up with the following:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-no-highlight" data-lang="no-highlight">[(1, &#39;soft&#39;), (2, &#39;some&#39;), (2, &#39;soda&#39;)]</code></pre></div>
+<pre><code>[(1, &#39;soft&#39;), (2, &#39;some&#39;), (2, &#39;soda&#39;)]</code></pre>
 <h3 id="why-does-it-work">Why does it work?</h3>
 
 <p>It's interesting to understand <strong>why</strong> we are allowed to prune all the children
