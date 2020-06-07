@@ -38,7 +38,7 @@ we can change the first one into the other by deleting the leading **s**, and
 then substituting the two central **c**'s with two **t**'s.
 
 Let's use the dictionary
-```no-highlight
+```
 {'some', 'soft', 'same', 'mole', 'soda', 'salmon'}
 ```
 To construct the tree, we first choose any word as the root node, and then
@@ -93,7 +93,8 @@ Hence "soft" is an acceptable result. Regarding its children, we take those
 that have a distance between $$D - N = -1$$ and $$D + N = 3$$. Again, all of
 them, but only "soda" is a valid result. Finally, "salmon" is not acceptable.
 If we sort our results by distance we end up with the following:
-```no-highlight
+
+```
 [(1, 'soft'), (2, 'some'), (2, 'soda')]
 ```
 
