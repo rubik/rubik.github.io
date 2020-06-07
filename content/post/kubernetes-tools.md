@@ -3,7 +3,7 @@ author = "Michele Lacchia"
 title = "Kubernetes tools and plugins for enhanced productivity"
 tags = ["kubernetes", "containers", "big-list"]
 category = "posts"
-date = "2020-06-02"
+date = "2020-06-07"
 summary = "A list of useful Kubernetes tools for enhanced productivity."
 +++
 
@@ -84,10 +84,98 @@ formats.
 | `stern --all-namespaces -l app=nginx` | tail Pods from all namespaces matching the label selector `app=nginx` |
 | `stern web -o json`                   | output logs in JSON format                                            |
 
-### Popeye
-
 ### Polaris
+[Polaris](https://github.com/FairwindsOps/polaris) is a static analysis tool
+that ensures that a variety of best practices are respected. Notably, it also
+includes a [validating
+webhook](https://github.com/FairwindsOps/polaris#webhook) that can be installed
+in your cluster to automatically check all workloads and reject those that
+don't adhere to your policies.
+
+### Popeye
+[Popeye](https://github.com/derailed/popeye) scans your cluster for best
+practices and potential issues. It aims to detect misconfigurations, like port
+mismatches, dead or unused resources, metrics utilization, probes, container
+images, RBAC rules, naked resources, etc. It should be noted that it's not a
+static analysis tool, as it actually inspects the live cluster. For that
+reason, the user running Popeye must have enough RBAC privileges to get/list
+the resources that Popeye checks. Overall, Popeye is a good complement to
+Polaris.
 
 ### krew
+[`krew`](https://github.com/kubernetes-sigs/krew) is a plugin manager for
+kubectl. As of the date of this post, there are more than [70
+plugins](https://github.com/kubernetes-sigs/krew-index/blob/master/plugins.md)
+available through krew. Many of the tool mentioned in this post are also
+installable with krew. Installing new plugins is very easy and straightforward.
 
 ### RBAC manager and rbac-lookup
+When RBAC policies start to become unmanageable, a tool like [RBAC
+Manager](https://github.com/FairwindsOps/rbac-manager) becomes essential. The
+RBAC Manager operator introduces new custom resources that allow a declarative
+management style of RBAC policies. Instead of managing role bindings directly,
+one can specify the desired RBAC state and the operator will take the necessary
+actions to achieve that state.
+
+[The example](https://github.com/FairwindsOps/rbac-manager#an-example) in the
+README is clearer than any explanation. Suppose that we want to grant our user
+Joe `edit` access to the `web` namespace and `view` access to `api` namespace.
+With RBAC, that requires creating two role bindings. The first grants `edit`
+access to the `web` namespace:
+
+```yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: joe-web
+  namespace: web
+subjects:
+- kind: User
+  name: joe@example.com
+roleRef:
+  kind: ClusterRole
+  name: edit
+  apiGroup: rbac.authorization.k8s.io
+```
+
+The second grants `view` access to the `api` namespace:
+
+```yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: joe-api
+  namespace: api
+subjects:
+- kind: User
+  name: joe@example.com
+roleRef:
+  kind: ClusterRole
+  name: view
+  apiGroup: rbac.authorization.k8s.io
+```
+
+One can easily see how this approach can quickly grow out of control with many
+users and many namespaces. With RBAC Manager, one can use a single custom
+resource to achieve the same result:
+
+```yaml
+apiVersion: rbacmanager.reactiveops.io/v1beta1
+kind: RBACDefinition
+metadata:
+  name: joe-access
+rbacBindings:
+  - name: joe
+    subjects:
+      - kind: User
+        name: joe@example.com
+    roleBindings:
+      - namespace: api
+        clusterRole: view
+      - namespace: web
+        clusterRole: edit
+```
+
+The companion tool [`rbac-lookup`](https://github.com/FairwindsOps/rbac-lookup)
+is very useful to inspect roles bound to any user or service account. When run
+on GKE clusters, it can also show IAM roles.
