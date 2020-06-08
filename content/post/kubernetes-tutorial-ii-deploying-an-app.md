@@ -362,7 +362,7 @@ spec:
     spec:
       containers:
       - args: ['/bin/app']
-        image: c1524db4f1/kubernetes-tutorial-backend:v0.2.0
+        image: c1524db4f1/kubernetes-tutorial-backend:v0.3.0
         env:
           - name: REDIS_URL
             value: redis:6379
