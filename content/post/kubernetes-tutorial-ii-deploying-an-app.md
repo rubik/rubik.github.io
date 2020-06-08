@@ -832,3 +832,13 @@ Redis Service.
 * If your Kubernetes cluster is accessed by multiple users, you should
   configure [role-based access control
   (RBAC)](https://kubernetes.io/docs/reference/access-authn-authz/rbac/).
+
+
+## Conclusion
+In this second part we deployed an toy application that resembled a real-world
+one. I encourage you to start experimenting with your applications. Before you
+begin, you may want to take a look at some [best
+practices](/post/kubernetes-tutorial-iii-best-practices/), so that you can
+form good habits from the start. I also recommend taking a look at some [useful
+tools](/post/kubernetes-tools/) that make working with Kubernetes easier and
+more efficient.

@@ -282,4 +282,6 @@ not start implementing everything immediately, but use this list as a starting
 point to learn new Kubernetes concepts and workflows. Some of them, on the
 other hand, are quite critical (e.g. keeping all your configuration in
 versioned YAML files), and you should definitely start adopting them
-immediately.
+immediately. I compiled a list of some [useful
+tools](/post/kubernetes-tools/) that can help you enforce good practices almost
+effortlessly.
