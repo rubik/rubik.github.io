@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Created by Michele Lacchia, built with Hugo</copyright>
-    <lastBuildDate>Tue, 01 Nov 2016 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://signal-to-noise.xyz/tags/sklearn/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 01 Nov 2016 00:00:00 +0000</lastBuildDate><atom:link href="https://signal-to-noise.xyz/tags/sklearn/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Why you should use scikit-learn&#39;s Pipeline object</title>
       <link>https://signal-to-noise.xyz/post/sklearn-pipeline/</link>

@@ -147,17 +147,17 @@ deadlocks or other broken states that don&rsquo;t necessarily result in a crash.
 <p>There are three types of probes: HTTP checks, TCP checks, and checks performed
 by running commands inside the container. The following is an example
 configuration of Readiness and Liveness probes:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">readinessProbe</span>:
-  <span style="color:#66d9ef">httpGet</span>:
-    <span style="color:#66d9ef">path</span>: /check
-    <span style="color:#66d9ef">port</span>: <span style="color:#ae81ff">80</span>
-  <span style="color:#66d9ef">periodSeconds</span>: <span style="color:#ae81ff">2</span>
-<span style="color:#66d9ef">livenessProbe</span>:
-  <span style="color:#66d9ef">httpGet</span>:
-    <span style="color:#66d9ef">path</span>: /healthz
-    <span style="color:#66d9ef">port</span>: <span style="color:#ae81ff">80</span>
-  <span style="color:#66d9ef">initialDelaySeconds</span>: <span style="color:#ae81ff">20</span>
-  <span style="color:#66d9ef">periodSeconds</span>: <span style="color:#ae81ff">30</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">readinessProbe</span>:
+  <span style="color:#f92672">httpGet</span>:
+    <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/check</span>
+    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">80</span>
+  <span style="color:#f92672">periodSeconds</span>: <span style="color:#ae81ff">2</span>
+<span style="color:#f92672">livenessProbe</span>:
+  <span style="color:#f92672">httpGet</span>:
+    <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/healthz</span>
+    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">80</span>
+  <span style="color:#f92672">initialDelaySeconds</span>: <span style="color:#ae81ff">20</span>
+  <span style="color:#f92672">periodSeconds</span>: <span style="color:#ae81ff">30</span>
 </code></pre></div><p>We configure two different health check, with a different frequency. If the
 container is unresponsive for a longer period of time, it will be restarted.
 More details on the probe types and all the options are found
@@ -291,13 +291,13 @@ for scheduling based on Pods that are already running on nodes rather than
 based on node labels.</p>
 <p>For example, we can use an anti-affinity rule to disallow scheduling on nodes
 that are already running Pods that match the specified label selector:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">affinity</span>:
-  <span style="color:#66d9ef">podAntiAffinity</span>:
-    <span style="color:#66d9ef">requiredDuringSchedulingIgnoredDuringExecution</span>:
-    - <span style="color:#66d9ef">labelSelector</span>:
-        <span style="color:#66d9ef">matchLabels</span>:
-          <span style="color:#66d9ef">app</span>: web
-      <span style="color:#66d9ef">topologyKey</span>: <span style="color:#e6db74">&#39;kubernetes.io/hostname&#39;</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">affinity</span>:
+  <span style="color:#f92672">podAntiAffinity</span>:
+    <span style="color:#f92672">requiredDuringSchedulingIgnoredDuringExecution</span>:
+    - <span style="color:#f92672">labelSelector</span>:
+        <span style="color:#f92672">matchLabels</span>:
+          <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
+      <span style="color:#f92672">topologyKey</span>: <span style="color:#e6db74">&#39;kubernetes.io/hostname&#39;</span>
 </code></pre></div><p>(Note that the requirement specified above is a <em>hard</em> requirement — the
 corresponding <em>soft</em> requirement can be specified with
 <code>preferredDuringSchedulingIgnoredDuringExecution</code>).</p>

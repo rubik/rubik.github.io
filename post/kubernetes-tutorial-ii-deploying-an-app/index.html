@@ -94,7 +94,7 @@ explained in the first part of the series. This is the structure of the series:<
 <ul>
 <li>Part I: <a href="/post/kubernetes-tutorial/">Kubernetes basic concepts</a></li>
 <li>Part II: A practical and realistic example (this post)</li>
-<li>Part III: Best practices (still WIP)</li>
+<li>Part III: <a href="/post/kubernetes-tutorial-iii-best-practices/">Best practices</a></li>
 </ul>
 <h4 id="table-of-contents">Table of contents</h4>
 <ul>
@@ -208,28 +208,28 @@ at any moment without issues.</p>
 <a href="/post/kubernetes-tutorial/#controller-objects"><strong>Deployment</strong></a> controller is
 the right abstraction in this case. Let&rsquo;s create the manifest the nginx
 instance:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: apps/v1
-<span style="color:#66d9ef">kind</span>: Deployment
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: frontend
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">replicas</span>: <span style="color:#ae81ff">2</span>
-  <span style="color:#66d9ef">selector</span>:
-    <span style="color:#66d9ef">matchLabels</span>:
-      <span style="color:#66d9ef">app</span>: web
-  <span style="color:#66d9ef">template</span>:
-    <span style="color:#66d9ef">metadata</span>:
-      <span style="color:#66d9ef">labels</span>:
-        <span style="color:#66d9ef">app</span>: web
-    <span style="color:#66d9ef">spec</span>:
-      <span style="color:#66d9ef">containers</span>:
-      - <span style="color:#66d9ef">args</span>: [<span style="color:#e6db74">&#39;nginx&#39;</span>, <span style="color:#e6db74">&#39;-g&#39;</span>, <span style="color:#e6db74">&#39;daemon off;&#39;</span>]
-        <span style="color:#66d9ef">image</span>: c1524db4f1/kubernetes-tutorial-frontend:v0<span style="color:#ae81ff">.2.0</span>
-        <span style="color:#66d9ef">imagePullPolicy</span>: Always
-        <span style="color:#66d9ef">name</span>: nginx
-        <span style="color:#66d9ef">ports</span>:
-        - <span style="color:#66d9ef">containerPort</span>: <span style="color:#ae81ff">80</span>
-      <span style="color:#66d9ef">restartPolicy</span>: Always
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">frontend</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">2</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">matchLabels</span>:
+      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
+  <span style="color:#f92672">template</span>:
+    <span style="color:#f92672">metadata</span>:
+      <span style="color:#f92672">labels</span>:
+        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
+    <span style="color:#f92672">spec</span>:
+      <span style="color:#f92672">containers</span>:
+      - <span style="color:#f92672">args</span>: [<span style="color:#e6db74">&#39;nginx&#39;</span>, <span style="color:#e6db74">&#39;-g&#39;</span>, <span style="color:#e6db74">&#39;daemon off;&#39;</span>]
+        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">c1524db4f1/kubernetes-tutorial-frontend:v0.2.0</span>
+        <span style="color:#f92672">imagePullPolicy</span>: <span style="color:#ae81ff">Always</span>
+        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+        <span style="color:#f92672">ports</span>:
+        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">80</span>
+      <span style="color:#f92672">restartPolicy</span>: <span style="color:#ae81ff">Always</span>
 </code></pre></div><p>This manifest file instructs Kubernetes to create a Deployment called
 <code>frontend</code>. Each Pod managed by the Deployment will be created according to the
 spec template: it will be built from the image
@@ -295,11 +295,11 @@ instances and then recreating them with the newer version.</p>
 appropriately, that&rsquo;s not possible with the <strong>Recreate</strong> one. Let&rsquo;s configure
 our update to prevent downtime. We&rsquo;ll add the following configuration to the
 <code>spec</code> object:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">strategy</span>:
-  <span style="color:#66d9ef">type</span>: RollingUpdate
-  <span style="color:#66d9ef">rollingUpdate</span>:
-    <span style="color:#66d9ef">maxSurge</span>: <span style="color:#ae81ff">1</span>
-    <span style="color:#66d9ef">maxUnavailable</span>: <span style="color:#ae81ff">0</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">strategy</span>:
+  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">RollingUpdate</span>
+  <span style="color:#f92672">rollingUpdate</span>:
+    <span style="color:#f92672">maxSurge</span>: <span style="color:#ae81ff">1</span>
+    <span style="color:#f92672">maxUnavailable</span>: <span style="color:#ae81ff">0</span>
 </code></pre></div><p>With the above parameters, the frontend Deployment will create one additional
 Pod during the update and it will ensure that no Pods are unavailable at any
 time. Additional update strategies are discussed
@@ -317,35 +317,35 @@ checks</a>.</p>
 <h4 id="final-configuration">Final configuration</h4>
 <p>With those improvements, the configuration for our frontend Deployment looks
 like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: apps/v1
-<span style="color:#66d9ef">kind</span>: Deployment
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: frontend
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">replicas</span>: <span style="color:#ae81ff">2</span>
-  <span style="color:#66d9ef">strategy</span>:
-    <span style="color:#66d9ef">type</span>: RollingUpdate
-    <span style="color:#66d9ef">rollingUpdate</span>:
-      <span style="color:#66d9ef">maxSurge</span>: <span style="color:#ae81ff">1</span>
-      <span style="color:#66d9ef">maxUnavailable</span>: <span style="color:#ae81ff">0</span>
-  <span style="color:#66d9ef">selector</span>:
-    <span style="color:#66d9ef">matchLabels</span>:
-      <span style="color:#66d9ef">app</span>: web
-      <span style="color:#66d9ef">service</span>: nginx
-  <span style="color:#66d9ef">template</span>:
-    <span style="color:#66d9ef">metadata</span>:
-      <span style="color:#66d9ef">labels</span>:
-        <span style="color:#66d9ef">app</span>: web
-        <span style="color:#66d9ef">service</span>: nginx
-    <span style="color:#66d9ef">spec</span>:
-      <span style="color:#66d9ef">containers</span>:
-      - <span style="color:#66d9ef">args</span>: [<span style="color:#e6db74">&#39;nginx&#39;</span>, <span style="color:#e6db74">&#39;-g&#39;</span>, <span style="color:#e6db74">&#39;daemon off;&#39;</span>]
-        <span style="color:#66d9ef">image</span>: c1524db4f1/kubernetes-tutorial-frontend:v0<span style="color:#ae81ff">.2.0</span>
-        <span style="color:#66d9ef">imagePullPolicy</span>: Always
-        <span style="color:#66d9ef">name</span>: nginx
-        <span style="color:#66d9ef">ports</span>:
-        - <span style="color:#66d9ef">containerPort</span>: <span style="color:#ae81ff">80</span>
-      <span style="color:#66d9ef">restartPolicy</span>: Always
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">frontend</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">2</span>
+  <span style="color:#f92672">strategy</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">RollingUpdate</span>
+    <span style="color:#f92672">rollingUpdate</span>:
+      <span style="color:#f92672">maxSurge</span>: <span style="color:#ae81ff">1</span>
+      <span style="color:#f92672">maxUnavailable</span>: <span style="color:#ae81ff">0</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">matchLabels</span>:
+      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
+      <span style="color:#f92672">service</span>: <span style="color:#ae81ff">nginx</span>
+  <span style="color:#f92672">template</span>:
+    <span style="color:#f92672">metadata</span>:
+      <span style="color:#f92672">labels</span>:
+        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
+        <span style="color:#f92672">service</span>: <span style="color:#ae81ff">nginx</span>
+    <span style="color:#f92672">spec</span>:
+      <span style="color:#f92672">containers</span>:
+      - <span style="color:#f92672">args</span>: [<span style="color:#e6db74">&#39;nginx&#39;</span>, <span style="color:#e6db74">&#39;-g&#39;</span>, <span style="color:#e6db74">&#39;daemon off;&#39;</span>]
+        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">c1524db4f1/kubernetes-tutorial-frontend:v0.2.0</span>
+        <span style="color:#f92672">imagePullPolicy</span>: <span style="color:#ae81ff">Always</span>
+        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+        <span style="color:#f92672">ports</span>:
+        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">80</span>
+      <span style="color:#f92672">restartPolicy</span>: <span style="color:#ae81ff">Always</span>
 </code></pre></div><p>After submitting the manifest with</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl apply -f deploy/frontend/20-deployment.yaml
 </code></pre></div><p>we see that the number of Pods immediately increases to three (due to
@@ -357,38 +357,38 @@ two fully ready Pods at any time (as we set <code>replicas: 2</code>). Had we sp
 <p>For our application, we&rsquo;ll create a similar Deployment manifest. It is
 essentially the same, so we will not discuss it in detail. We save the
 following configuration in <code>deploy/backend/20-deployment.yaml</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: apps/v1
-<span style="color:#66d9ef">kind</span>: Deployment
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: backend
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">replicas</span>: <span style="color:#ae81ff">2</span>
-  <span style="color:#66d9ef">strategy</span>:
-    <span style="color:#66d9ef">type</span>: RollingUpdate
-    <span style="color:#66d9ef">rollingUpdate</span>:
-      <span style="color:#66d9ef">maxSurge</span>: <span style="color:#ae81ff">1</span>
-      <span style="color:#66d9ef">maxUnavailable</span>: <span style="color:#ae81ff">0</span>
-  <span style="color:#66d9ef">selector</span>:
-    <span style="color:#66d9ef">matchLabels</span>:
-      <span style="color:#66d9ef">app</span>: web
-      <span style="color:#66d9ef">service</span>: app
-  <span style="color:#66d9ef">template</span>:
-    <span style="color:#66d9ef">metadata</span>:
-      <span style="color:#66d9ef">labels</span>:
-        <span style="color:#66d9ef">app</span>: web
-        <span style="color:#66d9ef">service</span>: app
-    <span style="color:#66d9ef">spec</span>:
-      <span style="color:#66d9ef">containers</span>:
-      - <span style="color:#66d9ef">args</span>: [<span style="color:#e6db74">&#39;/bin/app&#39;</span>]
-        <span style="color:#66d9ef">image</span>: c1524db4f1/kubernetes-tutorial-backend:v0<span style="color:#ae81ff">.3.0</span>
-        <span style="color:#66d9ef">env</span>:
-          - <span style="color:#66d9ef">name</span>: REDIS_URL
-            <span style="color:#66d9ef">value</span>: redis:<span style="color:#ae81ff">6379</span>
-        <span style="color:#66d9ef">imagePullPolicy</span>: Always
-        <span style="color:#66d9ef">name</span>: app
-        <span style="color:#66d9ef">ports</span>:
-        - <span style="color:#66d9ef">containerPort</span>: <span style="color:#ae81ff">1323</span>
-      <span style="color:#66d9ef">restartPolicy</span>: Always
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">backend</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">2</span>
+  <span style="color:#f92672">strategy</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">RollingUpdate</span>
+    <span style="color:#f92672">rollingUpdate</span>:
+      <span style="color:#f92672">maxSurge</span>: <span style="color:#ae81ff">1</span>
+      <span style="color:#f92672">maxUnavailable</span>: <span style="color:#ae81ff">0</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">matchLabels</span>:
+      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
+      <span style="color:#f92672">service</span>: <span style="color:#ae81ff">app</span>
+  <span style="color:#f92672">template</span>:
+    <span style="color:#f92672">metadata</span>:
+      <span style="color:#f92672">labels</span>:
+        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
+        <span style="color:#f92672">service</span>: <span style="color:#ae81ff">app</span>
+    <span style="color:#f92672">spec</span>:
+      <span style="color:#f92672">containers</span>:
+      - <span style="color:#f92672">args</span>: [<span style="color:#e6db74">&#39;/bin/app&#39;</span>]
+        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">c1524db4f1/kubernetes-tutorial-backend:v0.3.0</span>
+        <span style="color:#f92672">env</span>:
+          - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">REDIS_URL</span>
+            <span style="color:#f92672">value</span>: <span style="color:#ae81ff">redis:6379</span>
+        <span style="color:#f92672">imagePullPolicy</span>: <span style="color:#ae81ff">Always</span>
+        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">app</span>
+        <span style="color:#f92672">ports</span>:
+        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">1323</span>
+      <span style="color:#f92672">restartPolicy</span>: <span style="color:#ae81ff">Always</span>
 </code></pre></div><p>This manifest is almost identical to the previous one, with the only
 differences being the container image and command, and the <code>env</code> field. As the
 name implies, the <code>env</code> field allows us to inject environment variables inside
@@ -423,19 +423,19 @@ the Go application. If you need to, you can refresh your knowledge about
 Kubernetes Services <a href="/post/kubernetes-tutorial/#services">here</a>.</p>
 <p>This is the manifest file that declares the LoadBalancer Service for our nginx
 Pods:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
-<span style="color:#66d9ef">kind</span>: Service
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: nginx
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">type</span>: LoadBalancer
-  <span style="color:#66d9ef">ports</span>:
-  - <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;80&#34;</span>
-    <span style="color:#66d9ef">port</span>: <span style="color:#ae81ff">80</span>
-    <span style="color:#66d9ef">targetPort</span>: <span style="color:#ae81ff">80</span>
-  <span style="color:#66d9ef">selector</span>:
-    <span style="color:#66d9ef">app</span>: web
-    <span style="color:#66d9ef">service</span>: nginx
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">LoadBalancer</span>
+  <span style="color:#f92672">ports</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;80&#34;</span>
+    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">80</span>
+    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">80</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
+    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">nginx</span>
 </code></pre></div><p>This manifest specifies that the Service is a LoadBalancer and that it needs to
 forward traffic from port 80 (<code>port</code>), to port 80 (<code>targetPort</code>) of the
 selected Pods. We select Pods that have the labels <code>app: web</code> and <code>service: nginx</code>, which are the same ones we used in the nginx Deployment.</p>
@@ -445,19 +445,19 @@ submit it to the Kubernetes API with</p>
 </code></pre></div><p>As mentioned above, for the Go application we&rsquo;ll deploy a ClusterIP Service.
 That&rsquo;s because it&rsquo;s proxied by nginx, so all its traffic comes from inside the
 cluster. The manifest file is quite simple like the previous one:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
-<span style="color:#66d9ef">kind</span>: Service
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: app
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">type</span>: ClusterIP
-  <span style="color:#66d9ef">ports</span>:
-  - <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;1323&#34;</span>
-    <span style="color:#66d9ef">port</span>: <span style="color:#ae81ff">1323</span>
-    <span style="color:#66d9ef">targetPort</span>: <span style="color:#ae81ff">1323</span>
-  <span style="color:#66d9ef">selector</span>:
-    <span style="color:#66d9ef">app</span>: web
-    <span style="color:#66d9ef">service</span>: app
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">app</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">ClusterIP</span>
+  <span style="color:#f92672">ports</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;1323&#34;</span>
+    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">1323</span>
+    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">1323</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
+    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">app</span>
 </code></pre></div><p>We save it in <code>deploy/backend/30-service.yaml</code> and deploy it:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl apply -f deploy/backend/30-service.yaml
 </code></pre></div><p>We can inspect the status of the running Services (again, in the <code>default</code>
@@ -527,18 +527,18 @@ Kubernetes, storage resources are represented by <strong>PersistentVolume</stron
 These resources are consumed by <strong>PersistentVolumeClaim</strong> objects, just like
 Pods consume node compute resources. Therefore, we start by deploying the
 following PersistentVolumeClaim:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
-<span style="color:#66d9ef">kind</span>: PersistentVolumeClaim
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">labels</span>:
-    <span style="color:#66d9ef">service</span>: redis
-  <span style="color:#66d9ef">name</span>: redis-data
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">accessModes</span>:
-  - ReadWriteOnce
-  <span style="color:#66d9ef">resources</span>:
-    <span style="color:#66d9ef">requests</span>:
-      <span style="color:#66d9ef">storage</span>: 10Gi
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolumeClaim</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">labels</span>:
+    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">redis</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">redis-data</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">accessModes</span>:
+  - <span style="color:#ae81ff">ReadWriteOnce</span>
+  <span style="color:#f92672">resources</span>:
+    <span style="color:#f92672">requests</span>:
+      <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">10Gi</span>
 </code></pre></div><p>In the above specification, there are two important configuration options.</p>
 <p>The <strong>access mode</strong> describes how the volume is mounted; the possible values
 are:</p>
@@ -606,35 +606,35 @@ StatefulSet with ReadWriteOnce volumes, which is what we are doing in this
 case even if we only have a single Redis instance.</p>
 </blockquote>
 <p>A StatefulSet is configured almost identically to a Deployment:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: apps/v1
-<span style="color:#66d9ef">kind</span>: StatefulSet
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: redis
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">selector</span>:
-    <span style="color:#66d9ef">matchLabels</span>:
-      <span style="color:#66d9ef">service</span>: redis
-  <span style="color:#66d9ef">serviceName</span>: redis
-  <span style="color:#66d9ef">replicas</span>: <span style="color:#ae81ff">1</span>
-  <span style="color:#66d9ef">template</span>:
-    <span style="color:#66d9ef">metadata</span>:
-      <span style="color:#66d9ef">labels</span>:
-        <span style="color:#66d9ef">service</span>: redis
-    <span style="color:#66d9ef">spec</span>:
-      <span style="color:#66d9ef">containers</span>:
-      - <span style="color:#66d9ef">name</span>: redis
-        <span style="color:#66d9ef">image</span>: redis:<span style="color:#ae81ff">6.0.3</span>-alpine
-        <span style="color:#66d9ef">args</span>: [<span style="color:#e6db74">&#34;--appendonly&#34;</span>, <span style="color:#e6db74">&#34;no&#34;</span>, <span style="color:#e6db74">&#34;--save&#34;</span>, <span style="color:#e6db74">&#34;300&#34;</span>, <span style="color:#e6db74">&#34;1&#34;</span>, <span style="color:#e6db74">&#34;--save&#34;</span>, <span style="color:#e6db74">&#34;30&#34;</span>, <span style="color:#e6db74">&#34;1000&#34;</span>]
-        <span style="color:#66d9ef">ports</span>:
-          - <span style="color:#66d9ef">containerPort</span>: <span style="color:#ae81ff">6379</span>
-            <span style="color:#66d9ef">name</span>: redis
-        <span style="color:#66d9ef">volumeMounts</span>:
-        - <span style="color:#66d9ef">mountPath</span>: /data
-          <span style="color:#66d9ef">name</span>: redis-data
-      <span style="color:#66d9ef">volumes</span>:
-      - <span style="color:#66d9ef">name</span>: redis-data
-        <span style="color:#66d9ef">persistentVolumeClaim</span>:
-          <span style="color:#66d9ef">claimName</span>: redis-data
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">StatefulSet</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">redis</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">matchLabels</span>:
+      <span style="color:#f92672">service</span>: <span style="color:#ae81ff">redis</span>
+  <span style="color:#f92672">serviceName</span>: <span style="color:#ae81ff">redis</span>
+  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#f92672">template</span>:
+    <span style="color:#f92672">metadata</span>:
+      <span style="color:#f92672">labels</span>:
+        <span style="color:#f92672">service</span>: <span style="color:#ae81ff">redis</span>
+    <span style="color:#f92672">spec</span>:
+      <span style="color:#f92672">containers</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">redis</span>
+        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">redis:6.0.3-alpine</span>
+        <span style="color:#f92672">args</span>: [<span style="color:#e6db74">&#34;--appendonly&#34;</span>, <span style="color:#e6db74">&#34;no&#34;</span>, <span style="color:#e6db74">&#34;--save&#34;</span>, <span style="color:#e6db74">&#34;300&#34;</span>, <span style="color:#e6db74">&#34;1&#34;</span>, <span style="color:#e6db74">&#34;--save&#34;</span>, <span style="color:#e6db74">&#34;30&#34;</span>, <span style="color:#e6db74">&#34;1000&#34;</span>]
+        <span style="color:#f92672">ports</span>:
+          - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">6379</span>
+            <span style="color:#f92672">name</span>: <span style="color:#ae81ff">redis</span>
+        <span style="color:#f92672">volumeMounts</span>:
+        - <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/data</span>
+          <span style="color:#f92672">name</span>: <span style="color:#ae81ff">redis-data</span>
+      <span style="color:#f92672">volumes</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">redis-data</span>
+        <span style="color:#f92672">persistentVolumeClaim</span>:
+          <span style="color:#f92672">claimName</span>: <span style="color:#ae81ff">redis-data</span>
 </code></pre></div><p>Notably, we declare the volume <code>redis-data</code>, bound to the PersistentVolumeClaim
 <code>redis-data</code>, which is mounted at <code>/data</code>. The <code>redis</code> Docker image stores data
 at <code>/data</code> by default. The additional arguments in <code>args</code> just instruct Redis
@@ -644,19 +644,19 @@ to save data at a certain frequency. The above configuration is saved in
 </code></pre></div><p>Finally, we need to deploy a Service to ensure that our Redis instance can be
 reached. Since it only has to communicate with Pods inside the cluster, a
 ClusterIP Service is sufficient:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
-<span style="color:#66d9ef">kind</span>: Service
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: redis
-  <span style="color:#66d9ef">labels</span>:
-    <span style="color:#66d9ef">service</span>: redis
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">type</span>: ClusterIP
-  <span style="color:#66d9ef">selector</span>:
-    <span style="color:#66d9ef">service</span>: redis
-  <span style="color:#66d9ef">ports</span>:
-  - <span style="color:#66d9ef">port</span>: <span style="color:#ae81ff">6379</span>
-    <span style="color:#66d9ef">targetPort</span>: <span style="color:#ae81ff">6379</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">redis</span>
+  <span style="color:#f92672">labels</span>:
+    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">redis</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">ClusterIP</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">redis</span>
+  <span style="color:#f92672">ports</span>:
+  - <span style="color:#f92672">port</span>: <span style="color:#ae81ff">6379</span>
+    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">6379</span>
 </code></pre></div><p>We call the Service <code>redis</code>, so that it can be reached by our backend
 application (recall that we defined the environment variable <code>REDIS_URL</code>).</p>
 <p>Finally! The cluster is now fully functional.</p>

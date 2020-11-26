@@ -106,7 +106,7 @@ series:</p>
 <ul>
 <li>Part I: Kubernetes basic concepts (this post)</li>
 <li>Part II: <a href="/post/kubernetes-tutorial-ii-deploying-an-app/">A practical and realistic example</a></li>
-<li>Part III: Best practices (still WIP)</li>
+<li>Part III: <a href="/post/kubernetes-tutorial-iii-best-practices/">Best practices</a></li>
 </ul>
 <h4 id="table-of-contents">Table of contents</h4>
 <ul>
@@ -137,7 +137,7 @@ metal servers running within a data center.</p>
 understand:</p>
 <ul>
 <li>Kubernetes implements an <strong>object model</strong>: everything Kubernetes manages is
-represented by an object, and you can view and change these objects&rsquo;
+represented by an object, and you can view and change these objects'
 attributes and state;</li>
 <li>The second is the principle of <strong>declarative management</strong>. You can declare
 the state you want your cluster to be in through manifest files, and
@@ -177,16 +177,16 @@ also mount a set of volumes that are shared among its containers.</p>
 <p>Objects are defined in YAML manifest files. As an example, this is a minimal
 YAML manifest with the spec for a Pod that runs
 <a href="https://hub.docker.com/_/nginx">nginx</a>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
-<span style="color:#66d9ef">kind</span>: Pod
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: nginx
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">containers</span>:
-  - <span style="color:#66d9ef">image</span>: nginx:<span style="color:#ae81ff">1.17.5</span>
-    <span style="color:#66d9ef">name</span>: nginx
-    <span style="color:#66d9ef">ports</span>:
-    - <span style="color:#66d9ef">containerPort</span>: <span style="color:#ae81ff">80</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">containers</span>:
+  - <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nginx:1.17.5</span>
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+    <span style="color:#f92672">ports</span>:
+    - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">80</span>
 </code></pre></div><p>Manifest files have certain required fields. The field <code>apiVersion</code> specifies
 which API version is used to create the object; the Kubernetes API is
 versioned, and this helps to maintain backward compatibility. This file
@@ -219,25 +219,25 @@ perform the upgrade, the Deployment object will create a second ReplicaSet
 object, and then increase the number of (upgraded) Pods in the second
 ReplicaSet while it decreases the number in the first ReplicaSet.</p>
 <p>This is how a Deployment manifest file looks like:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: apps/v1
-<span style="color:#66d9ef">kind</span>: Deployment
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: nginx-proxy
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">replicas</span>: <span style="color:#ae81ff">3</span>
-  <span style="color:#66d9ef">selector</span>:
-    <span style="color:#66d9ef">matchLabels</span>:
-      <span style="color:#66d9ef">name</span>: nginx-proxy
-  <span style="color:#66d9ef">template</span>:
-    <span style="color:#66d9ef">metadata</span>:
-      <span style="color:#66d9ef">labels</span>:
-        <span style="color:#66d9ef">name</span>: nginx-proxy
-    <span style="color:#66d9ef">spec</span>:
-      <span style="color:#66d9ef">containers</span>:
-      - <span style="color:#66d9ef">name</span>: nginx-proxy
-        <span style="color:#66d9ef">image</span>: nginx:<span style="color:#ae81ff">1.17.5</span>
-        <span style="color:#66d9ef">ports</span>:
-        - <span style="color:#66d9ef">containerPort</span>: <span style="color:#ae81ff">80</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx-proxy</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">3</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">matchLabels</span>:
+      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx-proxy</span>
+  <span style="color:#f92672">template</span>:
+    <span style="color:#f92672">metadata</span>:
+      <span style="color:#f92672">labels</span>:
+        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx-proxy</span>
+    <span style="color:#f92672">spec</span>:
+      <span style="color:#f92672">containers</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx-proxy</span>
+        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nginx:1.17.5</span>
+        <span style="color:#f92672">ports</span>:
+        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">80</span>
 </code></pre></div><p>With this manifest, the nginx-proxy Deployment is created with three replicated
 Pods. the Pod template defines some metadata and the spec of each of the Pods
 in this replica set. In this example, each Pod encapsulates one container that
@@ -276,18 +276,18 @@ when scaling up and down. A <strong>Service</strong> is a static IP address that
 a service or a function in your infrastructure. It&rsquo;s a network abstraction for
 a set of Pods that deliver that service. These Pods are selected using a label
 selector. Here is an example of a Service:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
-<span style="color:#66d9ef">kind</span>: Service
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: backend-app-service
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">type</span>: ClusterIP
-  <span style="color:#66d9ef">ports</span>:
-  - <span style="color:#66d9ef">name</span>: <span style="color:#e6db74">&#34;80&#34;</span>
-    <span style="color:#66d9ef">port</span>: <span style="color:#ae81ff">80</span>
-    <span style="color:#66d9ef">targetPort</span>: <span style="color:#ae81ff">8080</span>
-  <span style="color:#66d9ef">selector</span>:
-    <span style="color:#66d9ef">app</span>: backend
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">backend-app-service</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">ClusterIP</span>
+  <span style="color:#f92672">ports</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;80&#34;</span>
+    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">80</span>
+    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8080</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">backend</span>
 </code></pre></div><p>This Service exposes an IP, from which it forwards all traffic it receives at
 port 80 to port 8080 on the Pods that have a label <code>app: backend</code>.</p>
 <p>There are a few different types of Services, and they build on top of each
@@ -346,38 +346,38 @@ controller</strong>. At the time of writing, Kubernetes officially supports two:
 <a href="https://github.com/kubernetes/ingress-gce/blob/master/README.md">GCE</a> and
 <a href="https://github.com/kubernetes/ingress-nginx/blob/master/README.md">nginx</a>.</p>
 <p>As an example, here is a manifest file that defines an Ingress backed by nginx:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: extensions/v1beta1
-<span style="color:#66d9ef">kind</span>: Ingress
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: my-ingress
-  <span style="color:#66d9ef">annotations</span>:
-    <span style="color:#66d9ef">kubernetes.io/ingress.class</span>: nginx
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">tls</span>:
-  - <span style="color:#66d9ef">hosts</span>:
-    - web1.example.com
-    <span style="color:#66d9ef">secretName</span>: letsencrypt-web1-certificate-secret
-    - web2.example.com
-    <span style="color:#66d9ef">secretName</span>: letsencrypt-web2-certificate-secret
-  <span style="color:#66d9ef">rules</span>:
-  - <span style="color:#66d9ef">host</span>: web1.example.com
-    <span style="color:#66d9ef">http</span>:
-      <span style="color:#66d9ef">paths</span>:
-      - <span style="color:#66d9ef">path</span>: /
-        <span style="color:#66d9ef">backend</span>:
-          <span style="color:#66d9ef">serviceName</span>: web1
-          <span style="color:#66d9ef">servicePort</span>: <span style="color:#ae81ff">80</span>
-  - <span style="color:#66d9ef">host</span>: web2.example.com
-    <span style="color:#66d9ef">http</span>:
-      <span style="color:#66d9ef">paths</span>:
-      - <span style="color:#66d9ef">path</span>: /
-        <span style="color:#66d9ef">backend</span>:
-          <span style="color:#66d9ef">serviceName</span>: web2
-          <span style="color:#66d9ef">servicePort</span>: <span style="color:#ae81ff">80</span>
-      - <span style="color:#66d9ef">path</span>: /api
-        <span style="color:#66d9ef">backend</span>:
-          <span style="color:#66d9ef">serviceName</span>: web2-api
-          <span style="color:#66d9ef">servicePort</span>: <span style="color:#ae81ff">3002</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">extensions/v1beta1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Ingress</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">my-ingress</span>
+  <span style="color:#f92672">annotations</span>:
+    <span style="color:#f92672">kubernetes.io/ingress.class</span>: <span style="color:#ae81ff">nginx</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">tls</span>:
+  - <span style="color:#f92672">hosts</span>:
+    - <span style="color:#ae81ff">web1.example.com</span>
+    <span style="color:#f92672">secretName</span>: <span style="color:#ae81ff">letsencrypt-web1-certificate-secret</span>
+    - <span style="color:#ae81ff">web2.example.com</span>
+    <span style="color:#f92672">secretName</span>: <span style="color:#ae81ff">letsencrypt-web2-certificate-secret</span>
+  <span style="color:#f92672">rules</span>:
+  - <span style="color:#f92672">host</span>: <span style="color:#ae81ff">web1.example.com</span>
+    <span style="color:#f92672">http</span>:
+      <span style="color:#f92672">paths</span>:
+      - <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/</span>
+        <span style="color:#f92672">backend</span>:
+          <span style="color:#f92672">serviceName</span>: <span style="color:#ae81ff">web1</span>
+          <span style="color:#f92672">servicePort</span>: <span style="color:#ae81ff">80</span>
+  - <span style="color:#f92672">host</span>: <span style="color:#ae81ff">web2.example.com</span>
+    <span style="color:#f92672">http</span>:
+      <span style="color:#f92672">paths</span>:
+      - <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/</span>
+        <span style="color:#f92672">backend</span>:
+          <span style="color:#f92672">serviceName</span>: <span style="color:#ae81ff">web2</span>
+          <span style="color:#f92672">servicePort</span>: <span style="color:#ae81ff">80</span>
+      - <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/api</span>
+        <span style="color:#f92672">backend</span>:
+          <span style="color:#f92672">serviceName</span>: <span style="color:#ae81ff">web2-api</span>
+          <span style="color:#f92672">servicePort</span>: <span style="color:#ae81ff">3002</span>
 </code></pre></div><p>This manifest files defines an Ingress that serves HTTPS traffic for
 web1.example.com and web2.example.com. Traffic to the former host is entirely
 routed to the service <code>web1</code>, whereas traffic to web2.example.com is routed to
@@ -405,20 +405,20 @@ exists as long as that Pod is running on that node. An emptyDir volume survives
 container crashes, because a Pod is not deleted if one of its container
 crashes. However, it is deleted if its Pod is unscheduled.</p>
 <p>Example:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
-<span style="color:#66d9ef">kind</span>: Pod
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: web
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">containers</span>:
-  - <span style="color:#66d9ef">image</span>: nginx:<span style="color:#ae81ff">1.17.5</span>
-    <span style="color:#66d9ef">name</span>: nginx
-    <span style="color:#66d9ef">volumeMounts</span>:
-    - <span style="color:#66d9ef">mountPath</span>: /cache
-      <span style="color:#66d9ef">name</span>: cache-volume
-  <span style="color:#66d9ef">volumes</span>:
-  - <span style="color:#66d9ef">name</span>: cache-volume
-    <span style="color:#66d9ef">emptyDir</span>: {}
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">web</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">containers</span>:
+  - <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nginx:1.17.5</span>
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+    <span style="color:#f92672">volumeMounts</span>:
+    - <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/cache</span>
+      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cache-volume</span>
+  <span style="color:#f92672">volumes</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cache-volume</span>
+    <span style="color:#f92672">emptyDir</span>: {}
 </code></pre></div><p>A <strong>secret</strong> Volume is used to pass sensitive information to a Pod. The secret
 must exist before it can be mounted as a Volume (we’ll do this in <a href="/post/kubernetes-tutorial-ii-deploying-an-app/">part
 II</a> of this series). These
@@ -426,25 +426,25 @@ Volumes are backed by tmpfs and thus their contents are never written to disk.</
 <p>For example, a secret Volume could be used to pass htpasswd-hashed data to
 nginx. In the following example, the data stored in the <code>HTPASSWD</code> key of the
 secret named <code>htpasswd</code> is mounted at <code>/auth/htpasswd</code> as read-only:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
-<span style="color:#66d9ef">kind</span>: Pod
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: web
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">containers</span>:
-  - <span style="color:#66d9ef">image</span>: nginx:<span style="color:#ae81ff">1.17.5</span>
-    <span style="color:#66d9ef">name</span>: nginx
-    <span style="color:#66d9ef">volumeMounts</span>:
-    - <span style="color:#66d9ef">mountPath</span>: /auth
-      <span style="color:#66d9ef">name</span>: htpasswd
-      <span style="color:#66d9ef">readOnly</span>: <span style="color:#66d9ef">true</span>
-  <span style="color:#66d9ef">volumes</span>:
-  - <span style="color:#66d9ef">name</span>: htpasswd
-    <span style="color:#66d9ef">secret</span>:
-      <span style="color:#66d9ef">secretName</span>: htpasswd
-      <span style="color:#66d9ef">items</span>:
-      - <span style="color:#66d9ef">key</span>: HTPASSWD
-        <span style="color:#66d9ef">path</span>: htpasswd
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">web</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">containers</span>:
+  - <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nginx:1.17.5</span>
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+    <span style="color:#f92672">volumeMounts</span>:
+    - <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/auth</span>
+      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">htpasswd</span>
+      <span style="color:#f92672">readOnly</span>: <span style="color:#66d9ef">true</span>
+  <span style="color:#f92672">volumes</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">htpasswd</span>
+    <span style="color:#f92672">secret</span>:
+      <span style="color:#f92672">secretName</span>: <span style="color:#ae81ff">htpasswd</span>
+      <span style="color:#f92672">items</span>:
+      - <span style="color:#f92672">key</span>: <span style="color:#ae81ff">HTPASSWD</span>
+        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">htpasswd</span>
 </code></pre></div><p>There are also some cloud provider-specific types like
 <strong>awsElasticBlockStore</strong>, <strong>azureDisk</strong>, or <strong>gcePersistentDisk</strong> that supply
 persistent, network-based storage. There are limitations, as usually you can
@@ -454,22 +454,22 @@ mounted.</p>
 <p>As an example, after creating a GCE persistent disk with <code>gcloud</code>,</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ gcloud compute disks create --size 30GB --zone<span style="color:#f92672">=</span>us-east1-b static-data-disk
 </code></pre></div><p>you can mount it in a Pod as follows:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
-<span style="color:#66d9ef">kind</span>: Pod
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: web
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">containers</span>:
-  - <span style="color:#66d9ef">image</span>: nginx:<span style="color:#ae81ff">1.17.5</span>
-    <span style="color:#66d9ef">name</span>: nginx
-    <span style="color:#66d9ef">volumeMounts</span>:
-    - <span style="color:#66d9ef">mountPath</span>: /var/www/html
-      <span style="color:#66d9ef">name</span>: static-data
-  <span style="color:#66d9ef">volumes</span>:
-  - <span style="color:#66d9ef">name</span>: static-data
-    <span style="color:#66d9ef">gcePersistentDisk</span>:
-      <span style="color:#66d9ef">pdName</span>: static-data-disk
-      <span style="color:#66d9ef">fsType</span>: ext4
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">web</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">containers</span>:
+  - <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nginx:1.17.5</span>
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+    <span style="color:#f92672">volumeMounts</span>:
+    - <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/var/www/html</span>
+      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">static-data</span>
+  <span style="color:#f92672">volumes</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">static-data</span>
+    <span style="color:#f92672">gcePersistentDisk</span>:
+      <span style="color:#f92672">pdName</span>: <span style="color:#ae81ff">static-data-disk</span>
+      <span style="color:#f92672">fsType</span>: <span style="color:#ae81ff">ext4</span>
 </code></pre></div><p>There are additional restrictions: the Pod must be running on a GCE VM, and
 this VM needs to be in the same GCP project and zone of the persistent disk.</p>
 <p><a href="https://kubernetes.io/docs/concepts/storage/volumes/">Documentation</a></p>

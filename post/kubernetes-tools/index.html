@@ -106,26 +106,26 @@ accomplish this task and related ones much more quickly and efficiently:</p>
 <table>
 <thead>
 <tr>
-<th align="left">Command</th>
-<th align="left">Explanation</th>
+<th style="text-align:left">Command</th>
+<th style="text-align:left">Explanation</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left"><code>kubectx &lt;name&gt;</code></td>
-<td align="left">switch to the context <code>&lt;name&gt;</code></td>
+<td style="text-align:left"><code>kubectx &lt;name&gt;</code></td>
+<td style="text-align:left">switch to the context <code>&lt;name&gt;</code></td>
 </tr>
 <tr>
-<td align="left"><code>kubectx -</code></td>
-<td align="left">switch to the previous context</td>
+<td style="text-align:left"><code>kubectx -</code></td>
+<td style="text-align:left">switch to the previous context</td>
 </tr>
 <tr>
-<td align="left"><code>kubectx &lt;new&gt;=&lt;old&gt;</code></td>
-<td align="left">rename <code>&lt;old&gt;</code> to <code>&lt;new&gt;</code></td>
+<td style="text-align:left"><code>kubectx &lt;new&gt;=&lt;old&gt;</code></td>
+<td style="text-align:left">rename <code>&lt;old&gt;</code> to <code>&lt;new&gt;</code></td>
 </tr>
 <tr>
-<td align="left"><code>kubectx &lt;new&gt;=.</code></td>
-<td align="left">rename the current context to <code>&lt;new&gt;</code></td>
+<td style="text-align:left"><code>kubectx &lt;new&gt;=.</code></td>
+<td style="text-align:left">rename the current context to <code>&lt;new&gt;</code></td>
 </tr>
 </tbody>
 </table>
@@ -137,22 +137,22 @@ to switch between namespaces:</p>
 <table>
 <thead>
 <tr>
-<th align="left">Command</th>
-<th align="left">Explanation</th>
+<th style="text-align:left">Command</th>
+<th style="text-align:left">Explanation</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left"><code>kubens &lt;name&gt;</code></td>
-<td align="left">switch to the namespace <code>&lt;name&gt;</code></td>
+<td style="text-align:left"><code>kubens &lt;name&gt;</code></td>
+<td style="text-align:left">switch to the namespace <code>&lt;name&gt;</code></td>
 </tr>
 <tr>
-<td align="left"><code>kubens -</code></td>
-<td align="left">switch to the previous namespace</td>
+<td style="text-align:left"><code>kubens -</code></td>
+<td style="text-align:left">switch to the previous namespace</td>
 </tr>
 <tr>
-<td align="left"><code>kubens -c</code></td>
-<td align="left">show the current namespace</td>
+<td style="text-align:left"><code>kubens -c</code></td>
+<td style="text-align:left">show the current namespace</td>
 </tr>
 </tbody>
 </table>
@@ -244,48 +244,48 @@ README is clearer than any explanation. Suppose that we want to grant our user
 Joe <code>edit</code> access to the <code>web</code> namespace and <code>view</code> access to <code>api</code> namespace.
 With RBAC, that requires creating two role bindings. The first grants <code>edit</code>
 access to the <code>web</code> namespace:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">kind</span>: RoleBinding
-<span style="color:#66d9ef">apiVersion</span>: rbac.authorization.k8s.io/v1
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: joe-web
-  <span style="color:#66d9ef">namespace</span>: web
-<span style="color:#66d9ef">subjects</span>:
-- <span style="color:#66d9ef">kind</span>: User
-  <span style="color:#66d9ef">name</span>: joe@example.com
-<span style="color:#66d9ef">roleRef</span>:
-  <span style="color:#66d9ef">kind</span>: ClusterRole
-  <span style="color:#66d9ef">name</span>: edit
-  <span style="color:#66d9ef">apiGroup</span>: rbac.authorization.k8s.io
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">RoleBinding</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">joe-web</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">web</span>
+<span style="color:#f92672">subjects</span>:
+- <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">User</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">joe@example.com</span>
+<span style="color:#f92672">roleRef</span>:
+  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRole</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">edit</span>
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
 </code></pre></div><p>The second grants <code>view</code> access to the <code>api</code> namespace:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">kind</span>: RoleBinding
-<span style="color:#66d9ef">apiVersion</span>: rbac.authorization.k8s.io/v1
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: joe-api
-  <span style="color:#66d9ef">namespace</span>: api
-<span style="color:#66d9ef">subjects</span>:
-- <span style="color:#66d9ef">kind</span>: User
-  <span style="color:#66d9ef">name</span>: joe@example.com
-<span style="color:#66d9ef">roleRef</span>:
-  <span style="color:#66d9ef">kind</span>: ClusterRole
-  <span style="color:#66d9ef">name</span>: view
-  <span style="color:#66d9ef">apiGroup</span>: rbac.authorization.k8s.io
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">RoleBinding</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">joe-api</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">api</span>
+<span style="color:#f92672">subjects</span>:
+- <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">User</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">joe@example.com</span>
+<span style="color:#f92672">roleRef</span>:
+  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRole</span>
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">view</span>
+  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
 </code></pre></div><p>One can easily see how this approach can quickly grow out of control with many
 users and many namespaces. With RBAC Manager, one can use a single custom
 resource to achieve the same result:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: rbacmanager.reactiveops.io/v1beta1
-<span style="color:#66d9ef">kind</span>: RBACDefinition
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: joe-access
-<span style="color:#66d9ef">rbacBindings</span>:
-  - <span style="color:#66d9ef">name</span>: joe
-    <span style="color:#66d9ef">subjects</span>:
-      - <span style="color:#66d9ef">kind</span>: User
-        <span style="color:#66d9ef">name</span>: joe@example.com
-    <span style="color:#66d9ef">roleBindings</span>:
-      - <span style="color:#66d9ef">namespace</span>: api
-        <span style="color:#66d9ef">clusterRole</span>: view
-      - <span style="color:#66d9ef">namespace</span>: web
-        <span style="color:#66d9ef">clusterRole</span>: edit
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbacmanager.reactiveops.io/v1beta1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">RBACDefinition</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">joe-access</span>
+<span style="color:#f92672">rbacBindings</span>:
+  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">joe</span>
+    <span style="color:#f92672">subjects</span>:
+      - <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">User</span>
+        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">joe@example.com</span>
+    <span style="color:#f92672">roleBindings</span>:
+      - <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">api</span>
+        <span style="color:#f92672">clusterRole</span>: <span style="color:#ae81ff">view</span>
+      - <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">web</span>
+        <span style="color:#f92672">clusterRole</span>: <span style="color:#ae81ff">edit</span>
 </code></pre></div><p>The companion tool <a href="https://github.com/FairwindsOps/rbac-lookup"><code>rbac-lookup</code></a>
 is very useful to inspect roles bound to any user or service account. When run
 on GKE clusters, it can also show IAM roles.</p>
