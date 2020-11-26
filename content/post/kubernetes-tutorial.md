@@ -30,7 +30,7 @@ series:
 
 * Part I: Kubernetes basic concepts (this post)
 * Part II: [A practical and realistic example](/post/kubernetes-tutorial-ii-deploying-an-app/)
-* Part III: Best practices (still WIP)
+* Part III: [Best practices](/post/kubernetes-tutorial-iii-best-practices/)
 
 #### Table of contents
 
