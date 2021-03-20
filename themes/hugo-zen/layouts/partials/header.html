@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="{{ with .Site.LanguageCode }}{{ . }}{{ else }}en-US{{ end }}">
 <head>
+  {{ $isHomePage := eq .Title .Site.Title }}
+  <title>{{ .Title }}</title>
+  <meta name="description" content="{{ .Params.summary }}">
+  {{ partial "head.html" }}
 </head>
-{{ partial "head.html" }}
-{{ $isHomePage := eq .Title .Site.Title }}
-<title>{{ .Title }}</title>
-<meta name="description" content="{{ .Params.summary }}">
 <body>
 
 <div class="container">
