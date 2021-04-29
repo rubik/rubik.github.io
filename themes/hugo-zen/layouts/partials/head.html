@@ -22,6 +22,7 @@
   <link href="{{ .RSSLink }}" rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" />
   <link href="{{ .RSSLink }}" rel="feed" type="application/rss+xml" title="{{ .Site.Title }}" />
 {{ end }}
+<script async defer data-domain="signal-to-noise.xyz" src="https://plausible.io/js/plausible.js"></script>
 {{ if not (in (string .Site.BaseURL) "localhost") }}
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86380700-1"></script>
