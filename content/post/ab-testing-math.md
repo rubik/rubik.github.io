@@ -128,8 +128,8 @@ large $n$,
 $$
 \begin{align}
 \begin{split}
-\bar X_n &\sim \mathcal N(p_0, p_0^2{(1 - p_0)}^2 / n)\\\\
-\bar Y_n &\sim \mathcal N(p_1, p_1^2{(1 - p_1)}^2 / n)
+\bar X_n &\sim \mathcal N(p_0, p_0(1 - p_0) / n)\\\\
+\bar Y_n &\sim \mathcal N(p_1, p_1(1 - p_1) / n)
 \end{split}
 \end{align}
 $$
@@ -140,7 +140,7 @@ normally distributed:
 
 $$
 \Delta_n \sim \mathcal N(\delta, \sigma_{\Delta n}^2),
-\quad\quad \sigma_{\Delta n}^2 = \frac{p_0^2{(1 - p_0)}^2 + p_1^2{(1 - p_1)\}^2}{n}
+\quad\quad \sigma_{\Delta n}^2 = \frac{p_0(1 - p_0) + p_1(1 - p_1)}{n}
 $$
 
 We can then define our test statistic:
@@ -149,14 +149,15 @@ $$
 Z_n = \frac{\Delta_n - \delta}{\sigma_{\Delta n}}
 $$
 
-and it's easy to verify that $Z_n \sim \mathcal N(0, 1)$. Since the standard
-deviation $\sigma_{\Delta n}$ is unknown, we'll need to replace it with a suitable
-estimator. From $(1)$, we know that the sample means $\bar X_n$ and $\bar Y_n$
-are unbiased estimators of the proportions $p_0$ and $p_1$. Thus we can define
+and it's easy to verify that $Z_n \sim \mathcal N(0, 1)$. However, since the
+standard deviation $\sigma_{\Delta n}$ depends on $p_0$ and $p_1$, which are
+unknown, we'll need to replace it with a suitable estimator. From $(1)$, we
+know that the sample means $\bar X_n$ and $\bar Y_n$ are unbiased estimators of
+the proportions $p_0$ and $p_1$. Thus we can define
 
 $$
 \begin{align\*}
-\hat \sigma_{\Delta n}^2 = \frac{\bar X_n^2{(1 - \bar X_n)}^2 + \bar Y_n^2{(1 - \bar Y_n)\}^2}{n}
+\hat \sigma_{\Delta n}^2 = \frac{\bar X_n(1 - \bar X_n) + \bar Y_n(1 - \bar Y_n)}{n}
 \end{align\*}
 $$
 
@@ -181,7 +182,8 @@ error, i.e. of rejecting $H_0$ when it's in fact true, is
 
 $$
 \begin{aligned}
-\operatorname{Pr}(\text{Reject } H_0 \mid H_0 \text{ is true}) &= \operatorname{Pr}(|Z_n^\prime| > c \mid H_0 \text{ is true}) =\\\\
+\alpha &= \operatorname{Pr}(\text{Reject } H_0 \mid H_0 \text{ is true}) =\\\\
+&= \operatorname{Pr}(|Z_n^\prime| > c \mid H_0 \text{ is true}) =\\\\
 &= \operatorname{Pr}\left(\left|\frac{\Delta_n - \delta}{\hat \sigma_{\Delta n}}\right| > c\\;\middle|\\;\delta = 0\right) =\\\\
 &= \Phi(-c) + (1 - \Phi(c)) =\\\\
 &= 1 - \Phi(c) + 1 - \Phi(c) =\\\\
@@ -190,11 +192,33 @@ $$
 $$
 
 where $\Phi$ is the cumulative density function of the standard normal, and we
-used the symmetry of the standard normal density around $0$. We now require that the
-probability above is at most $\alpha$, and thus to be conservative we set
+used the symmetry of the standard normal density around $0$. Thus, the critical
+value that we should use to decide whether to reject the null hypothesis $H_0$
+is
 
 $$
-2 - 2\Phi(c) = \alpha \implies c = \Phi^{-1}(1 - \alpha/2)
+2 - 2\Phi(c) = \alpha \implies c = \Phi^{-1}(1 - \alpha/2),
 $$
 
 which is sometimes written as $z_{1 - \alpha/2}$.
+
+So far we ignored the sample size $n$: how many observations are enough? To
+find a suitable sample size we turn to the type II error $\beta$, and we seek
+to determine the conditions under which it can be kept sufficiently low. By
+definition:
+
+$$
+\begin{aligned}
+\beta &= \operatorname{Pr}(\text{Accept } H_0 \mid H_0 \text{ is false}) =\\\\
+&= \operatorname{Pr}(|Z_n^\prime| \leq c \mid H_0 \text{ is false}) =\\\\
+&= \operatorname{Pr}\left(\left|\frac{\Delta_n - \delta}{\hat \sigma_{\Delta n}}\right| \leq c\right) =\\\\
+&= \Phi(c) - \Phi(-c) =\\\\
+&= \Phi(c) - (1 - \Phi(c)) =\\\\
+&= 2\Phi(c) - 1
+\end{aligned}
+$$
+
+TODO: the above is wrong
+Observe that:
+
+1.
