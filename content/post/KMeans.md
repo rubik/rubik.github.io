@@ -11,42 +11,41 @@ summary = "Mathematical explanation and Python implementation of the LLoyd's alg
 In this notebook, we will implement an algorithm for the K-Means problem and visualize it with a Matplotlib animation.
 
 # A mathematical introduction
-In the K-Means problem, a set of $$n$$ observations $$X = \{x_1, \ldots,
-x_n\}$$, with $$x_i \in \mathbb R^d$$, is given. The goal is to partition the
-set $$X$$ into $$k$$ sets $$S = \{S_1, \ldots, S_k\}$$, such that the total
-energy is minimized. We define the energy of the $$i$$-th cluster as follows:
+In the K-Means problem, a set of $n$ observations $X = \{x_1, \ldots,
+x_n\}$, with $x_i \in \mathbb R^d$, is given. The goal is to partition the
+set $X$ into $k$ sets $S = \{S_1, \ldots, S_k\}$, such that the total
+energy is minimized. We define the energy of the $i$-th cluster as follows:
 
 $$E(i) = \sum_{x_j \in S_i} {\|x_j - \mu_i\|}^2,$$
 
-where $$\mu_i$$ is a chosen representative of the cluster $$S_i$$. Usually $$\mu_i$$ is taken to be the centroid of cluster $$i$$, that is, the mean of all the points in $$S_i$$. In symbols, the objective is to find
+where $\mu_i$ is a chosen representative of the cluster $S_i$. Usually $\mu_i$ is taken to be the centroid of cluster $i$, that is, the mean of all the points in $S_i$. In symbols, the objective is to find
 
 $$\mathop{\mathrm{arg\,min}}\limits_{S} \sum_{i = 1}^k E(i).$$
 
 This problem is computationally difficult ([NP-hard](https://en.wikipedia.org/wiki/NP-hardness)): even though most algorithms do reasonably well, they usually converge to a local minimum. For such a solution, every minor rearrangement of the clusters makes the energy grow. However, there could be a completely different clustering where the total energy would be even lower. For this reason, those algorithms are called 'heuristic'.
 
 ## Lloyd's algorithm
-We will implement one of the simplest algorithms for the K-Means problem, known as the Lloyd's algorithm. It is an iterative algorithm that, given an initial estimate of the centroids $$\mu_i$$, progresses by repeating two steps:
+We will implement one of the simplest algorithms for the K-Means problem, known as the Lloyd's algorithm. It is an iterative algorithm that, given an initial estimate of the centroids $\mu_i$, progresses by repeating two steps:
 
-1. **Assignment**: each point is assigned to the cluster whose centroid gives the smallest energy. Since we are working in $$\mathbb R^d$$, it's worth noting that if we assume the norm $$\|\cdot\|$$ to be the standard [Euclidean norm][1], then the energy of a cluster is nothing else but the sum of the distances between each point in the cluster and the centroid. In this case it's possible to think of this step as the assignment of each point to the nearest centroid.
-
+1. **Assignment**: each point is assigned to the cluster whose centroid gives the smallest energy. Since we are working in $\mathbb R^d$, it's worth noting that if we assume the norm $\|\cdot\|$ to be the standard [Euclidean norm][1], then the energy of a cluster is nothing else but the sum of the distances between each point in the cluster and the centroid. In this case it's possible to think of this step as the assignment of each point to the nearest centroid.
 2. **Update**: for each cluster, a new centroid is calculated:
 
 $$\mu_i = \mathop{\mathrm{arg\,min}}\limits_{\hat\mu} \sum_{x_j \in S_i} {\|x_j - \hat\mu\|}^2$$
 
-Observe that in the second step the function to minimize is differentiable: in other words, $$\mu_i$$ satisfies
+Observe that in the second step the function to minimize is differentiable: in other words, $\mu_i$ satisfies
 
 $$2\sum_{x_j \in S_i} \|x_j - \mu_i\| = 0.$$
 
-Since the mean of the points in $$S_i$$ satisfies that condition, we can simply choose
+Since the mean of the points in $S_i$ satisfies that condition, we can simply choose
 
 $$\mu_i = \frac1{|S_i|} \sum_{x_j \in S_i} x_j.$$
 
-Finally, it's interesting to observe that the above algorithm does indeed converge to a local minimum. The first step decreases the total energy by construction, and so does the second one because the mean is a least-squares estimator, as we have seen. Moreover, the energy is nonnegative. It follows that the energy function has a minimum. But we can prove more: given a set of centroids $$\{\mu_i\}$$, the assignment step yields either the same clustering or a clustering with lower energy. Since there are at most $$k^n$$ ways to partition the $$n$$ observations into $$k$$ clusters, a local minimum will be reached in a finite number of iterations.
+Finally, it's interesting to observe that the above algorithm does indeed converge to a local minimum. The first step decreases the total energy by construction, and so does the second one because the mean is a least-squares estimator, as we have seen. Moreover, the energy is nonnegative. It follows that the energy function has a minimum. But we can prove more: given a set of centroids $\{\mu_i\}$, the assignment step yields either the same clustering or a clustering with lower energy. Since there are at most $k^n$ ways to partition the $n$ observations into $k$ clusters, a local minimum will be reached in a finite number of iterations.
 
 [1]: https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm
 
 # Algorithm implementation
-The Lloyd's algorithm requires initial estimates for the centroids. There are several ways to provide such values. We will simply take $$k$$ samples from the data. Let's define a function for that:
+The Lloyd's algorithm requires initial estimates for the centroids. There are several ways to provide such values. We will simply take $k$ samples from the data. Let's define a function for that:
 
 
 ```python
@@ -67,7 +66,7 @@ def pairwise_distances_argmin(X, y):
     return indices
 ```
 
-As an example, consider the points $$X = \{(0, 0), (5, 5)\}$$ and the centroids $$\mu = \{(1, 1), (6, 6)\}$$. The first point is then closer to the first centroid, while the second point is closer to the second centroid:
+As an example, consider the points $X = \{(0, 0), (5, 5)\}$ and the centroids $\mu = \{(1, 1), (6, 6)\}$. The first point is then closer to the first centroid, while the second point is closer to the second centroid:
 
 
 ```python
@@ -83,7 +82,7 @@ pairwise_distances_argmin(X, y)
 
 
 
-The result is an array of indices, and we can effectively interpret it as a set of cluster labels: the first point belongs to cluster "$$0$$", the second point to cluster "$$1$$". This is the first step of Lloyd's algorithm. We can now implement the second step and wrap them together in a single function, which will execute a complete iteration of Lloyd's algorithm.
+The result is an array of indices, and we can effectively interpret it as a set of cluster labels: the first point belongs to cluster "$0$", the second point to cluster "$1$". This is the first step of Lloyd's algorithm. We can now implement the second step and wrap them together in a single function, which will execute a complete iteration of Lloyd's algorithm.
 
 
 ```python
@@ -109,7 +108,7 @@ def kmeans(X, k):
     return new_m, clusters
 ```
 
-In the minimal implementation above, we chose to check whether the updated centroids are very close to each other: the [`np.isclose`](https://docs.scipy.org/doc/numpy-dev/reference/generated/numpy.isclose.html) function compares value with default tolerances of $$10^{-5}$$ and $$10^{-8}$$. Those are, respectively, the relative tolerance and the absolute tolerance. We want to avoid strict equality because floating point math is not exact. I encourage you to read Goldberg's ["What Every Computer Scientist Should Know About Floating-Point Arithmetic"](http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html) if you want to examine this topic in greater depth.
+In the minimal implementation above, we chose to check whether the updated centroids are very close to each other: the [`np.isclose`](https://docs.scipy.org/doc/numpy-dev/reference/generated/numpy.isclose.html) function compares value with default tolerances of $10^{-5}$ and $10^{-8}$. Those are, respectively, the relative tolerance and the absolute tolerance. We want to avoid strict equality because floating point math is not exact. I encourage you to read Goldberg's ["What Every Computer Scientist Should Know About Floating-Point Arithmetic"](http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html) if you want to examine this topic in greater depth.
 
 There are other ways in which we could have interrupted the algorithm: we can impose a maximum number of iterations, or stop once the total energy of the clusters has gone below a certain threshold.
 
@@ -4159,18 +4158,18 @@ dAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1Ny41Ni4xMDA=
 
 As we can see, Lloyd's algorithm tends to partition the space into clusters of uniform area. After running the algorithm on a dense space, it should be clear that Lloyd's algorithm is closely related to [Voronoi diagrams](https://en.wikipedia.org/wiki/Voronoi_diagram). In fact, at each iteration we are effectively computing the Voronoi tessellation with respect to the centroids.
 
-# Bonus: how to choose $$k$$?
-We never mentioned how one should choose the parameter $$k$$. After all, this algorithm is used for unsupervised learning, and the number of cluster is not necessarily known *a priori*. This is actually a non-trivial problem and there are a number of ways to approach it. A relatively recent result is represented by the [Gap statistics](https://web.stanford.edu/~hastie/Papers/gap.pdf) (PDF), a method developed by  Tibshirani, Walther and Hastie in 2001.
+# Bonus: how to choose $k$?
+We never mentioned how one should choose the parameter $k$. After all, this algorithm is used for unsupervised learning, and the number of cluster is not necessarily known *a priori*. This is actually a non-trivial problem and there are a number of ways to approach it. A relatively recent result is represented by the [Gap statistics](https://web.stanford.edu/~hastie/Papers/gap.pdf) (PDF), a method developed by  Tibshirani, Walther and Hastie in 2001.
 
-Let $$W_k$$ be the total energy of the clusters, when $$X$$ is partitioned into $$k$$ clusters:
+Let $W_k$ be the total energy of the clusters, when $X$ is partitioned into $k$ clusters:
 
 $$W_k = \sum_{i = 1}^k E(i) = \sum_{i = 1}^k \sum_{x_j \in S_i} {\|x_j - \mu_i\|}^2.$$
 
-The idea behind their method is make a standardized comparison between $$\log W_k$$ and a null reference distribution of the data; that is, a distribution with no clear clustering. The authors claim that the optimal number of clusters is the value of $$k$$ for which $$\log W_k$$ falls the farthest below the reference curve. This information is embedded in what they call "gap statistic":
+The idea behind their method is make a standardized comparison between $\log W_k$ and a null reference distribution of the data; that is, a distribution with no clear clustering. The authors claim that the optimal number of clusters is the value of $k$ for which $\log W_k$ falls the farthest below the reference curve. This information is embedded in what they call "gap statistic":
 
-$$\mathop{\mathrm{Gap}}_n(k) = E_n^*\{\log W_k^*\} - \log W_k.$$
+$$\mathop{\mathrm{Gap}}_n(k) = E_n^\*\{\log W_k^*\} - \log W_k.$$
 
-Here $$E_n^*$$ denotes the expected value under a sample of size $$n$$ from the reference distribution. The estimate $$\hat k$$ will then be the value of $$k$$ that maximizes $$\mathop{\mathrm{Gap}}_n(k)$$, after having taken the sample distribution into account.
+Here $E_n^\*$ denotes the expected value under a sample of size $n$ from the reference distribution. The estimate $\hat k$ will then be the value of $k$ that maximizes $\mathop{\mathrm{Gap}}_n(k)$, after having taken the sample distribution into account.
 
 ## Algorithm implementation
 To generate the reference distribution, the paper suggests two alternatives:
@@ -4178,21 +4177,21 @@ To generate the reference distribution, the paper suggests two alternatives:
 a) Monte Carlo sampling over the bounding box of the data;
 b) random sampling over a box aligned with the principal components of the data.
 
-Even though route b) is more robust, it requires a singular value decomposition of the matrix $$X$$. We are going to choose the first option for its simplicity of implementation.
+Even though route b) is more robust, it requires a singular value decomposition of the matrix $X$. We are going to choose the first option for its simplicity of implementation.
 
 The implementation follows these steps:
-1. cluster the data with $$k = 1, \ldots, K$$, and computing for each partition the total energy $$W_k$$;
-2. generate $$B$$ reference data sets, computing for each one the total energy $$W_{bk}^*$$.
+1. cluster the data with $k = 1, \ldots, K$, and computing for each partition the total energy $W_k$;
+2. generate $B$ reference data sets, computing for each one the total energy $W_{bk}^\*$.
 
 Then the gap will be
 
 $$\mathop{\mathrm{Gap}}(k) = \frac1B\sum_{b = 1}^B \log W_{bk}^* - \log W_k,$$
 
-where the first term is the mean of the log-energies $$\log W_{bk}^*$$ of the samples. We also have to account for the simulation error: if $$\mathop{\mathrm{sd}}(k)$$ denotes the standard deviation of the log-energies $$\log W_k^*$$, then the error is
+where the first term is the mean of the log-energies $\log W_{bk}^\*$ of the samples. We also have to account for the simulation error: if $\mathop{\mathrm{sd}}(k)$ denotes the standard deviation of the log-energies $\log W_k^\*$, then the error is
 
 $$s_k = \mathop{\mathrm{sd}}(k)\sqrt{1 + \frac1B}.$$
 
-Finally, the optimal cluster size $$\hat k$$ is the smallest $$k$$ such that $$\mathop{\mathrm{Gap}}(k) \geq \mathop{\mathrm{Gap}}(k + 1) - s_{k + 1}$$, or $$\mathop{\mathrm{Gap}}(k) - \mathop{\mathrm{Gap}}(k + 1) + s_{k + 1} \geq 0.$$
+Finally, the optimal cluster size $\hat k$ is the smallest $k$ such that $\mathop{\mathrm{Gap}}(k) \geq \mathop{\mathrm{Gap}}(k + 1) - s_{k + 1}$, or $\mathop{\mathrm{Gap}}(k) - \mathop{\mathrm{Gap}}(k + 1) + s_{k + 1} \geq 0.$
 
 Let's start by implementing a function to calculate the total energy of a clustering:
 
@@ -4203,7 +4202,7 @@ def Wk(X, centroids, clusters):
                    for i in range(len(X))])
 ```
 
-We'll also need a function to take uniform samples from the observations $$X$$:
+We'll also need a function to take uniform samples from the observations $X$:
 
 
 ```python
@@ -4260,15 +4259,15 @@ def gaps_info(X, ks, Wks, sample_Wks, gaps, sk):
     line2, = axes[0,1].plot(ks, sample_Wks, marker='.', markersize=10)
     axes[0,1].legend(
         (line1, line2),
-        (r'$$\log W_k$', r'$$\frac{1}{B}\sum_{b = 1}^B\,\log W_{kb}^*$')
+        (r'$\log W_k$', r'$\frac{1}{B}\sum_{b = 1}^B\,\log W_{kb}^*$')
     )
     axes[1,0].plot(ks, gaps, marker='.', markersize=10)
-    axes[1,0].set_ylabel('$$\mathop{\mathrm{Gap}}(k)$')
+    axes[1,0].set_ylabel('$\mathop{\mathrm{Gap}}(k)$')
     gaps_diff = gaps[:-1] - gaps[1:] + sk[1:]
     barlist = axes[1,1].bar(ks[:-1], gaps_diff,
                             width=0.5, align='center')
     barlist[np.argmax(gaps_diff > 0)].set_color(sns.xkcd_rgb['pale red'])
-    axes[1,1].set_ylabel('$$\mathop{\mathrm{Gap}}(k) -'
+    axes[1,1].set_ylabel('$\mathop{\mathrm{Gap}}(k) -'
                          ' \mathop{\mathrm{Gap}}(k + 1) + s_{k + 1}$')
     for (i, j) in ((0, 1), (1, 0), (1, 1)):
         axes[i,j].set_xlabel('Clusters')
@@ -4290,7 +4289,7 @@ gaps_info(X, ks, Wks, sample_Wks, gaps, sk)
 ![png](/KMeans_files/KMeans_37_0.png)
 
 
-The value $$k = 3$$ corresponds to the maximum $$\mathop{\mathrm{Gap}}$$, and we see that it's also the lowest value for which $$\mathop{\mathrm{Gap}}(k) - \mathop{\mathrm{Gap}}(k + 1) + s_{k + 1}$$ is positive. This confirms that $$k = 3$$ is indeed optimal.
+The value $k = 3$ corresponds to the maximum $\mathop{\mathrm{Gap}}$, and we see that it's also the lowest value for which $\mathop{\mathrm{Gap}}(k) - \mathop{\mathrm{Gap}}(k + 1) + s_{k + 1}$ is positive. This confirms that $k = 3$ is indeed optimal.
 
 Let's see what happens when we increase the standard deviation when generating blobs.
 
@@ -4307,9 +4306,9 @@ gaps_info(X, ks, Wks, sample_Wks, gaps, sk)
 
 The clusters are close and slightly fused, that even though they were generated
 from three centers, they could look like two clusters. The algorithm, though,
-correctly determines that $$k = 3$$ is the best value.
+correctly determines that $k = 3$ is the best value.
 
-Until now we have only tried the algorithm up to $$k = 5$$ candidate clusters. Let's see how the algorithm responds to a configuration with more blobs and more candidates.
+Until now we have only tried the algorithm up to $k = 5$ candidate clusters. Let's see how the algorithm responds to a configuration with more blobs and more candidates.
 
 
 ```python
@@ -4322,7 +4321,7 @@ gaps_info(X, ks, Wks, sample_Wks, gaps, sk)
 ![png](/KMeans_files/KMeans_41_0.png)
 
 
-This was tricky. The blobs were generated from eight centers but some of them fused and in the end only four or five are visible. The algorithm determined that $$k = 4$$ was indeed best.
+This was tricky. The blobs were generated from eight centers but some of them fused and in the end only four or five are visible. The algorithm determined that $k = 4$ was indeed best.
 
 On the other hand, it's also very interesting to test the algorithm with one single cluster.
 
@@ -4337,7 +4336,7 @@ gaps_info(X, ks, Wks, sample_Wks, gaps, sk)
 ![png](/KMeans_files/KMeans_43_0.png)
 
 
-The algorithm concludes without problems that $$k = 1$$ is best. Note that in the top rightmost plot, the energy of the observed data falls at roughly the same rate as the energy from the uniform samples. That makes sense, since a Gaussian distribution (the one from which the blobs are generated) can be approximated by the uniform distribution on an interval, progressively better as the standard deviation increases.
+The algorithm concludes without problems that $k = 1$ is best. Note that in the top rightmost plot, the energy of the observed data falls at roughly the same rate as the energy from the uniform samples. That makes sense, since a Gaussian distribution (the one from which the blobs are generated) can be approximated by the uniform distribution on an interval, progressively better as the standard deviation increases.
 
 As the last example, let's consider a uniform sample, to see what the algorithm decides.
 

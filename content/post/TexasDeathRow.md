@@ -1211,7 +1211,7 @@ $$(\text{car}, \text{bike}, \text{bicycle}) \longrightarrow (\text{car}, \alpha_
 
 It turns out that the lower-rank matrix that results from the application of the SVD algorithm can be viewed as an approximation of the original matrix, and there's more: this lower-rank matrix is actually the best approximation among all the other matrices with the same rank. This is extremely convenient: if one assumes that synonym words are used similarly, then the rank-lowering process should merge those terms.
 
-Since we don't have labeled data, we'll use an unsupervised algorithm like `KMeans`, then we'll validate the results with the [silhouette method](https://en.wikipedia.org/wiki/Silhouette_(clustering)). But first we have to choose how many features we want to reduce the problem to. For LSA, it's suggested to have around $$100$$ features. However, in the earlier iterations of this project, I found that leaving that many features gave very poor results. After some experimentation, I settled on $$20$$, knowing that it's particularly low.
+Since we don't have labeled data, we'll use an unsupervised algorithm like `KMeans`, then we'll validate the results with the [silhouette method](https://en.wikipedia.org/wiki/Silhouette_(clustering)). But first we have to choose how many features we want to reduce the problem to. For LSA, it's suggested to have around $100$ features. However, in the earlier iterations of this project, I found that leaving that many features gave very poor results. After some experimentation, I settled on $20$, knowing that it's particularly low.
 
 
 ```python
@@ -1231,8 +1231,7 @@ pipe = make_pipeline(
 X_s = pipe.fit_transform(people_with_stmt.last_statement)
 ```
 
-As expected, the shape of the resulting matrix is $$(\text{n\_statements},
-\text{n\_components})$$:
+As expected, the shape of the resulting matrix is $(\text{n\_statements}, \text{n\_components})$:
 
 
 ```python
@@ -1253,7 +1252,7 @@ We have now the possibility to check the hypothesis we formulated earlier: the i
 * the statements with heavy religious content.
 
 Let's check this hypothesis. We'll now try different values for the number of
-clusters (from $$2$$ to $$7$$) and visualize the silhouette score of each
+clusters (from $2$ to $7$) and visualize the silhouette score of each
 result.
 
 
@@ -1316,7 +1315,7 @@ plt.show(fig)
 ![png](/TexasDeathRow_files/TexasDeathRow_88_0.png)
 
 
-The vertical axis in each subplot represents the statements, grouped by cluster label and sorted within each cluster by their silhouette score. The silhouette score of an element ranges between $$-1$$ and $$1$$, where a value of $$-1$$ means that the element is in the wrong cluster, while $$1$$ indicates that it's perfectly clustered.
+The vertical axis in each subplot represents the statements, grouped by cluster label and sorted within each cluster by their silhouette score. The silhouette score of an element ranges between $-1$ and $1$, where a value of $-1$ means that the element is in the wrong cluster, while $1$ indicates that it's perfectly clustered.
 
 By comparing each cluster with the average silhouette score we can immediately discard some candidates: with two, three or even four clusters the result is unsatisfactory, since there are clusters almost completely below the average score. Not to mention the negative scores. Among the remaining ones, we choose the one with the fewest negative scores, and that appears to be the one with six clusters, which also has the highest average score.
 
@@ -1362,7 +1361,7 @@ print_topics(3)
 The topics are not at all like we envisioned, and there's too much overlap. It appears that six clusters is indeed a better model.
 
 ### Other `scikit-learn` models
-I also tried to fit a `MeanShift` model and a `DBSCAN` model. Unfortunately, the results weren't acceptable: the first one was either finding ten (or more) clusters or just one. The latter yielded slightly better results (at first sight), finding three clusters, but that was misleading: $$97\%$$ of the data was classified in the same cluster. For these reasons I dropped them and I won't show the code here, although it's very similar to what we have just done with `KMeans` (the `scikit-learn` API is amazingly consistent).
+I also tried to fit a `MeanShift` model and a `DBSCAN` model. Unfortunately, the results weren't acceptable: the first one was either finding ten (or more) clusters or just one. The latter yielded slightly better results (at first sight), finding three clusters, but that was misleading: $97\%$ of the data was classified in the same cluster. For these reasons I dropped them and I won't show the code here, although it's very similar to what we have just done with `KMeans` (the `scikit-learn` API is amazingly consistent).
 
 ## Topic modelling with `gensim`
 Finally, I wanted to try out `gensim`, which is a package built specifically for topic modeling. The first thing to do is tokenization.
