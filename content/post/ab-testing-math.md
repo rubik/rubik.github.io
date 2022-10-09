@@ -146,10 +146,11 @@ $$
 We can then define our test statistic:
 
 $$
-Z_n = \frac{\Delta_n - \delta}{\sigma_{\Delta n}}
+Z_n = \frac{\Delta_n}{\sigma_{\Delta n}}
 $$
 
-and it's easy to verify that $Z_n \sim \mathcal N(0, 1)$. However, since the
+and it's easy to verify that $Z_n \sim \mathcal N(\delta, 1)$, a standard
+normal distribution under $H_0$ (i.e. $\delta = 0$). However, since the
 standard deviation $\sigma_{\Delta n}$ depends on $p_0$ and $p_1$, which are
 unknown, we'll need to replace it with a suitable estimator. From $(1)$, we
 know that the sample means $\bar X_n$ and $\bar Y_n$ are unbiased estimators of
@@ -164,27 +165,29 @@ $$
 Our revised test statistic is now
 
 $$
-Z_n^\prime = \frac{\Delta_n - \delta}{\hat \sigma_{\Delta n}}
+Z_n^\prime = \frac{\Delta_n}{\hat \sigma_{\Delta n}}
 $$
 
-This statistic is no longer distributed as a standard normal variable, but
+This statistic is no longer distributed as a normal variable, but
 rather as a Student's t variable with $n - 1$ degrees of freedom. However, the
-density of a Student's t variable approaches the density of a standard normal
-as $n$ tends to infinity. In practice, the difference between the two is
-considered minimal at $n > 30$. In online controlled experiments we usually
-deal with much larger samples, and thus we can safely use the normal
+density of a Student's t distribution approaches the density of a normal
+distribution as $n$ tends to infinity. In practice, the difference between the
+two is considered minimal at $n > 30$. In online controlled experiments we
+usually deal with much larger samples, and thus we can safely use the normal
 approximation.
 
 We now define a "rejection rule" based on the statistic $Z_n^\prime$ to achieve
 the desired type I error rate; we'll reject the null hypothesis $H_0$ when the
-test statistic is too large (in absolute value, for a two-sided test), i.e. when $|Z_n^\prime| > c$ for some value $c \in \mathbb R$. The probability of making a two-sided type I
-error, i.e. of rejecting $H_0$ when it's in fact true, is
+test statistic is too large (in absolute value, for a two-sided test), i.e.
+when $|Z_n^\prime| > c$ for some value $c \in \mathbb R$. The probability of
+making a two-sided type I error, i.e. of rejecting $H_0$ when it's in fact
+true, is
 
 $$
 \begin{aligned}
 \alpha &= \operatorname{Pr}(\text{Reject } H_0 \mid H_0 \text{ is true}) =\\\\
 &= \operatorname{Pr}(|Z_n^\prime| > c \mid H_0 \text{ is true}) =\\\\
-&= \operatorname{Pr}\left(\left|\frac{\Delta_n - \delta}{\hat \sigma_{\Delta n}}\right| > c\\;\middle|\\;\delta = 0\right) =\\\\
+&= \operatorname{Pr}\left(\left|\frac{\Delta_n}{\hat \sigma_{\Delta n}}\right| > c\\;\middle|\\;\delta = 0\right) =\\\\
 &= \Phi(-c) + (1 - \Phi(c)) =\\\\
 &= 1 - \Phi(c) + 1 - \Phi(c) =\\\\
 &= 2 - 2\Phi(c)
@@ -211,14 +214,10 @@ $$
 \begin{aligned}
 \beta &= \operatorname{Pr}(\text{Accept } H_0 \mid H_0 \text{ is false}) =\\\\
 &= \operatorname{Pr}(|Z_n^\prime| \leq c \mid H_0 \text{ is false}) =\\\\
-&= \operatorname{Pr}\left(\left|\frac{\Delta_n - \delta}{\hat \sigma_{\Delta n}}\right| \leq c\right) =\\\\
-&= \Phi(c) - \Phi(-c) =\\\\
-&= \Phi(c) - (1 - \Phi(c)) =\\\\
-&= 2\Phi(c) - 1
+&= \operatorname{Pr}\left(\left|\frac{\Delta_n}{\hat \sigma_{\Delta n}}\right| \leq c\\;\middle|\\;\delta \neq 0\right) =\\\\
 \end{aligned}
 $$
 
-TODO: the above is wrong
 Observe that:
 
 1.
