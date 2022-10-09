@@ -4,7 +4,7 @@ title: "A/B testing math"
 date: "2022-10-08"
 tags: ["math", "ab-tests"]
 hasmath: true
-summary: "Mathematical framework underlying online A/B testing"
+summary: "Mathematical framework underlying online A/B testing using a frequentist approach."
 ---
 
 A/B testing, also referred to as "split testing", is a randomized
@@ -15,6 +15,16 @@ business metrics. This post explores the mathematical framework behind
 statistical A/B testing, and it assumes some basic knowledge about random
 variables and calculus.
 
+#### Table of contents
+
+* [Statistical models](#statistical-models)
+* [Binary responses](#binary-responses)
+    * [Model](#model)
+    * [Example](#example)
+* [Continuous responses](#continous-responses)
+    * [Model](#model-2)
+    * [Example](#example-2)
+
 ## Statistical models
 
 An A/B test's underlying statistical model comprises the following elements:
@@ -23,7 +33,44 @@ An A/B test's underlying statistical model comprises the following elements:
   on the random variables involved
 * a specification of the hypothesis testing method, i.e. a target significance
   level $\alpha \in (0, 1)$
-*
+
+### Table of error types
+
+<table>
+    <tbody>
+        <tr>
+            <th rowspan="2" colspan="2"></th>
+            <th colspan="2">Null hypothesis $H_0$ is</th>
+        </tr>
+        <tr style="border-bottom:solid 2px black">
+            <th>True</th>
+            <th>False</th>
+        </tr>
+        <tr>
+            <th rowspan="2" style="padding-right:10px;border-bottom:none">Decision about<br> null hypothesis $H_0$</th>
+            <th style="border-bottom:none">Don't reject</th>
+            <td style="text-align:center;">
+                <p>Correct inference<br> (true negative)</p>
+                <p>Probability $= 1 - \alpha$</p>
+            </td>
+            <td style="text-align:center;">
+                <p>Type II error<br> (false negative)</p>
+                <p>Probability $= \beta$</p>
+            </td>
+        </tr>
+        <tr>
+            <th style="border-bottom:none">Reject</th>
+            <td style="text-align:center;">
+                <p>Type I error<br> (false positive)</p>
+                <p>Probability $= \alpha$</p>
+            </td>
+            <td style="text-align:center;">
+                <p>Correct inference<br> (true positive)</p>
+                <p>Probability $= 1 − \beta$</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 ## Binary responses
 ### Model
@@ -44,7 +91,7 @@ Y_i &\sim \mathrm{Bernoulli}(p_1)
 $$
 
 We'll further assume that different observations in the same test arm are
-_independent_. This assumption is key because...
+_independent_. This assumption is key because... TODO
 
 The goal of our A/B experiment is to evaluate the hypothesis test
 
@@ -56,7 +103,8 @@ H_a&: \delta \neq 0
 $$
 
 where the null hypothesis $H_0$ is that there's no difference in the
-data-generation processes of $X_i$ and $Y_i$ ($p_0 = p_1$).
+data-generation processes of $X_i$ and $Y_i$ ($p_0 = p_1$). We seek to reject the
+null hypothesis with type I error $\alpha \in (0, 1)$.
 
 Let's define the sample mean to be
 
@@ -68,7 +116,14 @@ $$
 It can be observed that in this case it corresponds to the _conversion rate_ of
 each variant.
 
-Since the conversion variables are independent and have finite mean and variance, we can apply the [Central Limit Theorem](https://en.wikipedia.org/wiki/Central_limit_theorem#Classical_CLT) which states that, as $n$ approaches infinity, the distribution of $\sqrt n (\bar X_n - p_0)$ approaches that of a normal variable with mean $0$ and standard deviation $\mathrm{Var}(X_i) = p_0(1 - p_0)$. The same holds for $\bar Y_n$ and $\sqrt n (\bar Y_n - p_1)$. Hence in practice, for a sufficiently large $n$,
+Since the conversion variables are independent and have finite mean and
+variance, we can apply the [Central Limit
+Theorem](https://en.wikipedia.org/wiki/Central_limit_theorem#Classical_CLT)
+which states that, as $n$ approaches infinity, the distribution of $\sqrt n
+(\bar X_n - p_0)$ approaches that of a normal variable with mean $0$ and
+standard deviation $\mathrm{Var}(X_i) = p_0(1 - p_0)$. The same holds for $\bar
+Y_n$ and $\sqrt n (\bar Y_n - p_1)$. Hence in practice, for a sufficiently
+large $n$,
 
 $$
 \begin{align}
@@ -79,11 +134,13 @@ $$
 \end{align}
 $$
 
-We are interested in the difference of sample means, $\Delta_n = \bar Y_n - \bar X_n$. As $\Delta_n$ is a linear combination of normal variables, it's also normally
-distributed:
+We are interested in the difference of sample means, $\Delta_n = \bar Y_n -
+\bar X_n$. As $\Delta_n$ is a linear combination of normal variables, it's also
+normally distributed:
 
 $$
-\Delta_n \sim \mathcal N(\delta, \sigma_{\Delta n}^2),\quad\quad \sigma_{\Delta n}^2 = \frac{p_0^2{(1 - p_0)}^2 + p_1^2{(1 - p_1)\}^2}{n}
+\Delta_n \sim \mathcal N(\delta, \sigma_{\Delta n}^2),
+\quad\quad \sigma_{\Delta n}^2 = \frac{p_0^2{(1 - p_0)}^2 + p_1^2{(1 - p_1)\}^2}{n}
 $$
 
 We can then define our test statistic:
@@ -116,3 +173,28 @@ as $n$ tends to infinity. In practice, the difference between the two is
 considered minimal at $n > 30$. In online controlled experiments we usually
 deal with much larger samples, and thus we can safely use the normal
 approximation.
+
+We now define a "rejection rule" based on the statistic $Z_n^\prime$ to achieve
+the desired type I error rate; we'll reject the null hypothesis $H_0$ when the
+test statistic is too large (in absolute value, for a two-sided test), i.e. when $|Z_n^\prime| > c$ for some value $c \in \mathbb R$. The probability of making a two-sided type I
+error, i.e. of rejecting $H_0$ when it's in fact true, is
+
+$$
+\begin{aligned}
+\operatorname{Pr}(\text{Reject } H_0 \mid H_0 \text{ is true}) &= \operatorname{Pr}(|Z_n^\prime| > c \mid H_0 \text{ is true}) =\\\\
+&= \operatorname{Pr}\left(\left|\frac{\Delta_n - \delta}{\hat \sigma_{\Delta n}}\right| > c\\;\middle|\\;\delta = 0\right) =\\\\
+&= \Phi(-c) + (1 - \Phi(c)) =\\\\
+&= 1 - \Phi(c) + 1 - \Phi(c) =\\\\
+&= 2 - 2\Phi(c)
+\end{aligned}
+$$
+
+where $\Phi$ is the cumulative density function of the standard normal, and we
+used the symmetry of the standard normal density around $0$. We now require that the
+probability above is at most $\alpha$, and thus to be conservative we set
+
+$$
+2 - 2\Phi(c) = \alpha \implies c = \Phi^{-1}(1 - \alpha/2)
+$$
+
+which is sometimes written as $z_{1 - \alpha/2}$.
