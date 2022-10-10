@@ -17,15 +17,47 @@ variables and calculus.
 
 #### Table of contents
 
-* [Statistical models](#statistical-models)
-* [Binary responses](#binary-responses)
-    * [Model](#model)
-    * [Example](#example)
-* [Continuous responses](#continous-responses)
-    * [Model](#model-2)
-    * [Example](#example-2)
 
-## Statistical models
+## Statistical inference
+Statistical inference is the application of statistical methods to learn the
+characteristics of a data-generating mechanism which can be used to support
+causal claims and predictions.
+
+
+There are two kinds of errors one must guard against in designing a
+hypothesis test, and therefore an A/B test.
+
+The first, called the Type I error, consists in rejecting the null hypothesis
+$H_0$ when it's in fact true. When comparing two conversion rates for instance,
+it'd be equivalent to declaring that the difference between them is real when in fact the difference is zero. This
+kind of error has been given the greater amount of attention in elementary
+statistics books, and hence in practice. It is typically guarded against simply
+by setting the significance level $\alpha$ for the chosen statistical test, at a
+suitably small probability such as $0.01$ or $0.05$.
+
+This kind of control is not totally adequate, because a literal Type I error
+probably never occurs in practice. The reason is that the two populations
+giving rise to the observed samples will inevitably differ to some extent, albeit
+possibly by a trivially small amount. No matter how small the difference in
+conversion rates is between the two underlying populations, provided it is
+nonzero, samples of sufficiently large size can virtually guarantee statistical
+significance. Assuming that an investigator desires to declare significant only
+differences that are of practical importance, and not merely differences of any
+magnitude, he should impose the added safeguard of not employing
+sample sizes that are larger than he needs to guard against the second kind
+of error.
+
+The second kind of error, called the Type II error, consists in failing to
+declare the two conversion rates significantly different when in fact they are
+different. As just pointed out, such an error is not serious when the
+proportions are only trivially different. It becomes serious only when the
+proportions differ to an important extent. The practical control over the Type
+II error must therefore begin with the investigator's specifying just what
+difference is of sufficient importance to be detected, and must continue with
+the investigator's specifying the desired probability of actually detecting it.
+This probability, denoted $1 - \beta$, is called the **power** of the test; the
+quantity $\beta$ is the probability of failing to find the specified difference
+to be statistically significant.
 
 An A/B test's underlying statistical model comprises the following elements:
 
@@ -139,33 +171,33 @@ We are interested in the difference of sample means, $\Delta_n = \bar Y_n -
 normally distributed:
 
 $$
-\Delta_n \sim \mathcal N(\theta, \sigma_{\Delta n}^2),
-\quad\quad \sigma_{\Delta n}^2 = \frac{p_0(1 - p_0) + p_1(1 - p_1)}{n}
+\Delta_n \sim \mathcal N(\theta, \sigma_{\Delta n}^2 n^{-1}),
+\quad\quad \sigma_{\Delta n}^2 = p_0(1 - p_0) + p_1(1 - p_1)
 $$
 
 We can then define our test statistic:
 
 $$
-Z_n = \frac{\Delta_n}{\sigma_{\Delta n}}
+Z_n = \frac{\Delta_n \sqrt{n}}{\sigma_{\Delta n}}
 $$
 
-and it's easy to verify that $Z_n \sim \mathcal N(\theta, 1)$, a standard
-normal distribution under $H_0$. However, since the standard deviation
-$\sigma_{\Delta n}$ depends on $p_0$ and $p_1$, which are unknown, we'll need
-to replace it with a suitable estimator. From $(1)$, we know that the sample
-means $\bar X_n$ and $\bar Y_n$ are unbiased estimators of the proportions
-$p_0$ and $p_1$. Thus we can define
+and it's easy to verify that $Z_n \sim \mathcal N(\theta \sigma_{\Delta n}^{-1}
+\sqrt{n}, 1)$, a standard normal distribution under $H_0$. However, since the
+standard deviation $\sigma_{\Delta n}$ depends on $p_0$ and $p_1$, which are
+unknown, we'll need to replace it with a suitable estimator. From $(1)$, we
+know that the sample means $\bar X_n$ and $\bar Y_n$ are unbiased estimators of
+the proportions $p_0$ and $p_1$. Thus we can define
 
 $$
 \begin{align\*}
-\hat \sigma_{\Delta n}^2 = \frac{\bar X_n(1 - \bar X_n) + \bar Y_n(1 - \bar Y_n)}{n}
+\hat \sigma_{\Delta n}^2 = \bar X_n(1 - \bar X_n) + \bar Y_n(1 - \bar Y_n)
 \end{align\*}
 $$
 
 Our revised test statistic is now
 
 $$
-Z_n^\prime = \frac{\Delta_n}{\hat \sigma_{\Delta n}}
+Z_n^\prime = \frac{\Delta_n \sqrt{n}}{\hat \sigma_{\Delta n}}
 $$
 
 This statistic is no longer distributed as a normal variable, but
@@ -174,7 +206,8 @@ density of a Student's t distribution approaches the density of a normal
 distribution as $n$ tends to infinity. In practice, the difference between the
 two is considered minimal at $n > 30$. In online controlled experiments we
 usually deal with much larger samples, and thus we can safely use the normal
-approximation.
+approximation and assume $Z_n^\prime \sim \mathcal N(\theta \hat \sigma_{\Delta
+n}^{-1} \sqrt{n}, 1)$.
 
 We now define a "rejection rule" based on the statistic $Z_n^\prime$ to achieve
 the desired type I error rate; we'll reject the null hypothesis $H_0$ when the
@@ -186,8 +219,7 @@ true, is
 $$
 \begin{aligned}
 \alpha &= \operatorname{Pr}(\text{Reject } H_0 \mid H_0 \text{ is true}) =\\\\
-&= \operatorname{Pr}(|Z_n^\prime| > c \mid H_0 \text{ is true}) =\\\\
-&= \operatorname{Pr}\left(\left|\frac{\Delta_n}{\hat \sigma_{\Delta n}}\right| > c\\;\middle|\\;\theta = 0\right) =\\\\
+&= \operatorname{Pr}(|Z_n^\prime| > c \mid \theta = 0) =\\\\
 &= \Phi(-c) + (1 - \Phi(c)) =\\\\
 &= 1 - \Phi(c) + 1 - \Phi(c) =\\\\
 &= 2 - 2\Phi(c)
@@ -200,49 +232,104 @@ value that we should use to decide whether to reject the null hypothesis $H_0$
 is
 
 $$
+\begin{align}
 2 - 2\Phi(c) = \alpha \implies c = \Phi^{-1}(1 - \alpha/2),
+\end{align}
 $$
 
 which is sometimes written as $z_{1 - \alpha/2}$.
 
 So far we ignored the sample size $n$: how many observations are enough? To
 find a suitable sample size we turn to the type II error $\beta$, and we seek
-to determine the conditions under which it can be kept sufficiently low. By
-definition:
+to determine the conditions under which it can be kept sufficiently low.
+
+We are going to calculate the power at $\theta = \delta > 0$, our
+minimum effect of interest. The power of the test will be higher for higher
+values of $\theta$, and lower for lower values.
 
 $$
 \begin{aligned}
-\beta &= \operatorname{Pr}(\text{Accept } H_0 \mid H_0 \text{ is false}) =\\\\
-&= \operatorname{Pr}(|Z_n^\prime| \leq c \mid H_0 \text{ is false}) =\\\\
-&= \operatorname{Pr}\left(\left|\frac{\Delta_n}{\hat \sigma_{\Delta n}}\right| \leq c\\;\middle|\\;\theta \neq 0\right) =\\\\
+1 - \beta &= 1 - \operatorname{Pr}(\text{Accept } H_0 \mid H_0 \text{ is false}) =\\\\
+&= 1 - \operatorname{Pr}(|Z_n^\prime| \leq c \mid \theta \neq 0) =\\\\
+&= \operatorname{Pr}(|Z_n^\prime| > c \mid \theta = \delta) =\\\\
+&= \operatorname{Pr}(Z_n^\prime > c \mid \theta = \delta) + \operatorname{Pr}(Z_n^\prime < -c \mid \theta = \delta)
 \end{aligned}
 $$
 
-Observe that:
+Observe that at $\theta = \delta$, the second probability is going to be
+vanishingly small, and can be ignored for practical purposes. Therefore:
 
-1.
+$$
+\begin{aligned}
+1 - \beta &\approx \operatorname{Pr}(Z_n^\prime - \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n} > c -\delta\hat \sigma_{\Delta n}^{-1} \sqrt{n}) =\\\\
+&= 1 - \Phi(c - \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n})
+\end{aligned}
+$$
 
+Recall from $(2)$ that we found that in order to limit the type I error at
+the desired significance level $\alpha$, the critical value $c$ must be equal
+to $\Phi^{-1}(1 - \alpha/2)$. Therefore,
+
+$$
+\begin{aligned}
+\Phi^{-1}(1 - \beta) &= \Phi^{-1}(1 - \Phi(\Phi^{-1}(1 - \alpha/2) - \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n})) =\\\\
+&= \Phi^{-1}(\Phi(-\Phi^{-1}(1 - \alpha/2) + \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n})) =\\\\
+&= -\Phi^{-1}(1 - \alpha/2) + \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n}\\\\
+\end{aligned}
+$$
+
+Before presenting the final expression for $n$, note that $\hat \sigma_{\Delta n}$ depends on $\bar X_n$ and $\bar Y_n$, which are observable only after the experiment is completed. Thus we can define
+
+$$
+s^2 = P_0 (1 - P_0) + P_1 (1 - P_1)
+$$
+
+as a replacement for $\hat \sigma_{\Delta n}^2$, where $P_0$ and $P_1$ are
+hypothesized by the designer of the experiment and are such that $P_1 - P_0 =
+\delta$. In practice, $P_0$ is derived from existing available data (such as
+conversion data from Google Analytics or a similar tracking tool), and $P_1$ is
+calculated after defining the minimum effect of interest $\delta$. Ideally,
+historical data should be:
+
+* recent enough to be representative for the A/B test;
+* without outliers (like holidays for an e-commerce site); and
+* from a time period that is a multiple of the business cycle (to avoid
+  seasonality effects).
+
+Finally we can solve for $n$ and obtain
 
 $$
 \begin{align}
+n = \frac{{\left[\Phi^{-1}(1 - \alpha/2) + \Phi^{-1}(1 - \beta)\right]}^2 s^2}{\delta^2}
 \end{align}
 $$
 
+Observe that the sample size $n$ required to attain power $1 - \beta$ and
+maintain significance $\alpha$:
+
+1. is directly proportional to the variance $\hat \sigma_{\Delta n}^2$
+2. is inversely proportional to the square of the minimum effect of interest
+   $\delta$
+
+This makes intuitive sense as, all else being equal, data with higher variance
+will make the same effect of interest $\delta$ more difficult to detect with
+the given significance level. Similarly, smaller effects are going to require a
+bigger sample for the same $\alpha$ and $1 - \beta$.
 
 In practice, as found by [Haseman (1978)](https://doi.org/10.2307/2529595),
 the sample size calculated using the normal approximation above
 results in values that are too low, in the sense that the power of the test is
-lower than $1 - \beta$ when $p_0$ and $p_1$ are the underlying probabilities.
+lower than $1 - \beta$ at $\theta = \delta$.
 [Casagrande, Pike, and Smith (1978b)](https://doi.org/10.2307/2530613) derived
 the following adjustment (called "continuity correction"),
 
 $$
 \begin{align}
-n^\star = \frac{n}{4}{\left(1 + \sqrt{1 + \frac{4}{n |\theta|}}\right)}^2
+n^\star = \frac{n}{4}{\left(1 + \sqrt{1 + \frac{4}{n \delta}}\right)}^2
 \end{align}
 $$
 
 which provides values very close to the exact sample size. The exact
 calculation of the sample size requires an iterative procedure involving
-binomial distributions, and thus it's almost never used in practice. $(3)$ or
-even $(2)$ provide good approximations.
+binomial distributions, and thus it's almost never used in practice. $(4)$ or
+even $(3)$ provide good approximations.
