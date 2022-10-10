@@ -104,8 +104,7 @@ An A/B test's underlying statistical model comprises the following elements:
     </tbody>
 </table>
 
-## Binary responses
-### Model
+## Binary responses with equal sample sizes
 We'll first describe one of the simplest cases encountered in online A/B tests:
 a binary response variable, such as whether a conversion happened or not for a
 particular user. Let $X_i, Y_i, i = 1, \ldots, n$ be the conversion data for
@@ -125,7 +124,7 @@ $$
 We'll further assume that different observations in the same test arm are
 _independent_. This assumption is key because... TODO
 
-The goal of our A/B experiment is to evaluate the hypothesis test
+The goal of our A/B experiment is to evaluate the two-tailed hypothesis test
 
 $$
 \begin{align\*}
@@ -233,7 +232,7 @@ is
 
 $$
 \begin{align}
-2 - 2\Phi(c) = \alpha \implies c = \Phi^{-1}(1 - \alpha/2),
+c = \Phi^{-1}(1 - \alpha/2),
 \end{align}
 $$
 
@@ -331,5 +330,12 @@ $$
 
 which provides values very close to the exact sample size. The exact
 calculation of the sample size requires an iterative procedure involving
-binomial distributions, and thus it's almost never used in practice. $(4)$ or
-even $(3)$ provide good approximations.
+binomial distributions, and thus it's rarely used in practice. $(4)$ or even
+$(3)$ provide good approximations.
+
+
+## Unequal sample sizes
+## Continous responses
+## Types of hypothesis tests
+## Simulation
+## Streaming algorithm and segment analysis
