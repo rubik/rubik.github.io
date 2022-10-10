@@ -97,9 +97,9 @@ The goal of our A/B experiment is to evaluate the hypothesis test
 
 $$
 \begin{align\*}
-H_0&: \delta = 0\\\\
-H_a&: \delta \neq 0
-\end{align\*}\quad\quad\delta = p_1 - p_0
+H_0&: \theta = 0\\\\
+H_a&: \theta \neq 0
+\end{align\*}\quad\quad\theta = p_1 - p_0
 $$
 
 where the null hypothesis $H_0$ is that there's no difference in the
@@ -139,7 +139,7 @@ We are interested in the difference of sample means, $\Delta_n = \bar Y_n -
 normally distributed:
 
 $$
-\Delta_n \sim \mathcal N(\delta, \sigma_{\Delta n}^2),
+\Delta_n \sim \mathcal N(\theta, \sigma_{\Delta n}^2),
 \quad\quad \sigma_{\Delta n}^2 = \frac{p_0(1 - p_0) + p_1(1 - p_1)}{n}
 $$
 
@@ -149,12 +149,12 @@ $$
 Z_n = \frac{\Delta_n}{\sigma_{\Delta n}}
 $$
 
-and it's easy to verify that $Z_n \sim \mathcal N(\delta, 1)$, a standard
-normal distribution under $H_0$ (i.e. $\delta = 0$). However, since the
-standard deviation $\sigma_{\Delta n}$ depends on $p_0$ and $p_1$, which are
-unknown, we'll need to replace it with a suitable estimator. From $(1)$, we
-know that the sample means $\bar X_n$ and $\bar Y_n$ are unbiased estimators of
-the proportions $p_0$ and $p_1$. Thus we can define
+and it's easy to verify that $Z_n \sim \mathcal N(\theta, 1)$, a standard
+normal distribution under $H_0$. However, since the standard deviation
+$\sigma_{\Delta n}$ depends on $p_0$ and $p_1$, which are unknown, we'll need
+to replace it with a suitable estimator. From $(1)$, we know that the sample
+means $\bar X_n$ and $\bar Y_n$ are unbiased estimators of the proportions
+$p_0$ and $p_1$. Thus we can define
 
 $$
 \begin{align\*}
@@ -187,7 +187,7 @@ $$
 \begin{aligned}
 \alpha &= \operatorname{Pr}(\text{Reject } H_0 \mid H_0 \text{ is true}) =\\\\
 &= \operatorname{Pr}(|Z_n^\prime| > c \mid H_0 \text{ is true}) =\\\\
-&= \operatorname{Pr}\left(\left|\frac{\Delta_n}{\hat \sigma_{\Delta n}}\right| > c\\;\middle|\\;\delta = 0\right) =\\\\
+&= \operatorname{Pr}\left(\left|\frac{\Delta_n}{\hat \sigma_{\Delta n}}\right| > c\\;\middle|\\;\theta = 0\right) =\\\\
 &= \Phi(-c) + (1 - \Phi(c)) =\\\\
 &= 1 - \Phi(c) + 1 - \Phi(c) =\\\\
 &= 2 - 2\Phi(c)
@@ -214,7 +214,7 @@ $$
 \begin{aligned}
 \beta &= \operatorname{Pr}(\text{Accept } H_0 \mid H_0 \text{ is false}) =\\\\
 &= \operatorname{Pr}(|Z_n^\prime| \leq c \mid H_0 \text{ is false}) =\\\\
-&= \operatorname{Pr}\left(\left|\frac{\Delta_n}{\hat \sigma_{\Delta n}}\right| \leq c\\;\middle|\\;\delta \neq 0\right) =\\\\
+&= \operatorname{Pr}\left(\left|\frac{\Delta_n}{\hat \sigma_{\Delta n}}\right| \leq c\\;\middle|\\;\theta \neq 0\right) =\\\\
 \end{aligned}
 $$
 
