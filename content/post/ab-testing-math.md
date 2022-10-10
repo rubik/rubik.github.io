@@ -221,3 +221,28 @@ $$
 Observe that:
 
 1.
+
+
+$$
+\begin{align}
+\end{align}
+$$
+
+
+In practice, as found by [Haseman (1978)](https://doi.org/10.2307/2529595),
+the sample size calculated using the normal approximation above
+results in values that are too low, in the sense that the power of the test is
+lower than $1 - \beta$ when $p_0$ and $p_1$ are the underlying probabilities.
+[Casagrande, Pike, and Smith (1978b)](https://doi.org/10.2307/2530613) derived
+the following adjustment (called "continuity correction"),
+
+$$
+\begin{align}
+n^\star = \frac{n}{4}{\left(1 + \sqrt{1 + \frac{4}{n |\theta|}}\right)}^2
+\end{align}
+$$
+
+which provides values very close to the exact sample size. The exact
+calculation of the sample size requires an iterative procedure involving
+binomial distributions, and thus it's almost never used in practice. $(3)$ or
+even $(2)$ provide good approximations.
