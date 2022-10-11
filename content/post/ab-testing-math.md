@@ -12,11 +12,15 @@ experimentation process wherein two or more versions of a variable (web page,
 page element, etc.) are shown to different segments of website visitors at the
 same time to determine which version leaves the maximum impact and drives
 business metrics. This post explores the mathematical framework behind
-statistical A/B testing, and it assumes some basic knowledge about random
-variables and calculus.
+statistical A/B testing, and it assumes some basic knowledge about calculus,
+random variables, and statistics.
 
 #### Table of contents
-
+* [Statistical inference](#statistical-inference)
+* [Binary responses with equal sample size](#binary-responses-with-equal-sample-sizes)
+* [Unequal sample sizes](#unequal-sample-sizes)
+* [Continuous responses](#continuous-responses)
+* [Streaming algorithm and segment analysis](#streaming-algorithm-and-segment-analysis)
 
 ## Statistical inference
 Statistical inference is the application of statistical methods to learn the
@@ -41,10 +45,10 @@ giving rise to the observed samples will inevitably differ to some extent, albei
 possibly by a trivially small amount. No matter how small the difference in
 conversion rates is between the two underlying populations, provided it is
 nonzero, samples of sufficiently large size can virtually guarantee statistical
-significance. Assuming that an investigator desires to declare significant only
+significance. Assuming that an experiment designer desires to declare significant only
 differences that are of practical importance, and not merely differences of any
-magnitude, he should impose the added safeguard of not employing
-sample sizes that are larger than he needs to guard against the second kind
+magnitude, they should impose the added safeguard of not employing
+sample sizes that are larger than they needs to guard against the second kind
 of error.
 
 The second kind of error, called the Type II error, consists in failing to
@@ -52,9 +56,9 @@ declare the two conversion rates significantly different when in fact they are
 different. As just pointed out, such an error is not serious when the
 proportions are only trivially different. It becomes serious only when the
 proportions differ to an important extent. The practical control over the Type
-II error must therefore begin with the investigator's specifying just what
+II error must therefore begin with the experiment designer specifying just what
 difference is of sufficient importance to be detected, and must continue with
-the investigator's specifying the desired probability of actually detecting it.
+the designer specifying the desired probability of actually detecting it.
 This probability, denoted $1 - \beta$, is called the **power** of the test; the
 quantity $\beta$ is the probability of failing to find the specified difference
 to be statistically significant.
@@ -66,7 +70,45 @@ An A/B test's underlying statistical model comprises the following elements:
 * a specification of the hypothesis testing method, i.e. a target significance
   level $\alpha \in (0, 1)$
 
-### Table of error types
+#### p-values
+TODO: p-values definition
+
+An important observation about the definition of the p-value is that it
+mentions the null hypothesis as an assumption only. The p-value is a
+caracteristic of the testing procedure and do not, directly or indirectly,
+define the probability of a hypothesis being true or false. A p-value **is not**:
+
+* the probability of the outcome being "due to chance" (whatever that means);
+* the probability of the null hypothesis;
+* the probability of the alternative hypothesis; or
+* the probability of making a wrong decision.
+
+There are three possible scenarios in which a very low p-value below the
+significance threshold (e.g. $0.0001$) can be observed, all logically valid:
+
+1. the null hypothesis is not true;
+2. the null hypothesis is true, but a very rare outcome is observed;
+3. the statistical model is inadequate, and the calculated p-value is not an
+   actual p-value.
+
+Most of the time we'll interpret a low p-value as evidence that the null
+hypothesis is not true. However, the other two possibilities can never be ruled
+out entirely. Granted, provided the experiment was designed properly, scenario
+\#3 is very unlikely, and by setting a significance level we accept that we'll
+make the wrong decision a certain fraction of times over the long run. It's
+therefore logical to interpret low p-values according to scenario \#1 above in
+practice, although the other two possibilities should not be forgotten.
+
+Understanding statistical uncertainty is key for implementing a data-driven
+approach. While before running an experiment the designers must agree that if
+they observe a p-value lower than a certain significance threshold they'll
+reject the null hypothesis, it doesn't mean that a conclusion reached through
+the experimental procedure is irrefutable, certain, or unquestionable.
+Statistics is the science of estimating uncertainty. It cannot lead to certain
+conclusions, it can only suggest how close we are to having irrefutable
+evidence.
+
+#### Types of hypothesis tests
 
 <table>
     <tbody>
@@ -116,8 +158,8 @@ probability $1 - p$:
 
 $$
 \begin{align\*}
-X_i &\sim \mathrm{Bernoulli}(p_0)\\\\
-Y_i &\sim \mathrm{Bernoulli}(p_1)
+X_i &\sim \operatorname{Bernoulli}(p_0)\\\\
+Y_i &\sim \operatorname{Bernoulli}(p_1)
 \end{align\*}
 $$
 
@@ -135,7 +177,7 @@ $$
 
 where the null hypothesis $H_0$ is that there's no difference in the
 data-generation processes of $X_i$ and $Y_i$ ($p_0 = p_1$). We seek to reject the
-null hypothesis with type I error $\alpha \in (0, 1)$.
+null hypothesis with Type I error $\alpha \in (0, 1)$.
 
 Let's define the sample mean to be
 
@@ -144,15 +186,15 @@ $$
 \bar Y_i = \frac 1n \sum_{i = 1}^n Y_i
 $$
 
-It can be observed that in this case it corresponds to the _conversion rate_ of
-each variant.
+It can be observed that in this case it corresponds to the _sample conversion
+rate_ of each variant.
 
 Since the conversion variables are independent and have finite mean and
 variance, we can apply the [Central Limit
 Theorem](https://en.wikipedia.org/wiki/Central_limit_theorem#Classical_CLT)
 which states that, as $n$ approaches infinity, the distribution of $\sqrt n
 (\bar X_n - p_0)$ approaches that of a normal variable with mean $0$ and
-standard deviation $\mathrm{Var}(X_i) = p_0(1 - p_0)$. The same holds for $\bar
+standard deviation $\operatorname{Var}(X_i) = p_0(1 - p_0)$. The same holds for $\bar
 Y_n$ and $\sqrt n (\bar Y_n - p_1)$. Hence in practice, for a sufficiently
 large $n$,
 
@@ -196,7 +238,9 @@ $$
 Our revised test statistic is now
 
 $$
+\begin{align}
 Z_n^\prime = \frac{\Delta_n \sqrt{n}}{\hat \sigma_{\Delta n}}
+\end{align}
 $$
 
 This statistic is no longer distributed as a normal variable, but
@@ -208,11 +252,28 @@ usually deal with much larger samples, and thus we can safely use the normal
 approximation and assume $Z_n^\prime \sim \mathcal N(\theta \hat \sigma_{\Delta
 n}^{-1} \sqrt{n}, 1)$.
 
+<blockquote>
+<strong>Note</strong>: the test statistic defined above is the so-called
+"unpooled" statistic for this test. The "pooled" version is defined as
+
+$$
+\hat \sigma_{\Delta n,\ \text{pooled}}^2 = 2\bar p_n(1 - \bar p_n)
+$$
+
+where $\bar p_n = (\bar X_n + \bar Y_n) / 2$. The pooled statistic is also
+normally distributed for large values of $n$. The main differences are that the
+pooled version is slightly stricter if the null hypothesis is true, whereas the
+unpooled version is slightly more powerful if the alternative hypothesis is
+true. However, in practice these differences are only relevant for very low
+sample sizes, which are not the norm in online A/B testing. More details and
+simulation results can be found [here](https://stats.stackexchange.com/a/573144).
+</blockquote>
+
 We now define a "rejection rule" based on the statistic $Z_n^\prime$ to achieve
-the desired type I error rate; we'll reject the null hypothesis $H_0$ when the
+the desired Type I error rate; we'll reject the null hypothesis $H_0$ when the
 test statistic is too large (in absolute value, for a two-sided test), i.e.
 when $|Z_n^\prime| > c$ for some value $c \in \mathbb R$. The probability of
-making a two-sided type I error, i.e. of rejecting $H_0$ when it's in fact
+making a two-sided Type I error, i.e. of rejecting $H_0$ when it's in fact
 true, is
 
 $$
@@ -239,7 +300,7 @@ $$
 which is sometimes written as $z_{1 - \alpha/2}$.
 
 So far we ignored the sample size $n$: how many observations are enough? To
-find a suitable sample size we turn to the type II error $\beta$, and we seek
+find a suitable sample size we turn to the Type II error $\beta$, and we seek
 to determine the conditions under which it can be kept sufficiently low.
 
 We are going to calculate the power at $\theta = \delta > 0$, our
@@ -265,7 +326,7 @@ $$
 \end{aligned}
 $$
 
-Recall from $(2)$ that we found that in order to limit the type I error at
+Recall from $(3)$ that we found that in order to limit the Type I error at
 the desired significance level $\alpha$, the critical value $c$ must be equal
 to $\Phi^{-1}(1 - \alpha/2)$. Therefore,
 
@@ -330,12 +391,10 @@ $$
 
 which provides values very close to the exact sample size. The exact
 calculation of the sample size requires an iterative procedure involving
-binomial distributions, and thus it's rarely used in practice. $(4)$ or even
-$(3)$ provide good approximations.
+binomial distributions, and thus it's rarely used in practice. $(5)$ or even
+$(4)$ provide good approximations.
 
 
 ## Unequal sample sizes
-## Continous responses
-## Types of hypothesis tests
-## Simulation
+## Continuous responses
 ## Streaming algorithm and segment analysis
