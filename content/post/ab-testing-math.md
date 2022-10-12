@@ -19,6 +19,7 @@ random variables, and statistics.
 * [Statistical inference](#statistical-inference)
 * [Binary responses with equal sample size](#binary-responses-with-equal-sample-sizes)
 * [Unequal sample sizes](#unequal-sample-sizes)
+* [Other hypothesis tests](#other-hypothesis-tests)
 * [Continuous responses](#continuous-responses)
 * [Streaming algorithm and segment analysis](#streaming-algorithm-and-segment-analysis)
 
@@ -27,32 +28,45 @@ Statistical inference is the application of statistical methods to learn the
 characteristics of a data-generating mechanism which can be used to support
 causal claims and predictions.
 
+Hypothesis testing is a form of statistical inference that uses data from a
+sample to draw conclusions about a population parameter or a population
+probability distribution. First, a tentative assumption is made about the
+parameter or distribution. This assumption is called the "null hypothesis" and
+is denoted by $H_0$. An alternative hypothesis (denoted $H_a$), which is the
+opposite of what is stated in the null hypothesis, is then defined. The
+hypothesis-testing procedure involves using sample data to determine whether or
+not $H_0$ can be rejected. If $H_0$ is rejected, the statistical conclusion is
+that the alternative hypothesis $H_a$ is true.
 
-There are two kinds of errors one must guard against in designing a
-hypothesis test, and therefore an A/B test.
+Since hypothesis tests derive their conclusions from sample, and therefore from
+limited information, the possibility of errors must be considered. There are
+two kinds of errors one must guard against in designing a hypothesis test.
 
-The first, called the Type I error, consists in rejecting the null hypothesis
+The first, called the **Type I error**, consists in rejecting the null hypothesis
 $H_0$ when it's in fact true. When comparing two conversion rates for instance,
-it'd be equivalent to declaring that the difference between them is real when in fact the difference is zero. This
-kind of error has been given the greater amount of attention in elementary
-statistics books, and hence in practice. It is typically guarded against simply
-by setting the significance level $\alpha$ for the chosen statistical test, at a
-suitably small probability such as $0.01$ or $0.05$.
+it'd be equivalent to declaring that the difference between them is real when
+in fact the difference is zero. This kind of error has been given the greater
+amount of attention in elementary statistics books, and hence in practice. It
+is typically guarded against simply by setting the significance level $\alpha$
+for the chosen statistical test, at a suitably small probability such as $0.01$
+or $0.05$.
 
 This kind of control is not totally adequate, because a literal Type I error
 probably never occurs in practice. The reason is that the two populations
-giving rise to the observed samples will inevitably differ to some extent, albeit
-possibly by a trivially small amount. No matter how small the difference in
-conversion rates is between the two underlying populations, provided it is
+giving rise to the observed samples will inevitably differ to some extent,
+albeit possibly by a trivially small amount. No matter how small the difference
+in conversion rates is between the two underlying populations, provided it is
 nonzero, samples of sufficiently large size can virtually guarantee statistical
-significance. Assuming that an experiment designer desires to declare significant only
-differences that are of practical importance, and not merely differences of any
-magnitude, they should impose the added safeguard of not employing
-sample sizes that are larger than they needs to guard against the second kind
-of error.
+significance. Assuming that an experiment designer desires to declare
+significant only differences that are of practical importance, and not merely
+differences of any magnitude, they should impose the added safeguard of not
+employing sample sizes that are larger than they needs to guard against the
+second kind of error.
 
-The second kind of error, called the Type II error, consists in failing to
-declare the two conversion rates significantly different when in fact they are
+The second kind of error, called the **Type II error**, consists in accepting
+the null hypothesis when the alternative hypothesis is in fact true. For
+example, when comparing conversion rates, it would consist in failing to
+declare the two conversion rates significantly different when they are actually
 different. As just pointed out, such an error is not serious when the
 proportions are only trivially different. It becomes serious only when the
 proportions differ to an important extent. The practical control over the Type
@@ -67,8 +81,7 @@ An A/B test's underlying statistical model comprises the following elements:
 
 * a substantive hypothesis to be tested -- including distributional assumptions
   on the random variables involved
-* a specification of the hypothesis testing method, i.e. a target significance
-  level $\alpha \in (0, 1)$
+* a target significance level $\alpha \in (0, 1)$, which
 
 #### p-values
 TODO: p-values definition
@@ -79,8 +92,8 @@ caracteristic of the testing procedure and do not, directly or indirectly,
 define the probability of a hypothesis being true or false. A p-value **is not**:
 
 * the probability of the outcome being "due to chance" (whatever that means);
-* the probability of the null hypothesis;
-* the probability of the alternative hypothesis; or
+* the probability of the null hypothesis being true;
+* the probability of the alternative hypothesis being true; or
 * the probability of making a wrong decision.
 
 There are three possible scenarios in which a very low p-value below the
@@ -107,8 +120,6 @@ the experimental procedure is irrefutable, certain, or unquestionable.
 Statistics is the science of estimating uncertainty. It cannot lead to certain
 conclusions, it can only suggest how close we are to having irrefutable
 evidence.
-
-#### Types of hypothesis tests
 
 <table>
     <tbody>
@@ -164,7 +175,9 @@ Y_i &\sim \operatorname{Bernoulli}(p_1)
 $$
 
 We'll further assume that different observations in the same test arm are
-_independent_. This assumption is key because... TODO
+_independent_, and that observation from a test arm are independent from all
+observations in the other arm. This assumption is key because otherwise we
+wouldn't be able to apply the normal approximation discussed below.
 
 The goal of our A/B experiment is to evaluate the two-tailed hypothesis test
 
@@ -177,7 +190,10 @@ $$
 
 where the null hypothesis $H_0$ is that there's no difference in the
 data-generation processes of $X_i$ and $Y_i$ ($p_0 = p_1$). We seek to reject the
-null hypothesis with Type I error $\alpha \in (0, 1)$.
+null hypothesis with Type I error $\alpha \in (0, 1)$. We chose a two-tailed
+test for simplicity. In section [Other hypothesis
+tests](#other-hypothesis-tests) below, we discuss different hypothesis tests
+that might be better suited to online A/B tests.
 
 Let's define the sample mean to be
 
@@ -244,13 +260,12 @@ Z_n^\prime = \frac{\Delta_n \sqrt{n}}{\hat \sigma_{\Delta n}}
 $$
 
 This statistic is no longer distributed as a normal variable, but
-rather as a Student's t variable with $n - 1$ degrees of freedom. However, the
-density of a Student's t distribution approaches the density of a normal
-distribution as $n$ tends to infinity. In practice, the difference between the
-two is considered minimal at $n > 30$. In online controlled experiments we
-usually deal with much larger samples, and thus we can safely use the normal
-approximation and assume $Z_n^\prime \sim \mathcal N(\theta \hat \sigma_{\Delta
-n}^{-1} \sqrt{n}, 1)$.
+rather as a Student's t variable. However, the density of a Student's t
+distribution approaches the density of a normal distribution as $n$ tends to
+infinity. In practice, the difference between the two is considered minimal at
+$n > 30$. In online controlled experiments we usually deal with much larger
+samples, and thus we can safely use the normal approximation and assume
+$Z_n^\prime \sim \mathcal N(\theta \hat \sigma_{\Delta n}^{-1} \sqrt{n}, 1)$.
 
 <blockquote>
 <strong>Note</strong>: the test statistic defined above is the so-called
@@ -396,5 +411,6 @@ $(4)$ provide good approximations.
 
 
 ## Unequal sample sizes
+## Other hypothesis tests
 ## Continuous responses
 ## Streaming algorithm and segment analysis
