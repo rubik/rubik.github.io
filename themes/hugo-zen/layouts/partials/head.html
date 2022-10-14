@@ -24,13 +24,10 @@
 {{ end }}
 <script async defer data-domain="signal-to-noise.xyz" src="https://plausible.io/js/plausible.js"></script>
 {{ if not (in (string .Site.BaseURL) "localhost") }}
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-86380700-1"></script>
+<!-- Panelbear -->
+<script async src="https://cdn.panelbear.com/analytics.js?site=7moiko9QLML"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-86380700-1');
+    window.panelbear = window.panelbear || function() { (window.panelbear.q = window.panelbear.q || []).push(arguments); };
+    panelbear('config', { site: '7moiko9QLML' });
 </script>
 {{ end }}

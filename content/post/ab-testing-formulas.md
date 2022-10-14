@@ -1,161 +1,25 @@
 ---
 author: "Michele Lacchia"
-title: "A/B testing math"
+title: "A/B testing - part II: binary and continous responses"
 date: "2022-10-08"
 tags: ["math", "ab-tests"]
 hasmath: true
-summary: "Mathematical framework underlying online A/B testing using a frequentist approach."
+summary: "Statistical framework underlying online A/B testing: formulas for binary and continous responses."
 ---
 
-A/B testing, also referred to as "split testing", is a randomized
-experimentation process wherein two or more versions of a variable (web page,
-page element, etc.) are shown to different segments of website visitors at the
-same time to determine which version leaves the maximum impact and drives
-business metrics. This post explores the mathematical framework behind
-statistical A/B testing, and it assumes some basic knowledge about calculus,
-random variables, and statistics.
+This post continues the A/B testing series and it shows how to derive key
+formulas for some common cases encountered in online A/B tests. This post
+assumes some basic knowledge about calculus, random variables, and statistics.
+For an overview of the basic concepts and the underlying statistical framework,
+I recommend reading part I of the series linked below.
 
-#### Table of contents
-* [Statistical inference](#statistical-inference)
-* [Binary responses with equal sample size](#binary-responses-with-equal-sample-sizes)
-* [Unequal sample sizes](#unequal-sample-sizes)
-* [Other hypothesis tests](#other-hypothesis-tests)
-* [Continuous responses](#continuous-responses)
-* [Streaming algorithm and segment analysis](#streaming-algorithm-and-segment-analysis)
+#### A/B testing series
+* [Part I: Statistical inference and hypothsis testing](/post/ab-testing-hypothesis-tests)
+* Part II: Formulas for binary and continous responses (this post)
+* Part III: Streaming algorithm and segment analysis
+* Part IV: Group sequential tests
+* Part V: Multivariate tests
 
-## Statistical inference
-Statistical inference is the application of statistical methods to learn the
-characteristics of a data-generating mechanism which can be used to support
-causal claims and predictions.
-
-Hypothesis testing is a form of statistical inference that uses data from a
-sample to draw conclusions about a population parameter or a population
-probability distribution. First, a tentative assumption is made about the
-parameter or distribution. This assumption is called the "null hypothesis" and
-is denoted by $H_0$. An alternative hypothesis (denoted $H_a$), which is the
-opposite of what is stated in the null hypothesis, is then defined. The
-hypothesis-testing procedure involves using sample data to determine whether or
-not $H_0$ can be rejected. If $H_0$ is rejected, the statistical conclusion is
-that the alternative hypothesis $H_a$ is true.
-
-Since hypothesis tests derive their conclusions from sample, and therefore from
-limited information, the possibility of errors must be considered. There are
-two kinds of errors one must guard against in designing a hypothesis test.
-
-The first, called the **Type I error**, consists in rejecting the null hypothesis
-$H_0$ when it's in fact true. When comparing two conversion rates for instance,
-it'd be equivalent to declaring that the difference between them is real when
-in fact the difference is zero. This kind of error has been given the greater
-amount of attention in elementary statistics books, and hence in practice. It
-is typically guarded against simply by setting the significance level $\alpha$
-for the chosen statistical test, at a suitably small probability such as $0.01$
-or $0.05$.
-
-This kind of control is not totally adequate, because a literal Type I error
-probably never occurs in practice. The reason is that the two populations
-giving rise to the observed samples will inevitably differ to some extent,
-albeit possibly by a trivially small amount. No matter how small the difference
-in conversion rates is between the two underlying populations, provided it is
-nonzero, samples of sufficiently large size can virtually guarantee statistical
-significance. Assuming that an experiment designer desires to declare
-significant only differences that are of practical importance, and not merely
-differences of any magnitude, they should impose the added safeguard of not
-employing sample sizes that are larger than they needs to guard against the
-second kind of error.
-
-The second kind of error, called the **Type II error**, consists in accepting
-the null hypothesis when the alternative hypothesis is in fact true. For
-example, when comparing conversion rates, it would consist in failing to
-declare the two conversion rates significantly different when they are actually
-different. As just pointed out, such an error is not serious when the
-proportions are only trivially different. It becomes serious only when the
-proportions differ to an important extent. The practical control over the Type
-II error must therefore begin with the experiment designer specifying just what
-difference is of sufficient importance to be detected, and must continue with
-the designer specifying the desired probability of actually detecting it.
-This probability, denoted $1 - \beta$, is called the **power** of the test; the
-quantity $\beta$ is the probability of failing to find the specified difference
-to be statistically significant.
-
-An A/B test's underlying statistical model comprises the following elements:
-
-* a substantive hypothesis to be tested -- including distributional assumptions
-  on the random variables involved
-* a target significance level $\alpha \in (0, 1)$, which
-
-#### p-values
-TODO: p-values definition
-
-An important observation about the definition of the p-value is that it
-mentions the null hypothesis as an assumption only. The p-value is a
-caracteristic of the testing procedure and do not, directly or indirectly,
-define the probability of a hypothesis being true or false. A p-value **is not**:
-
-* the probability of the outcome being "due to chance" (whatever that means);
-* the probability of the null hypothesis being true;
-* the probability of the alternative hypothesis being true; or
-* the probability of making a wrong decision.
-
-There are three possible scenarios in which a very low p-value below the
-significance threshold (e.g. $0.0001$) can be observed, all logically valid:
-
-1. the null hypothesis is not true;
-2. the null hypothesis is true, but a very rare outcome is observed;
-3. the statistical model is inadequate, and the calculated p-value is not an
-   actual p-value.
-
-Most of the time we'll interpret a low p-value as evidence that the null
-hypothesis is not true. However, the other two possibilities can never be ruled
-out entirely. Granted, provided the experiment was designed properly, scenario
-\#3 is very unlikely, and by setting a significance level we accept that we'll
-make the wrong decision a certain fraction of times over the long run. It's
-therefore logical to interpret low p-values according to scenario \#1 above in
-practice, although the other two possibilities should not be forgotten.
-
-Understanding statistical uncertainty is key for implementing a data-driven
-approach. While before running an experiment the designers must agree that if
-they observe a p-value lower than a certain significance threshold they'll
-reject the null hypothesis, it doesn't mean that a conclusion reached through
-the experimental procedure is irrefutable, certain, or unquestionable.
-Statistics is the science of estimating uncertainty. It cannot lead to certain
-conclusions, it can only suggest how close we are to having irrefutable
-evidence.
-
-<table>
-    <tbody>
-        <tr>
-            <th rowspan="2" colspan="2"></th>
-            <th colspan="2">Null hypothesis $H_0$ is</th>
-        </tr>
-        <tr style="border-bottom:solid 2px black">
-            <th>True</th>
-            <th>False</th>
-        </tr>
-        <tr>
-            <th rowspan="2" style="padding-right:10px;border-bottom:none">Decision about<br> null hypothesis $H_0$</th>
-            <th style="border-bottom:none">Don't reject</th>
-            <td style="text-align:center;">
-                <p>Correct inference<br> (true negative)</p>
-                <p>Probability $= 1 - \alpha$</p>
-            </td>
-            <td style="text-align:center;">
-                <p>Type II error<br> (false negative)</p>
-                <p>Probability $= \beta$</p>
-            </td>
-        </tr>
-        <tr>
-            <th style="border-bottom:none">Reject</th>
-            <td style="text-align:center;">
-                <p>Type I error<br> (false positive)</p>
-                <p>Probability $= \alpha$</p>
-            </td>
-            <td style="text-align:center;">
-                <p>Correct inference<br> (true positive)</p>
-                <p>Probability $= 1 − \beta$</p>
-            </td>
-        </tr>
-    </tbody>
-</table>
 
 ## Binary responses with equal sample sizes
 We'll first describe one of the simplest cases encountered in online A/B tests:
@@ -178,6 +42,9 @@ We'll further assume that different observations in the same test arm are
 _independent_, and that observation from a test arm are independent from all
 observations in the other arm. This assumption is key because otherwise we
 wouldn't be able to apply the normal approximation discussed below.
+Furthermore, if observations are paired, [McNemar's
+test](https://en.wikipedia.org/wiki/McNemar%27s_test) might be more
+appropriate.
 
 The goal of our A/B experiment is to evaluate the two-tailed hypothesis test
 
@@ -353,7 +220,9 @@ $$
 \end{aligned}
 $$
 
-Before presenting the final expression for $n$, note that $\hat \sigma_{\Delta n}$ depends on $\bar X_n$ and $\bar Y_n$, which are observable only after the experiment is completed. Thus we can define
+Before presenting the final expression for $n$, note that $\hat \sigma_{\Delta
+n}$ depends on $\bar X_n$ and $\bar Y_n$, which are observable only after the
+experiment is completed. Thus we can define
 
 $$
 s^2 = P_0 (1 - P_0) + P_1 (1 - P_1)
@@ -413,4 +282,3 @@ $(4)$ provide good approximations.
 ## Unequal sample sizes
 ## Other hypothesis tests
 ## Continuous responses
-## Streaming algorithm and segment analysis
