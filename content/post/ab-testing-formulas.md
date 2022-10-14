@@ -136,14 +136,16 @@ $Z_n^\prime \sim \mathcal N(\theta \hat \sigma_{\Delta n}^{-1} \sqrt{n}, 1)$.
 
 <blockquote>
 <strong>Note</strong>: the test statistic defined above is the so-called
-"unpooled" statistic for this test. The "pooled" version is defined as
+"unpooled" statistic for this test. The "pooled" version $Z_{n,\
+\text{pooled}}^\prime$ is defined just like $Z_n^\prime$, except for the
+variance estimate:
 
 $$
-\hat \sigma_{\Delta n,\ \text{pooled}}^2 = 2\bar p_n(1 - \bar p_n)
+Z_{n,\ \text{pooled}}^\prime = \frac{\Delta_n \sqrt n}{\hat \sigma_{\Delta n,\ \text{pooled}}},\quad\quad\hat \sigma_{\Delta n,\ \text{pooled}}^2 = 2\bar p_n(1 - \bar p_n)
 $$
 
 where $\bar p_n = (\bar X_n + \bar Y_n) / 2$. The pooled statistic is also
-normally distributed for large values of $n$. The main differences are that the
+normally distributed for large values of $n$. The main difference is that the
 pooled version is slightly stricter if the null hypothesis is true, whereas the
 unpooled version is slightly more powerful if the alternative hypothesis is
 true. However, in practice these differences are only relevant for very low
