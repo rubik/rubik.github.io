@@ -322,14 +322,14 @@ following table:
             <td>Two-proportion z-test (pooled)</td>
             <td>$$\frac{\bar p_2 - \bar p_1}{\sqrt{\bar p_{1, 2} (1 - \bar p_{1, 2}) (n_1^{-1} + n_2^{-1})}}$$</td>
             <td>$$\mathcal N(0, 1)$$</td>
-            <td>$n_1 p_1 > 5$, $n_1 (1 - p_1) > 5$, $n_2 p_2 > 5$, $n_2 (1 - p_2) > 5$, and independent observations (<a href="https://en.wikipedia.org/wiki/Binomial_distribution#Normal_approximation" rel="noopener noreferrer" target="_blank">source</a>)</td>
+            <td>$n_1 p_1 > 5$,<br> $n_1 (1 - p_1) > 5$,<br> $n_2 p_2 > 5$,<br> $n_2 (1 - p_2) > 5$,<br> and independent observations (<a href="https://en.wikipedia.org/wiki/Binomial_distribution#Normal_approximation" rel="noopener noreferrer" target="_blank">source</a>)</td>
             <td>$$p_1 = p_2$$</td>
         </tr>
         <tr>
             <td>Two-proportion z-test (unpooled)</td>
             <td>$$\frac{\bar p_2 - \bar p_1 - d_p}{\sqrt{\bar p_1 (1 - \bar p_1) n_1^{-1} + \bar p_2 (1 - \bar p_2) n_2^{-1}}}$$</td>
             <td>$$\mathcal N(0, 1)$$</td>
-            <td>$n_1 p_1 > 5$, $n_1 (1 - p_1) > 5$, $n_2 p_2 > 5$, $n_2 (1 - p_2) > 5$, and independent observations (<a href="https://en.wikipedia.org/wiki/Binomial_distribution#Normal_approximation" rel="noopener noreferrer" target="_blank">source</a>)</td>
+            <td>$n_1 p_1 > 5$,<br> $n_1 (1 - p_1) > 5$,<br> $n_2 p_2 > 5$,<br> $n_2 (1 - p_2) > 5$,<br> and independent observations (<a href="https://en.wikipedia.org/wiki/Binomial_distribution#Normal_approximation" rel="noopener noreferrer" target="_blank">source</a>)</td>
             <td>$$p_2 - p_1 = d_p$$</td>
         </tr>
     </tbody>
@@ -360,7 +360,7 @@ to stress that a p-value **is not**:
 * the probability of making a wrong decision.
 
 There are three possible scenarios in which a very low p-value below the
-significance threshold (e.g. $0.0001$) can be observed, all logically valid:
+significance threshold can be observed, all logically valid:
 
 1. the null hypothesis is not true;
 2. the null hypothesis is true, but a very rare outcome is observed;
