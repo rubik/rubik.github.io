@@ -14,9 +14,9 @@ For an overview of the basic concepts and the underlying statistical framework,
 I recommend reading part I of the series linked below.
 
 #### A/B testing series
-* [Part I: Statistical inference and hypothsis testing](/post/ab-testing-hypothesis-tests)
+* [Part I: Statistical inference and hypothsis testing](/post/ab-testing-inference)
 * Part II: Formulas for binary and continous responses (this post)
-* Part III: Streaming algorithm and segment analysis
+* Part III: Streaming algorithms and segment analysis
 * Part IV: Group sequential tests
 * Part V: Multivariate tests
 
