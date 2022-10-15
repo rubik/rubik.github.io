@@ -248,7 +248,7 @@ The following table lists some common test statistics. In the formulas:
             <td>$$\frac{(\bar x_2 - \bar x_1) - d_0}{\sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}}}$$</td>
             <td>$$\mathcal N(0, 1)$$</td>
             <td>Normal populations (or large $n_1$ and $n_2$) and $\sigma_1$ and $\sigma_2$ known.</td>
-            <td>$$\mu_2 - \mu_2 = d_0$$</td>
+            <td>$$\mu_2 - \mu_1 = d_0$$</td>
         </tr>
         <tr>
             <td>One-sample t-test</td>
@@ -262,14 +262,14 @@ The following table lists some common test statistics. In the formulas:
             <td>$$\frac{(\bar x_2 - \bar x_1) - (\mu_2 - \mu_1)}{s_{\text{pooled}} \sqrt{\frac{1}{n_1} + \frac{1}{n_2}}}$$</td>
             <td>$$t(n_1 + n_2 - 2)$$</td>
             <td>Normal populations (or large $n_1$ and $n_2$) and $\sigma_1 = \sigma_2$, unknown.</td>
-            <td>$$\mu_2 - \mu_2 = d_0$$</td>
+            <td>$$\mu_2 - \mu_1 = d_0$$</td>
         </tr>
         <tr>
             <td>Two-sample t-test (unpooled)</td>
             <td>$$\frac{(\bar x_2 - \bar x_1) - (\mu_2 - \mu_1)}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}$$</td>
             <td>$$t(\nu)$$</td>
             <td>Normal populations (or large $n_1$ and $n_2$) and $\sigma_1 \neq \sigma_2$, unknown.</td>
-            <td>$$\mu_2 - \mu_2 = d_0$$</td>
+            <td>$$\mu_2 - \mu_1 = d_0$$</td>
         </tr>
     </tbody>
 </table>
@@ -283,13 +283,63 @@ formula](https://en.wikipedia.org/wiki/Welch%27s_t-test). The z-tests are used
 when the populations variances are known; t-tests are used otherwise.
 One-sample tests are used to determine whether a population has a certain mean;
 two-sample tests are used to compare samples and determine if they are from
-populations with the same mean or a specific difference in means $d_0$. In the
-table the null hypothesis is expressed as a point hypothesis, but all these
-tests can be trivially adapted to the case of a composite hypothesis. If the
-samples are from Bernoulli-distributed random variables, then the test
-statistics above have alternative formulations in terms of proportions (the
-number of successes over the total sample size). More details are provided in
-[part II](/post/ab-testing-formulas/).
+populations with the same mean or in general a specific difference in means
+$d_0$. In the table the null hypothesis is expressed as a point hypothesis, but
+all these tests can be trivially adapted to the case of a composite hypothesis.
+If the samples are realizations of Bernoulli-distributed random variables, then
+the z-test statistics above have alternative formulations in terms of
+proportions (the number of successes over the total sample size). In the
+following table:
+
+* $n_1$ and $n_2$ are the sample sizes
+* $\bar p_1$ are the sample proportions
+* $\bar p_{1, 2}$ is the combined sample proportion (sum of successes from both
+  samples, divided by $n_1 + n_2$)
+* $p_1$ and $p_2$ are the population proportions
+* $p_0$ is the hypothesized population proportion
+* $d_p$ is the hypothesized differece in proportions
+
+<table class="align-middle">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Formula</td>
+            <td>Sampling distribution</td>
+            <td>Assumptions</td>
+            <td>Null hypothesis</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>One-proportion z-test</td>
+            <td>$$\frac{(\bar p_1  - p_0)\sqrt n_1}{p_0 (1 - p_0)}$$</td>
+            <td>$$\mathcal N(0, 1)$$</td>
+            <td>$n_1 p_0 > 10$ and $n_1 (1 - p_0) > 10$ (<a href="https://en.wikipedia.org/wiki/Binomial_distribution#Normal_approximation" rel="noopener noreferrer" target="_blank">source</a>)</td>
+            <td>$$p_1 = p_0$$</td>
+        </tr>
+        <tr>
+            <td>Two-proportion z-test (pooled)</td>
+            <td>$$\frac{\bar p_2 - \bar p_1}{\sqrt{\bar p_{1, 2} (1 - \bar p_{1, 2}) (n_1^{-1} + n_2^{-1})}}$$</td>
+            <td>$$\mathcal N(0, 1)$$</td>
+            <td>$n_1 p_1 > 5$, $n_1 (1 - p_1) > 5$, $n_2 p_2 > 5$, $n_2 (1 - p_2) > 5$, and independent observations (<a href="https://en.wikipedia.org/wiki/Binomial_distribution#Normal_approximation" rel="noopener noreferrer" target="_blank">source</a>)</td>
+            <td>$$p_1 = p_2$$</td>
+        </tr>
+        <tr>
+            <td>Two-proportion z-test (unpooled)</td>
+            <td>$$\frac{\bar p_2 - \bar p_1 - d_p}{\sqrt{\bar p_1 (1 - \bar p_1) n_1^{-1} + \bar p_2 (1 - \bar p_2) n_2^{-1}}}$$</td>
+            <td>$$\mathcal N(0, 1)$$</td>
+            <td>$n_1 p_1 > 5$, $n_1 (1 - p_1) > 5$, $n_2 p_2 > 5$, $n_2 (1 - p_2) > 5$, and independent observations (<a href="https://en.wikipedia.org/wiki/Binomial_distribution#Normal_approximation" rel="noopener noreferrer" target="_blank">source</a>)</td>
+            <td>$$p_2 - p_1 = d_p$$</td>
+        </tr>
+    </tbody>
+</table>
+
+The reason these are z-tests and not t-tests is that the variance of a
+proportion is a function of the proportion itself. Once the proportion has been
+estimated from the sample, there is no additional source of uncertainty that
+has to be taken into account for the estimation of the variance. In t-tests,
+the population mean and variance are estimated by independent random
+quantities.
 
 ## p-values and uncertainty
 As mentioned above, the p-value of a test is the probability of obtaining test

@@ -126,13 +126,10 @@ Z_n^\prime = \frac{\Delta_n \sqrt{n}}{\hat \sigma_{\Delta n}}
 \end{align}
 $$
 
-This statistic is no longer distributed as a normal variable, but
-rather as a Student's t variable. However, the density of a Student's t
-distribution approaches the density of a normal distribution as $n$ tends to
-infinity. In practice, the difference between the two is considered minimal at
-$n > 30$. In online controlled experiments we usually deal with much larger
-samples, and thus we can safely use the normal approximation and assume
-$Z_n^\prime \sim \mathcal N(\theta \hat \sigma_{\Delta n}^{-1} \sqrt{n}, 1)$.
+This statistic is still approximately normal for large $n$ values. In online
+controlled experiments we usually deal with much larger samples, and thus we
+can safely use the normal approximation and assume $Z_n^\prime \sim \mathcal
+N(\theta \hat \sigma_{\Delta n}^{-1} \sqrt{n}, 1)$.
 
 <blockquote>
 <strong>Note</strong>: the test statistic defined above is the so-called
@@ -230,7 +227,7 @@ $$
 s^2 = P_0 (1 - P_0) + P_1 (1 - P_1)
 $$
 
-as a replacement for $\hat \sigma_{\Delta n}^2$, where $P_0$ and $P_1$ are
+as an estimate of $\hat \sigma_{\Delta n}^2$, where $P_0$ and $P_1$ are
 hypothesized by the designer of the experiment and are such that $P_1 - P_0 =
 \delta$. In practice, $P_0$ is derived from existing available data (such as
 conversion data from Google Analytics or a similar tracking tool), and $P_1$ is
