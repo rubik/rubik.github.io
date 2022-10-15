@@ -34,10 +34,13 @@ main{margin:4rem 0}
 #disqus_thread{margin-top:60px}
 figure{text-align:center;width:110%;margin:0;margin-left:-5%;margin-bottom:2.5rem}
 table{display:block;overflow-x:auto;border:none;text-align:left;margin:30px auto;border-collapse:collapse}
-table thead{vertical-align:baseline;display:table-header-group}
+table thead{vertical-align:baseline;display:table-header-group;border-top:none;border-bottom:2px solid black;font-weight:bold}
+table thead tr td{border-top:none}
+table td {vertical-align:middle}
 figure table{display: inline-table;margin:0 auto}
 th{color:#000;padding:10px 8px;text-align:center;border-bottom:2px solid;background-color:#E6E6E7}
 table td{padding:8px;text-align:center;vertical-align:top;line-height:2;border-top:1px solid #DDD}
+table.align-middle td{vertical-align:middle}
 tbody th{background-color:#fff;text-align:center;border-bottom:1px solid #DDD}
 blockquote{background:#f9f9f9;border-left:5px solid #eee;margin:0 0 20px;padding:10px 20px}
 blockquote p{display:inline}

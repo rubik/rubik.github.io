@@ -35,10 +35,11 @@ from a limited sample (a series of observations).
 Hypothesis testing is a form of statistical inference that uses representative
 samples to evaluate two mutually exclusive hypotheses. First, a tentative
 assumption is made about the parameter or distribution of interest. This
-assumption is called the "null hypothesis" and is denoted by $H_0$. By defining
-the null hypothesis, the alternative hypothesis, denoted $H_a$, is
-automatically defined: it is the opposite of what is stated in the null
-hypothesis. The hypothesis-testing procedure works as follows:
+assumption is called the "null hypothesis" and is denoted by $H_0$. The
+alternative hypothesis $H_a$ is fully specified by the null hypothesis: it is
+the opposite of what is stated in the null hypothesis, being the complementary
+set of possible parameter values. The hypothesis-testing procedure works as
+follows:
 
 1. from the sample data we calculate a **test statistic**, a numerical quantity
    that summarizes the properties of the sample. The test statistic assesses
@@ -71,7 +72,10 @@ $$
 
 where the null hypothesis is that parameter $\theta$ is equal to zero, and the
 alternative hypothesis covers the complementary set of possible parameter
-values.
+values. A test for a point null hypothesis is called _two-tailed test_, as the
+critical areas for statistical significance are at both tails of the test
+statistic distribution (when it's very high or very low, it's strong evidence
+against the null hypothesis).
 
 A composite null hypothesis covers multiple values from the parameter space,
 e.g.:
@@ -84,15 +88,16 @@ H_a:& \theta > 0
 $$
 
 where $\theta$ for example could be a difference in coversion rates, between
-variant B and the control in an A/B test.
+variant B and the control in an A/B test. A test for a composite null
+hypothesis is called _one-tailed test_, as the critical area for statistical
+significance is only at the tail of interest.
 
 Testing a composite null hypothesis is what usually makes the most sense in an
 online A/B test, as we are interested in detecting and estimating effects in
 only one direction: e.g. an increase in conversion rate or average revenue per
 user. In fact, using a point null hypothesis would require a larger sample size
 for the same significance level, and running a test so long as to detect a
-statistically significant negative effect can be harmful overall for the
-business.
+statistically significant negative effect is overall harmful for the business.
 
 ## Errors
 Since hypothesis tests derive their conclusions from a sample, and therefore
@@ -190,15 +195,101 @@ procedure for a statistically sound test:
 2. we choose a target significance level $\alpha \in (0, 1)$ to control Type I
    errors;
 3. we choose a target power $1 - \beta \in (0, 1)$ to control Type II errors,
-   along with a minimum effect of interest (MEI) $\delta$;
+   along with a minimum effect of interest $\delta > 0$;
 4. we calculate the sample size per variant required to achieve the target
    power;
 5. we collect data until the target sample size is met;
 6. we calculate a p-value for each variant;
 7. we conclude the test by accepting or rejecting the null hypothesis.
 
-## Types of tests
-TODO
+## Test statistics
+Performing a hypothesis test on a specific sample yields a single test
+statistic, calculated from the observed sample. If we were to repeat the test
+many times, with different random samples of the same size from the population,
+we would obtain a distribution of test statistics. This distribution is called
+**sampling distribution**. Knowing its properties allows the calculation of
+p-values, as it provides context to understand how rare or surprising the
+observed statistic is, when the null hypothesis is assumed.
+
+An important properties of test statistics is that their sampling distribution
+under the null hypothesis must be calculable, either exactly or approximately,
+so that p-values can be calculated precisely without the need to obtain many
+samples and doing many repeated tests.
+
+The following table lists some common test statistics. In the formulas:
+
+* $n_1$ and $n_2$ are the sample sizes
+* $\bar x_1$ and $\bar x_2$ are the [sample means](https://en.wikipedia.org/wiki/Sample_mean_and_covariance)
+* $s_1$ and $s_2$ are the sample standard deviations
+* $\mu_1$ and $\mu_2$ are the population means
+* $\sigma_1$ and $\sigma_2$ are the population standard deviations
+* $\mu_0$ is the hypothesized population mean
+
+<table class="align-middle">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Formula</td>
+            <td>Sampling distribution</td>
+            <td>Assumptions</td>
+            <td>Null hypothesis</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>One-sample z-test</td>
+            <td>$$\frac{\bar x_1 - \mu_0}{\sigma_1 / \sqrt{n_1}}$$</td>
+            <td>$$\mathcal N(0, 1)$$</td>
+            <td>Normal population (or large $n_1$) and $\sigma_1$ known.</td>
+            <td>$$\mu_1 = \mu_0$$</td>
+        </tr>
+        <tr>
+            <td>Two-sample z-test</td>
+            <td>$$\frac{(\bar x_2 - \bar x_1) - d_0}{\sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}}}$$</td>
+            <td>$$\mathcal N(0, 1)$$</td>
+            <td>Normal populations (or large $n_1$ and $n_2$) and $\sigma_1$ and $\sigma_2$ known.</td>
+            <td>$$\mu_2 - \mu_2 = d_0$$</td>
+        </tr>
+        <tr>
+            <td>One-sample t-test</td>
+            <td>$$\frac{\bar x_1 - \mu_0}{s_1 / \sqrt{n_1}}$$</td>
+            <td>$$\mathcal t(n_1 - 1)$$</td>
+            <td>Normal population (or large $n_1$) and $\sigma_1$ unknown.</td>
+            <td>$$\mu_1 = \mu_0$$</td>
+        </tr>
+        <tr>
+            <td>Two-sample t-test (pooled)</td>
+            <td>$$\frac{(\bar x_2 - \bar x_1) - (\mu_2 - \mu_1)}{s_{\text{pooled}} \sqrt{\frac{1}{n_1} + \frac{1}{n_2}}}$$</td>
+            <td>$$t(n_1 + n_2 - 2)$$</td>
+            <td>Normal populations (or large $n_1$ and $n_2$) and $\sigma_1 = \sigma_2$, unknown.</td>
+            <td>$$\mu_2 - \mu_2 = d_0$$</td>
+        </tr>
+        <tr>
+            <td>Two-sample t-test (unpooled)</td>
+            <td>$$\frac{(\bar x_2 - \bar x_1) - (\mu_2 - \mu_1)}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}$$</td>
+            <td>$$t(\nu)$$</td>
+            <td>Normal populations (or large $n_1$ and $n_2$) and $\sigma_1 \neq \sigma_2$, unknown.</td>
+            <td>$$\mu_2 - \mu_2 = d_0$$</td>
+        </tr>
+    </tbody>
+</table>
+
+The pooled sample standard deviation is defined as
+
+$$s_{\text{pooled}} = \frac{(n_1 - 1)s_1^2 + (n_2 - 1)s_2^2}{n_1 + n_2 - 2}$$
+
+and $\nu$ is calculated according to [Welch's t-test
+formula](https://en.wikipedia.org/wiki/Welch%27s_t-test). The z-tests are used
+when the populations variances are known; t-tests are used otherwise.
+One-sample tests are used to determine whether a population has a certain mean;
+two-sample tests are used to compare samples and determine if they are from
+populations with the same mean or a specific difference in means $d_0$. In the
+table the null hypothesis is expressed as a point hypothesis, but all these
+tests can be trivially adapted to the case of a composite hypothesis. If the
+samples are from Bernoulli-distributed random variables, then the test
+statistics above have alternative formulations in terms of proportions (the
+number of successes over the total sample size). More details are provided in
+[part II](/post/ab-testing-formulas/).
 
 ## p-values and uncertainty
 As mentioned above, the p-value of a test is the probability of obtaining test
