@@ -1,6 +1,6 @@
 ---
 author: "Michele Lacchia"
-title: "A/B testing - part I: statistical inference and hypothesis testing"
+title: "A/B testing foundations - part I: statistical inference and hypothesis testing"
 date: "2022-10-08"
 tags: ["math", "statistics", "ab-tests"]
 hasmath: true
@@ -224,6 +224,7 @@ The following table lists some common test statistics. In the formulas:
 * $\mu_1$ and $\mu_2$ are the population means
 * $\sigma_1$ and $\sigma_2$ are the population standard deviations
 * $\mu_0$ is the hypothesized population mean
+* $d_0 = \mu_2 - \mu_1$ is the hypothesized difference in population means
 
 <table class="align-middle">
     <thead>
@@ -259,14 +260,14 @@ The following table lists some common test statistics. In the formulas:
         </tr>
         <tr>
             <td>Two-sample t-test (pooled)</td>
-            <td>$$\frac{(\bar x_2 - \bar x_1) - (\mu_2 - \mu_1)}{s_{\text{pooled}} \sqrt{\frac{1}{n_1} + \frac{1}{n_2}}}$$</td>
+            <td>$$\frac{(\bar x_2 - \bar x_1) - d_0}{s_{\text{pooled}} \sqrt{\frac{1}{n_1} + \frac{1}{n_2}}}$$</td>
             <td>$$t(n_1 + n_2 - 2)$$</td>
             <td>Normal populations (or large $n_1$ and $n_2$) and $\sigma_1 = \sigma_2$, unknown.</td>
             <td>$$\mu_2 - \mu_1 = d_0$$</td>
         </tr>
         <tr>
             <td>Two-sample t-test (unpooled)</td>
-            <td>$$\frac{(\bar x_2 - \bar x_1) - (\mu_2 - \mu_1)}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}$$</td>
+            <td>$$\frac{(\bar x_2 - \bar x_1) - d_0}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}$$</td>
             <td>$$t(\nu)$$</td>
             <td>Normal populations (or large $n_1$ and $n_2$) and $\sigma_1 \neq \sigma_2$, unknown.</td>
             <td>$$\mu_2 - \mu_1 = d_0$$</td>
@@ -297,7 +298,7 @@ following table:
   samples, divided by $n_1 + n_2$)
 * $p_1$ and $p_2$ are the population proportions
 * $p_0$ is the hypothesized population proportion
-* $d_p$ is the hypothesized differece in proportions
+* $d_p$ is the hypothesized difference in proportions
 
 <table class="align-middle">
     <thead>

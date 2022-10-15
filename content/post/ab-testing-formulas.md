@@ -1,6 +1,6 @@
 ---
 author: "Michele Lacchia"
-title: "A/B testing - part II: binary and continous responses"
+title: "A/B testing foundations - part II: binary and continous responses"
 date: "2022-10-08"
 tags: ["math", "ab-tests"]
 hasmath: true
