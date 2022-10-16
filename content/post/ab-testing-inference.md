@@ -20,7 +20,7 @@ about calculus, random variables, and statistics. In this first post we'll
 describe the foundation to A/B testing: statistical inference through
 hypothesis testing.
 
-#### A/B testing series
+#### A/B testing foundations series
 * Part I: Statistical inference and hypothsis testing (this post)
 * [Part II: Formulas for binary and continous responses](/post/ab-testing-formulas/)
 * Part III: Streaming algorithms and segment analysis

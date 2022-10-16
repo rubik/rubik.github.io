@@ -13,7 +13,7 @@ assumes some basic knowledge about calculus, random variables, and statistics.
 For an overview of the basic concepts and the underlying statistical framework,
 I recommend reading part I of the series linked below.
 
-#### A/B testing series
+#### A/B testing foundations series
 * [Part I: Statistical inference and hypothsis testing](/post/ab-testing-inference)
 * Part II: Formulas for binary and continous responses (this post)
 * Part III: Streaming algorithms and segment analysis
@@ -142,12 +142,12 @@ Z_{n,\ \text{pooled}}^\prime = \frac{\Delta_n \sqrt n}{\hat \sigma_{\Delta n,\ \
 $$
 
 where $\bar p_n = (\bar X_n + \bar Y_n) / 2$. The pooled statistic is also
-normally distributed for large values of $n$. The main difference is that the
-pooled version is slightly stricter if the null hypothesis is true, whereas the
-unpooled version is slightly more powerful if the alternative hypothesis is
-true. However, in practice these differences are only relevant for very low
-sample sizes, which are not the norm in online A/B testing. More details and
-simulation results can be found [here](https://stats.stackexchange.com/a/573144).
+normally distributed for large values of $n$. The unpooled version has worse
+small-sample properties than the pooled version, but they are asymptotically
+equivalent as $n$ goes to infinity. The large sample sizes normally encountered
+in online A/B testing render them essentially equal in practice. More details
+and simulation results can be found
+[here](https://stats.stackexchange.com/a/573144).
 </blockquote>
 
 We now define a "rejection rule" based on the statistic $Z_n^\prime$ to achieve
