@@ -4,6 +4,7 @@ title = "Kubernetes tools and plugins for enhanced productivity"
 tags = ["kubernetes", "containers", "big-list"]
 category = "posts"
 date = "2020-06-07"
+hasCode = true
 summary = "A list of useful Kubernetes tools for enhanced productivity."
 +++
 

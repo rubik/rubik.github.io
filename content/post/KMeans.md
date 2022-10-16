@@ -5,6 +5,7 @@ date = "2016-10-30"
 tags = ["python", "matplotlib", "machine-learning"]
 category = "notebooks"
 hasMath = true
+hasCode = true
 summary = "Mathematical explanation and Python implementation of the LLoyd's algorithm for the KMeans problem"
 +++
 

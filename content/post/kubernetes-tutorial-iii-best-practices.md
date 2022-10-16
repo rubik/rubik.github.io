@@ -4,6 +4,7 @@ title = "A complete Kubernetes tutorial, part III: best practices"
 tags = ["kubernetes", "containers"]
 category = "posts"
 date = "2020-06-01"
+hasCode = true
 summary = "A complete Kubernetes tutorial series covering all the basics."
 +++
 

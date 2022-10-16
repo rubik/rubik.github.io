@@ -4,6 +4,7 @@ title = "Why you should use scikit-learn's Pipeline object"
 tags = ["python", "sklearn", "machine-learning"]
 category = "posts"
 date = "2016-11-01"
+hasCode = true
 summary = "Making the case for sklearn's Pipeline object"
 +++
 
