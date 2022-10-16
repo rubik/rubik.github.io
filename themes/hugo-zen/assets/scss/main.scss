@@ -366,7 +366,19 @@ figure {
   }
 }
 
+.non-mobile {
+  display: block;
+}
+
+.mobile {
+  display: none;
+}
+
 @media screen and (max-width: 768px) {
+  header {
+    margin: 1rem 0;
+  }
+
   .main-content {
     display: grid;
     grid-template-columns: 10px 1fr 10px;
@@ -377,7 +389,11 @@ figure {
     }
   }
 
-  .xl {
-    overflow-x: scroll;
+  .non-mobile {
+    display: none;
+  }
+
+  .mobile {
+    display: block;
   }
 }

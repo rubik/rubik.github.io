@@ -2,7 +2,7 @@
 author: "Michele Lacchia"
 title: "A/B testing foundations - part II: binary and continous responses"
 date: "2022-10-08"
-tags: ["math", "ab-tests"]
+tags: ["math", "statistics", "ab-tests"]
 hasmath: true
 summary: "Statistical framework underlying online A/B testing: formulas for binary and continous responses."
 ---
@@ -33,8 +33,8 @@ probability $1 - p$:
 
 $$
 \begin{align\*}
-X_i &\sim \operatorname{Bernoulli}(p_0)\\\\
-Y_i &\sim \operatorname{Bernoulli}(p_1)
+X_i &\sim \operatorname{Bernoulli}(p_1)\\\\
+Y_i &\sim \operatorname{Bernoulli}(p_2)
 \end{align\*}
 $$
 
@@ -46,21 +46,25 @@ Furthermore, if observations are paired, [McNemar's
 test](https://en.wikipedia.org/wiki/McNemar%27s_test) might be more
 appropriate.
 
-The goal of our A/B experiment is to evaluate the two-tailed hypothesis test
+The goal of our A/B experiment is to evaluate the one-tailed hypothesis test
 
 $$
 \begin{align\*}
-H_0&: \theta = 0\\\\
-H_a&: \theta \neq 0
-\end{align\*}\quad\quad\theta = p_1 - p_0
+H_0&: \theta \leq 0\\\\
+H_a&: \theta > 0
+\end{align\*}\quad\quad\theta = p_2 - p_1
 $$
 
 where the null hypothesis $H_0$ is that there's no difference in the
-data-generation processes of $X_i$ and $Y_i$ ($p_0 = p_1$). We seek to reject the
-null hypothesis with Type I error $\alpha \in (0, 1)$. We chose a two-tailed
-test for simplicity. In section [Other hypothesis
-tests](#other-hypothesis-tests) below, we discuss different hypothesis tests
-that might be better suited to online A/B tests.
+data-generation processes of $X_i$ and $Y_i$ ($p_1 = p_2$). We seek to reject
+the null hypothesis with Type I error $\alpha \in (0, 1)$. We'll furthermore
+require power $1 - \beta \in (0, 1)$ at $\theta = \delta > 0$.
+
+We chose a one-tailed test as opposed to the more common two-tailed tests
+because they make much more sense in the context of online A/B testing, where
+we are interested in determining whether the new variant is sufficiently better
+than control. This was also discussed in [part
+I](/post/ab-testing-inference/#types-of-hypotheses).
 
 Let's define the sample mean to be
 
@@ -76,16 +80,16 @@ Since the conversion variables are independent and have finite mean and
 variance, we can apply the [Central Limit
 Theorem](https://en.wikipedia.org/wiki/Central_limit_theorem#Classical_CLT)
 which states that, as $n$ approaches infinity, the distribution of $\sqrt n
-(\bar X_n - p_0)$ approaches that of a normal variable with mean $0$ and
-standard deviation $\operatorname{Var}(X_i) = p_0(1 - p_0)$. The same holds for $\bar
-Y_n$ and $\sqrt n (\bar Y_n - p_1)$. Hence in practice, for a sufficiently
+(\bar X_n - p_1)$ approaches that of a normal variable with mean $0$ and
+standard deviation $\operatorname{Var}(X_i) = p_1(1 - p_1)$. The same holds for $\bar
+Y_n$ and $\sqrt n (\bar Y_n - p_2)$. Hence in practice, for a sufficiently
 large $n$,
 
 $$
 \begin{align}
 \begin{split}
-\bar X_n &\sim \mathcal N(p_0, p_0(1 - p_0) / n)\\\\
-\bar Y_n &\sim \mathcal N(p_1, p_1(1 - p_1) / n)
+\bar X_n &\sim \mathcal N(p_1, p_1(1 - p_1) / n)\\\\
+\bar Y_n &\sim \mathcal N(p_2, p_2(1 - p_2) / n)
 \end{split}
 \end{align}
 $$
@@ -94,10 +98,21 @@ We are interested in the difference of sample means, $\Delta_n = \bar Y_n -
 \bar X_n$. As $\Delta_n$ is a linear combination of normal variables, it's also
 normally distributed:
 
+<p class="non-mobile">
 $$
 \Delta_n \sim \mathcal N(\theta, \sigma_{\Delta n}^2 n^{-1}),
-\quad\quad \sigma_{\Delta n}^2 = p_0(1 - p_0) + p_1(1 - p_1)
+\quad\quad \sigma_{\Delta n}^2 = p_1(1 - p_1) + p_2(1 - p_2)
 $$
+</p>
+
+<p class="mobile">
+$$
+\Delta_n \sim \mathcal N(\theta, \sigma_{\Delta n}^2 n^{-1}),\ \text{with}
+$$
+$$
+\quad\quad \sigma_{\Delta n}^2 = p_1(1 - p_1) + p_2(1 - p_2)
+$$
+</p>
 
 We can then define our test statistic:
 
@@ -107,10 +122,10 @@ $$
 
 and it's easy to verify that $Z_n \sim \mathcal N(\theta \sigma_{\Delta n}^{-1}
 \sqrt{n}, 1)$, a standard normal distribution under $H_0$. However, since the
-standard deviation $\sigma_{\Delta n}$ depends on $p_0$ and $p_1$, which are
+standard deviation $\sigma_{\Delta n}$ depends on $p_1$ and $p_2$, which are
 unknown, we'll need to replace it with a suitable estimator. From $(1)$, we
 know that the sample means $\bar X_n$ and $\bar Y_n$ are unbiased estimators of
-the proportions $p_0$ and $p_1$. Thus we can define
+the proportions $p_1$ and $p_2$. Thus we can define
 
 $$
 \begin{align\*}
@@ -137,9 +152,19 @@ N(\theta \hat \sigma_{\Delta n}^{-1} \sqrt{n}, 1)$.
 \text{pooled}}^\prime$ is defined just like $Z_n^\prime$, except for the
 variance estimate:
 
+<p class="non-mobile">
 $$
 Z_{n,\ \text{pooled}}^\prime = \frac{\Delta_n \sqrt n}{\hat \sigma_{\Delta n,\ \text{pooled}}},\quad\quad\hat \sigma_{\Delta n,\ \text{pooled}}^2 = 2\bar p_n(1 - \bar p_n)
 $$
+</p>
+<p class="mobile">
+$$
+Z_{n,\ \text{pooled}}^\prime = \frac{\Delta_n \sqrt n}{\hat \sigma_{\Delta n,\ \text{pooled}}},\ \text{with}
+$$
+$$
+\hat \sigma_{\Delta n,\ \text{pooled}}^2 = 2\bar p_n(1 - \bar p_n)
+$$
+</p>
 
 where $\bar p_n = (\bar X_n + \bar Y_n) / 2$. The pooled statistic is also
 normally distributed for large values of $n$. The unpooled version has worse
@@ -160,25 +185,23 @@ true, is
 $$
 \begin{aligned}
 \alpha &= \operatorname{Pr}(\text{Reject } H_0 \mid H_0 \text{ is true}) =\\\\
-&= \operatorname{Pr}(|Z_n^\prime| > c \mid \theta = 0) =\\\\
-&= \Phi(-c) + (1 - \Phi(c)) =\\\\
-&= 1 - \Phi(c) + 1 - \Phi(c) =\\\\
-&= 2 - 2\Phi(c)
+&= \operatorname{Pr}(Z_n^\prime > c \mid \theta = 0) =\\\\
+&= 1 - \Phi(c)
 \end{aligned}
 $$
 
-where $\Phi$ is the cumulative density function of the standard normal, and we
-used the symmetry of the standard normal density around $0$. Thus, the critical
-value that we should use to decide whether to reject the null hypothesis $H_0$
-is
+where $\Phi$ is the cumulative density function of the standard normal. Thus,
+the critical value that we should use to decide whether to reject the null
+hypothesis $H_0$ is
 
 $$
 \begin{align}
-c = \Phi^{-1}(1 - \alpha/2),
+c = \Phi^{-1}(1 - \alpha),
 \end{align}
 $$
 
-which is sometimes written as $z_{1 - \alpha/2}$.
+which is sometimes written as $z_{1 - \alpha}$. If this were a two-tailed test,
+we would have found that $c = \Phi^{-1}(1 - \alpha / 2)$.
 
 So far we ignored the sample size $n$: how many observations are enough? To
 find a suitable sample size we turn to the Type II error $\beta$, and we seek
@@ -224,13 +247,13 @@ n}$ depends on $\bar X_n$ and $\bar Y_n$, which are observable only after the
 experiment is completed. Thus we can define
 
 $$
-s^2 = P_0 (1 - P_0) + P_1 (1 - P_1)
+s^2 = P_1 (1 - P_1) + P_2 (1 - P_2)
 $$
 
-as an estimate of $\hat \sigma_{\Delta n}^2$, where $P_0$ and $P_1$ are
-hypothesized by the designer of the experiment and are such that $P_1 - P_0 =
-\delta$. In practice, $P_0$ is derived from existing available data (such as
-conversion data from Google Analytics or a similar tracking tool), and $P_1$ is
+as an estimate of $\hat \sigma_{\Delta n}^2$, where $P_1$ and $P_2$ are
+hypothesized by the designer of the experiment and are such that $P_2 - P_1 =
+\delta$. In practice, $P_1$ is derived from existing available data (such as
+conversion data from Google Analytics or a similar tracking tool), and $P_2$ is
 calculated after defining the minimum effect of interest $\delta$. Ideally,
 historical data should be:
 

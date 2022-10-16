@@ -227,6 +227,9 @@ The following table lists some common test statistics. In the formulas:
 * $\sigma_1$ and $\sigma_2$ are the population standard deviations
 * $\mu_0$ is the hypothesized population mean
 * $d_0 = \mu_2 - \mu_1$ is the hypothesized difference in population means
+* the pooled sample standard deviation $s_{\text{pooled}}$ is defined as
+  $$s_{\text{pooled}} = \frac{(n_1 - 1)s_1^2 + (n_2 - 1)s_2^2}{n_1 + n_2 - 2}$$
+* $\nu$ is calculated according to [Welch's t-test formula](https://en.wikipedia.org/wiki/Welch%27s_t-test)
 
 <table class="xl">
     <thead>
@@ -277,18 +280,14 @@ The following table lists some common test statistics. In the formulas:
     </tbody>
 </table>
 
-The pooled sample standard deviation is defined as
-
-$$s_{\text{pooled}} = \frac{(n_1 - 1)s_1^2 + (n_2 - 1)s_2^2}{n_1 + n_2 - 2}$$
-
-and $\nu$ is calculated according to [Welch's t-test
-formula](https://en.wikipedia.org/wiki/Welch%27s_t-test). The z-tests are used
+The z-tests are used
 when the populations variances are known; t-tests are used otherwise.
 One-sample tests are used to determine whether a population has a certain mean;
 two-sample tests are used to compare samples and determine if they are from
 populations with the same mean or in general a specific difference in means
 $d_0$. In the table the null hypothesis is expressed as a point hypothesis, but
 all these tests can be trivially adapted to the case of a composite hypothesis.
+
 If the samples are realizations of Bernoulli-distributed random variables, then
 the z-test statistics above have alternative formulations in terms of
 proportions (the number of successes over the total sample size). In the
@@ -324,14 +323,14 @@ following table:
             <td>Two-proportion z-test (pooled)</td>
             <td>$$\frac{\bar p_2 - \bar p_1}{\sqrt{\bar p_{1, 2} (1 - \bar p_{1, 2}) (n_1^{-1} + n_2^{-1})}}$$</td>
             <td>$$\mathcal N(0, 1)$$</td>
-            <td>$n_1 p_1 > 5$,<br> $n_1 (1 - p_1) > 5$,<br> $n_2 p_2 > 5$,<br> $n_2 (1 - p_2) > 5$,<br> and independent observations (<a href="https://en.wikipedia.org/wiki/Binomial_distribution#Normal_approximation" rel="noopener noreferrer" target="_blank">source</a>)</td>
+            <td>$n_1 p_1 > 5$, $n_1 (1 - p_1) > 5$,<br> $n_2 p_2 > 5$, $n_2 (1 - p_2) > 5$,<br> and independent observations (<a href="https://en.wikipedia.org/wiki/Binomial_distribution#Normal_approximation" rel="noopener noreferrer" target="_blank">source</a>)</td>
             <td>$$p_1 = p_2$$</td>
         </tr>
         <tr>
             <td>Two-proportion z-test (unpooled)</td>
             <td>$$\frac{\bar p_2 - \bar p_1 - d_p}{\sqrt{\bar p_1 (1 - \bar p_1) n_1^{-1} + \bar p_2 (1 - \bar p_2) n_2^{-1}}}$$</td>
             <td>$$\mathcal N(0, 1)$$</td>
-            <td>$n_1 p_1 > 5$,<br> $n_1 (1 - p_1) > 5$,<br> $n_2 p_2 > 5$,<br> $n_2 (1 - p_2) > 5$,<br> and independent observations (<a href="https://en.wikipedia.org/wiki/Binomial_distribution#Normal_approximation" rel="noopener noreferrer" target="_blank">source</a>)</td>
+            <td>$n_1 p_1 > 5$, $n_1 (1 - p_1) > 5$,<br> $n_2 p_2 > 5$, $n_2 (1 - p_2) > 5$,<br> and independent observations (<a href="https://en.wikipedia.org/wiki/Binomial_distribution#Normal_approximation" rel="noopener noreferrer" target="_blank">source</a>)</td>
             <td>$$p_2 - p_1 = d_p$$</td>
         </tr>
     </tbody>
@@ -388,5 +387,5 @@ to estimate risk and control it as we deem appropriate.
 ## Summary
 TODO
 
-The [next post](/post/ab-testing-formulas/) describes in detail how the
+The [next post](/post/ab-testing-formulas/) will describe in detail how the
 formulas for the target sample size is derived in some common scenarios.
