@@ -11,7 +11,7 @@ summary = "Mathematical explanation and Python implementation of the LLoyd's alg
 
 In this notebook, we will implement an algorithm for the K-Means problem and visualize it with a Matplotlib animation.
 
-# A mathematical introduction
+## A mathematical introduction
 In the K-Means problem, a set of $n$ observations $X = \{x_1, \ldots,
 x_n\}$, with $x_i \in \mathbb R^d$, is given. The goal is to partition the
 set $X$ into $k$ sets $S = \{S_1, \ldots, S_k\}$, such that the total
@@ -25,7 +25,7 @@ $$\mathop{\mathrm{arg\,min}}\limits_{S} \sum_{i = 1}^k E(i).$$
 
 This problem is computationally difficult ([NP-hard](https://en.wikipedia.org/wiki/NP-hardness)): even though most algorithms do reasonably well, they usually converge to a local minimum. For such a solution, every minor rearrangement of the clusters makes the energy grow. However, there could be a completely different clustering where the total energy would be even lower. For this reason, those algorithms are called 'heuristic'.
 
-## Lloyd's algorithm
+### Lloyd's algorithm
 We will implement one of the simplest algorithms for the K-Means problem, known as the Lloyd's algorithm. It is an iterative algorithm that, given an initial estimate of the centroids $\mu_i$, progresses by repeating two steps:
 
 1. **Assignment**: each point is assigned to the cluster whose centroid gives the smallest energy. Since we are working in $\mathbb R^d$, it's worth noting that if we assume the norm $\|\cdot\|$ to be the standard [Euclidean norm][1], then the energy of a cluster is nothing else but the sum of the distances between each point in the cluster and the centroid. In this case it's possible to think of this step as the assignment of each point to the nearest centroid.
@@ -45,7 +45,7 @@ Finally, it's interesting to observe that the above algorithm does indeed conver
 
 [1]: https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm
 
-# Algorithm implementation
+## Algorithm implementation
 The Lloyd's algorithm requires initial estimates for the centroids. There are several ways to provide such values. We will simply take $k$ samples from the data. Let's define a function for that:
 
 
@@ -4159,7 +4159,7 @@ dAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1Ny41Ni4xMDA=
 
 As we can see, Lloyd's algorithm tends to partition the space into clusters of uniform area. After running the algorithm on a dense space, it should be clear that Lloyd's algorithm is closely related to [Voronoi diagrams](https://en.wikipedia.org/wiki/Voronoi_diagram). In fact, at each iteration we are effectively computing the Voronoi tessellation with respect to the centroids.
 
-# Bonus: how to choose $k$?
+## Bonus: how to choose $k$?
 We never mentioned how one should choose the parameter $k$. After all, this algorithm is used for unsupervised learning, and the number of cluster is not necessarily known *a priori*. This is actually a non-trivial problem and there are a number of ways to approach it. A relatively recent result is represented by the [Gap statistics](https://web.stanford.edu/~hastie/Papers/gap.pdf) (PDF), a method developed by  Tibshirani, Walther and Hastie in 2001.
 
 Let $W_k$ be the total energy of the clusters, when $X$ is partitioned into $k$ clusters:
@@ -4354,5 +4354,5 @@ gaps_info(X, ks, Wks, sample_Wks, gaps, sk)
 
 This confirms what we anticipated in the last example: now the energy decay is almost identical. That's because the distribution of the observed data and the samples is exactly the same.
 
-# Conclusion
+## Conclusion
 In this notebook we introduced the K-Means problem and implemented Lloyd's algorithm, one out of the several that exist to solve it. We then animated the steps of Lloyd's algorithm with Matplotlib. Finally, we tackled the problem of determining the optimal number of clusters, and implemented the 'gap statistics' from the Tibshirani, Walther and Hastie paper. This algorithm proved to be quite reliable, having successfully determined the optimal number of clusters in all of the different cases we tested it on.

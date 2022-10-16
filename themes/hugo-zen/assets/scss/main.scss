@@ -305,6 +305,11 @@ table {
   overflow-x: auto;
   text-align: left;
 
+  &.xl {
+    grid-column: 2 / -2;
+    overflow-x: scroll;
+  }
+
   thead {
     border-bottom: 2px solid black;
     border-top: 0;
@@ -358,5 +363,21 @@ figure {
     justify-content: end;
     margin-bottom: 1.25rem;
     margin-top: .3125rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .main-content {
+    display: grid;
+    grid-template-columns: 10px 1fr 10px;
+
+    > * {
+      grid-column: 2;
+      overflow-x: scroll;
+    }
+  }
+
+  .xl {
+    overflow-x: scroll;
   }
 }

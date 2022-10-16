@@ -228,7 +228,7 @@ The following table lists some common test statistics. In the formulas:
 * $\mu_0$ is the hypothesized population mean
 * $d_0 = \mu_2 - \mu_1$ is the hypothesized difference in population means
 
-<table class="align-middle">
+<table class="xl">
     <thead>
         <tr>
             <td>Name</td>
@@ -302,7 +302,7 @@ following table:
 * $p_0$ is the hypothesized population proportion
 * $d_p$ is the hypothesized difference in proportions
 
-<table class="align-middle">
+<table class="xl">
     <thead>
         <tr>
             <td>Name</td>
