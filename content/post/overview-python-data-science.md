@@ -7,10 +7,12 @@ date = "2016-11-06"
 summary = "Overview of the most useful tools for data science: mainly Python and Javscript"
 +++
 
-<div class="img-with-copyright">
-<img itemprop="image" title="A graph" src="/static/images/world-graph.jpg" />
-<div class="copyright"><span>Travel vector designed by <a href="http://www.freepik.com/free-photos-vectors/travel">Freepik</a><span style="clear:both"></span></span></div>
-</div>
+<figure>
+    <img itemprop="image" title="A graph" src="/static/images/world-graph.jpg" />
+    <div class="copyright">
+        Travel vector designed by&nbsp;<a href="http://www.freepik.com/free-photos-vectors/travel">Freepik</a>
+    </div>
+</figure>
 
 This post presents an overview of the most useful tools for data
 science-related tasks. It is not meant to be a complete list, but rather a

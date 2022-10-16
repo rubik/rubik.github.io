@@ -1,6 +1,6 @@
 	<footer role="contentinfo">
 		<div class="hr"></div>
-		<div class="footer-link">
+		<div class="footer-links">
             <ul>
                 {{ with .Site.Params.obfuscated_email }}<li><script>{{ . | safeJS }}</script>{{ end }}</li>
                 {{ with .Site.Params.github }}<li><a href="{{ . }}" target="_blank" rel="noopener">GitHub</a>{{ end }}</li>

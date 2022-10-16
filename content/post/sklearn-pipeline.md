@@ -8,10 +8,12 @@ hasCode = true
 summary = "Making the case for sklearn's Pipeline object"
 +++
 
-<div class="img-with-copyright">
-<img itemprop="image" title="A pipeline" src="/static/images/pipes.jpg" />
-<div class="copyright"><span>Copyright: <a href="http://www.istockphoto.com/portfolio/visualgo">visualgo</a><span style="clear:both"></span></span></div>
-</div>
+<figure>
+    <img itemprop="image" title="A pipeline" src="/static/images/pipes.jpg" />
+    <div class="copyright">
+        Copyright:&nbsp;<a href="http://www.istockphoto.com/portfolio/visualgo">visualgo</a>.
+    </div>
+</figure>
 
 Machine learning models learn from data. It is crucial, however, that the data
 you feed them is specifically preprocessed and refined for the problem you want

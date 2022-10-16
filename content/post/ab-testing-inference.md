@@ -20,7 +20,7 @@ about calculus, random variables, and statistics. In this first post we'll
 describe the foundation to A/B testing: statistical inference through
 hypothesis testing.
 
-#### A/B testing foundations series
+### A/B testing foundations series
 * Part I: Statistical inference and hypothsis testing (this post)
 * [Part II: Formulas for binary and continous responses](/post/ab-testing-formulas/)
 * Part III: Streaming algorithms and segment analysis
@@ -143,15 +143,17 @@ difference to be statistically significant.
 
 <figure>
     <table>
-        <tbody>
+        <thead>
             <tr>
                 <th rowspan="2" colspan="2"></th>
-                <th colspan="2">Null hypothesis $H_0$ is</th>
+                <th colspan="2" class="text-center">Null hypothesis $H_0$ is</th>
             </tr>
             <tr style="border-bottom:solid 2px black">
-                <th>True</th>
-                <th>False</th>
+                <th class="text-center">True</th>
+                <th class="text-center">False</th>
             </tr>
+        </thead>
+        <tbody>
             <tr>
                 <th rowspan="2" style="padding-right:10px;border-bottom:none">Decision about<br> null hypothesis $H_0$</th>
                 <th style="border-bottom:none">Don't reject</th>

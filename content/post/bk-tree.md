@@ -47,7 +47,7 @@ add the other words by calculating their distance from the root. In our case,
 we can choose "some" to be the root element. Then, after adding the two
 subsequent words the tree would look like this:
 
-<p class="centered">
+<p class="text-center">
 <img src="/static/images/bk-tree-1.png" width="200" />
 </p>
 
@@ -57,7 +57,7 @@ Observe that the distance between "mole" and "some" is again $2$, so we add
 it to the tree as a child of "soft", with an edge corresponding to their
 distance. After adding all the words we obtain the following tree:
 
-<p class="centered">
+<p class="text-center">
 <img src="/static/images/bk-tree-2.png" width="320" />
 </p>
 
@@ -123,7 +123,7 @@ of an arbitrary node $A$ inside the tree, which we calculated to be at a distanc
 x, A)$ from the query key. This situation is summarized in the following
 figure:
 
-<p class="centered">
+<p class="text-center">
 <img src="/static/images/bk-tree-3.png" width="350" />
 </p>
 
