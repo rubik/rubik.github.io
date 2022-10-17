@@ -9,7 +9,7 @@ hasCode = true
 summary = "Exploration of Texas death row data"
 +++
 
-On the site [Texas Department of Criminal Justice]([http://www.tdcj.state.tx.us](www.tdcj.state.tx.us)) there's a page which lists all the people that have been executed since 1982, when the death penalty was reinstated, along with their last statement. The data is [here](http://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html). In this project we are going to explore the data and see if we can apply topic modeling to the statements.
+On the site of the [Texas Department of Criminal Justice](http://www.tdcj.state.tx.us) there's a page which lists all the people that have been executed since 1982, when the death penalty was reinstated, along with their last statement. The data is [here](http://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html). In this project we are going to explore the data and see if we can apply topic modeling to the statements.
 
 # Setup
 We are going to use the following packages:
@@ -165,7 +165,7 @@ people.head()
 
 
 <div>
-<table border="1" class="dataframe">
+<table>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -297,7 +297,7 @@ def _read_date(date):
 people.date_execution = people.date_execution.map(_read_date)
 ```
 
-The gender column is a bit more complicated to fill, since in theory there are a few names that are considered 'unisex' ([this site](http://www.babynameguide.com/categoryunisex.asp?strCat=Unisex) has a comprehensive list). Let's check the names of the people for which we are missing the gender.
+The gender column is a bit more complicated to fill, since in theory there are a few names that are considered 'unisex' (<s>babynameguide.com has a comprehensive list</s> 2022 update: the site is no longer operational). Let's check the names of the people for which we are missing the gender.
 
 
 ```python
@@ -694,7 +694,7 @@ counties.head()
 
 
 <div>
-<table border="1" class="dataframe">
+<table>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -752,7 +752,7 @@ county_count.head()
 
 
 <div>
-<table border="1" class="dataframe">
+<table>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -804,7 +804,7 @@ county_data.head()
 
 
 <div>
-<table border="1" class="dataframe">
+<table>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -888,7 +888,7 @@ county_count.sort_values(by='count', ascending=False).head(10)
 
 
 <div>
-<table border="1" class="dataframe">
+<table>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -1126,7 +1126,7 @@ people_with_stmt[['race', 'sentiment_polarity']].groupby(people_with_stmt['race'
 
 
 <div>
-<table border="1" class="dataframe">
+<table>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -1171,7 +1171,7 @@ people_with_stmt[['race', 'sentiment_subjectivity']].groupby(people_with_stmt['r
 
 
 <div>
-<table border="1" class="dataframe">
+<table>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -1232,7 +1232,7 @@ pipe = make_pipeline(
 X_s = pipe.fit_transform(people_with_stmt.last_statement)
 ```
 
-As expected, the shape of the resulting matrix is $(\text{n\_statements}, \text{n\_components})$:
+As expected, the shape of the resulting matrix is $(n_{\text{statements}},\\;n_{\text{components}})$:
 
 
 ```python
@@ -1417,4 +1417,4 @@ lsi_model = LsiModel(tfidf_model[corpus], id2word=dictionary, num_topics=3)
 The result is quite different from what we got from `KMeans`. Here, the clusters are slightly better defined: one for shorter statements directed to the Warden, one for the family and lastly one with mixed words (even from a religious lexicon).
 
 # Wrapping up
-We analyzed a very interesting dataset, and even though it was fairly small in size, it provided us with quite a number of thought-provoking insights, that could be the starting point for further analysis. The goal of this exploration wasn't to reach a definitive conclusion about the dataset, but rather to put together different aspects of data analysis and visualization. This was also an opportunity to acquaint myself with various Python libraries.
+We analyzed a very interesting dataset, and even though it was fairly small in size, it provided us with quite a number of thought-provoking insights that could be the starting point for further analysis. The goal of this exploration wasn't to reach a definitive conclusion about the dataset, but rather to put together different aspects of data analysis and visualization. This was also an opportunity to acquaint myself with various Python libraries.
