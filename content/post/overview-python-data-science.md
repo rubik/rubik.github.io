@@ -10,7 +10,7 @@ summary = "Overview of the most useful tools for data science: mainly Python and
 <figure>
     <img itemprop="image" title="A graph" src="/static/images/world-graph.jpg" />
     <div class="copyright">
-        Travel vector designed by&nbsp;<a href="http://www.freepik.com/free-photos-vectors/travel">Freepik</a>
+        Travel vector designed by&nbsp;<a href="https://www.freepik.com/free-photos-vectors/travel">Freepik</a>
     </div>
 </figure>
 
@@ -18,7 +18,7 @@ This post presents an overview of the most useful tools for data
 science-related tasks. It is not meant to be a complete list, but rather a
 brief summary of the tools I've found repeatedly useful, with a couple new ones
 that show great promise. The idea came from my last project ([Exploration of
-Texas Death row data](/texas-death-row.html)), where I ended up using quite a
+Texas Death row data](/post/texasdeathrow/)), where I ended up using quite a
 lot of Python packages, without having planned it from the start. This post is
 meant to be a very syntetic reference, so that it can be useful to someone
 comparing different solutions for a certain problem.
@@ -29,11 +29,11 @@ working with. I also intend to start learning R in the near future, so maybe
 there will be a follow-up with R libraries as well. Without further ado, let's
 get started. This is what will be covered:
 
-- [foundations (the SciPy stack)](#foundations)
-- [scraping, data mining and NLP](#scr-nlp)
-- [data visualization](#data-viz)
-- [statistical modeling](#stat)
-- [machine-learning](#ml)
+- [Foundations (the SciPy stack)](#foundations)
+- [Scraping, data mining and NLP](#scr-nlp)
+- [Data visualization](#data-viz)
+- [Statistical modeling](#stat)
+- [Machine-learning](#ml)
 
 ---
 
@@ -41,21 +41,21 @@ get started. This is what will be covered:
 ## Foundations (the SciPy stack)
 
 #### NumPy
-Without doubt, [NumPy](http://www.numpy.org/) is the most foundamental package
+Without doubt, [NumPy](https://www.numpy.org/) is the most foundamental package
 for efficient scientific computing in Python. NumPy provides multi-dimensional
 array objects and sophisticated broadcasting functions. Its core is written in
 C, C++ and Fortran code for efficiency. Many packages in this list are built
 upon NumPy, which is a must-know in the Python scientific computing landscape.
 
 #### SciPy library
-The [SciPy library](http://scipy.org/scipylib/index.html) is an extension to
+The [SciPy library](https://scipy.org/) is an extension to
 NumPy that adds numerous algorithms for integration and optimization problems,
 signal processing, statistics, linear algebra, as well as routines and objects
 to work with sparse data. This library is huge, but it's well documented, with
 explanations and examples.
 
 #### Matplotlib
-[Matplotlib](http://matplotlib.org/) is the standard Python plotting library
+[Matplotlib](https://matplotlib.org/) is the standard Python plotting library
 that produces publication-quality plots out of the box. It focuses on 2D
 graphs, but it can produce 3D visualizations as well. It's pretty low-level,
 meaning that plotting is not really straightforward. However, the library is
@@ -63,13 +63,13 @@ completely flexible, and you can customize it to make any kind of plot you
 want.
 
 #### Pandas
-[Pandas](http://pandas.pydata.org/) is a library for operating with table-like
+[Pandas](https://pandas.pydata.org/) is a library for operating with table-like
 structures. Its powerful `DataFrame` object makes it easy to reshape, merge,
 slice and perform computations on datasets. It can also read and write data to
 a wealth of formats, including JSON, CSV and Excel.
 
 #### Jupyter
-[Project Jupyter](http://jupyter.org/) was born out of the IPython Project in
+[Project Jupyter](https://jupyter.org/) was born out of the IPython Project in
 2014 as it evolved to support interactive data science and scientific computing
 across all programming languages. Its notebook is a web application that allows
 to create documents containing live code, equations, interactive visualizations
@@ -84,7 +84,7 @@ always fire up a notebook and delve into it.
 ## Scraping, data mining and natural language processing (NLP)
 #### Scrapy
 [Scrapy](https://scrapy.org/) is a Python library to extract data from
-websites. It builds on [Twisted](https://twistedmatrix.com/trac/) to schedule
+websites. It builds on [Twisted](https://twisted.org/) to schedule
 asynchronous requests, resulting in extremely fast crawlers. It's also very
 easy to extend. Scrapy requires a whole project to run, but it provides command
 to build them from base templates (`scrapy startproject`, `scrapy genspider`),
@@ -92,9 +92,10 @@ so it's both easy and quick to get up and running.
 
 Scrapy is my tool of choice when I have to scrape data and I have yet to
 encounter something that it cannot do. For example, you can plug
-[Splash](http://splash.readthedocs.io/en/stable/) to render Javascript, or
-[Crawlera](https://crawlera.com/) (paid service) to route requests through a
-pool of proxies, which are managed automatically.
+[Splash](https://splash.readthedocs.io/en/stable/) to render Javascript, or
+[Smart Proxy Manager (formerly
+Crawlera)](https://www.zyte.com/smart-proxy-manager/) (paid service) to route
+requests through a pool of proxies, which are managed automatically.
 
 #### Stocktalk
 [Stocktalk](https://github.com/anfederico/Stocktalk) is a data collection
@@ -102,11 +103,11 @@ toolkit to scrape stock data from social media and explore it. The library can
 also perform sentiment analysis over the collected data.
 
 #### NLTK
-[NLTK](http://www.nltk.org/), or Natural Language Toolkit, is a set of
+[NLTK](https://www.nltk.org/), or Natural Language Toolkit, is a set of
 libraries to work with human language data: it supports tokenization, stemming,
 tagging, parsing and classification. It also includes over 50 corpora and
 lexical resources. I found its documentation to be lacking in certain areas,
-but there is also a [book](http://www.nltk.org/book/), written by the creators
+but there is also a [book](https://www.nltk.org/book/), written by the creators
 of NLTK, which provides an introduction to NLP with Python.
 
 #### Textblob
@@ -143,7 +144,7 @@ NLP space. I have yet to try it, but it looks really promising.
 <a name="data-viz"></a>
 ## Data visualization
 #### seaborn
-[Seaborn](http://seaborn.pydata.org/index.html) is based on Matplotlib's core
+[Seaborn](https://seaborn.pydata.org/index.html) is based on Matplotlib's core
 and adds several features (heat maps, violin plots, scatter plots with
 marginals, etc.). Seaborn focuses on statistical visualization. Its default
 styles are also much more sophisticated than Matplotlib's default ones, and
@@ -158,13 +159,13 @@ to the Javascript library Vega-Lite. It's very easy to display Altair plots in
 Jupyter notebooks.
 
 #### Bokeh
-[Bokeh](http://bokeh.pydata.org/en/latest/) is a Python visualization library
+[Bokeh](https://bokeh.pydata.org/en/latest/) is a Python visualization library
 that targets the browser and focuses on interactivity. Its goal is to provide
 elegant and concise construction of graphics in the style of D3.js (see below).
 It's very easy to embed Bokeh graphics in Jupyter notebooks.
 
 #### Folium
-[Folium](https://folium.readthedocs.io/en/latest/) is a library that brings the
+[Folium](https://python-visualization.github.io/folium/) is a library that brings the
 mapping strengths of the Leaflet library to Python. It is capable of
 producing interactive maps of different kinds, with different tiles. It's very
 easy to embed Folium maps in Jupyter notebooks.
@@ -174,7 +175,7 @@ maps. It is designed with simplicity and performance in mind, and its code is
 exceptionally small, but extensible.
 
 #### gmaps
-[gmaps](http://jupyter-gmaps.readthedocs.io/en/latest/) is a Jupyter extension
+[gmaps](https://jupyter-gmaps.readthedocs.io/en/latest/) is a Jupyter extension
 for embedding interactive Google Maps in Jupyter notebooks. It supports various
 layer types: markers and symbols, heatmaps and weighted heatmaps. It's very
 easy to use, but it requires an API key from Google.
@@ -194,16 +195,16 @@ transformations.
 <a name="stat"></a>
 ## Statistical modeling
 #### statsmodels
-[Statsmodels](http://statsmodels.sourceforge.net/) is the standard library for
-estimating statistical models and performing statistical tests in Python. It is
-fully-featured and among other things, it includes: linear regression models,
-generalized linear models, discrete choice models and models for time series
-analysis. The library also exposes plotting functions that work on top of
-Matplotlib. The development appears to have been slowed down, but it's still
-ongoing.
+[Statsmodels](https://www.statsmodels.org/stable/index.html) is the standard
+library for estimating statistical models and performing statistical tests in
+Python. It is fully-featured and among other things, it includes: linear
+regression models, generalized linear models, discrete choice models and models
+for time series analysis. The library also exposes plotting functions that work
+on top of Matplotlib. The development appears to have been slowed down, but
+it's still ongoing.
 
 #### tsfresh
-[tsfresh](http://tsfresh.readthedocs.io/en/latest/) is a new Python library
+[tsfresh](https://tsfresh.readthedocs.io/en/latest/) is a new Python library
 that allows automatic extraction of hundreds of features from time series. At
 the time of writing, tsfresh is very young, being only 12 days old.  However,
 it's extremely useful and quickly gained a lot of traction.
@@ -211,7 +212,7 @@ it's extremely useful and quickly gained a lot of traction.
 <a name="ml"></a>
 ## Machine learning
 #### scikit-learn
-[scikit-learn](http://scikit-learn.org/stable/) is the most popular machine
+[scikit-learn](https://scikit-learn.org/stable/) is the most popular machine
 learning library for Python. It is built on NumPy and SciPy, and it's
 fully-featured, including a broad range of models for classification,
 regression, clustering, dimensionality reduction, and lots of utility classes
@@ -230,19 +231,19 @@ code. With Tensorflow, one defines the neural network in a symbolic way, or how
 the data flows.
 
 #### Theano
-[Theano](http://www.deeplearning.net/software/theano/) uses NumPy-like syntax
-to optimize and evaluate mathematical expressions. It also supports automatic
+[Theano](https://pypi.org/project/Theano/) uses NumPy-like syntax to optimize
+and evaluate mathematical expressions. It also supports automatic
 differentiation. What sets Theano apart is that it takes advantage of the
 computer's GPU. Theano's speed makes it especially valuable for deep learning
 and other computationally complex tasks.
 
 #### Lasagne
-[Lasagne](http://lasagne.readthedocs.io/en/latest/) is a lightweight library
+[Lasagne](https://lasagne.readthedocs.io/en/latest/) is a lightweight library
 for building and training neural networks in Python. Lasagne uses Theano for
 its computation and therefore can make use of the GPU.
 
 #### scikit-neuralnetwork
-[sknn](http://scikit-neuralnetwork.readthedocs.io/en/latest/index.html) is a
+[sknn](https://scikit-neuralnetwork.readthedocs.io/en/latest/index.html) is a
 Python library that implements multi-layer perceptrons and is compatible with
 scikit-learn's API. The library supports both regressors and classifiers and
 uses Lasagne and Theano behind the scenes.
