@@ -62,7 +62,7 @@ anova_svm.predict(X)
 ```
 
 The function
-[`make_pipeline`](http://scikit-learn.org/stable/modules/generated/sklearn.pipeline.make_pipeline.html)
+[`make_pipeline`](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.make_pipeline.html)
 is just a wrapper around the class, and it allows to compose transformers and
 estimators without specifying a name for each one. The above code is equivalent
 to the following:
@@ -188,6 +188,6 @@ of the function `_transform_one` changed once again, and the code of
 `DFFeatureUnion` was updated accordingly (thanks to Григорий Гусаров for
 pointing it out).
 
-[pipeline-doc]: http://scikit-learn.org/stable/modules/pipeline.html#pipeline
-[fu-doc]: http://scikit-learn.org/stable/modules/pipeline.html#featureunion-composite-feature-spaces
-[anova-svm]: http://scikit-learn.org/stable/auto_examples/feature_selection/feature_selection_pipeline.html#sphx-glr-auto-examples-feature-selection-feature-selection-pipeline-py
+[pipeline-doc]: https://scikit-learn.org/stable/modules/pipeline.html#pipeline
+[fu-doc]: https://scikit-learn.org/stable/modules/compose.html#featureunion-composite-feature-spaces
+[anova-svm]: https://scikit-learn.org/stable/auto_examples/feature_selection/plot_feature_selection_pipeline.html#sphx-glr-auto-examples-feature-selection-plot-feature-selection-pipeline-py

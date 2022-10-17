@@ -297,7 +297,7 @@ def _read_date(date):
 people.date_execution = people.date_execution.map(_read_date)
 ```
 
-The gender column is a bit more complicated to fill, since in theory there are a few names that are considered 'unisex' (<s>babynameguide.com has a comprehensive list</s> 2022 update: the site is no longer operational). Let's check the names of the people for which we are missing the gender.
+The gender column is a bit more complicated to fill, since in theory there are a few names that are considered 'unisex' (<s>babynameguide.com has a comprehensive list</s> UPDATE (2022): the site is no longer operational). Let's check the names of the people for which we are missing the gender.
 
 
 ```python
