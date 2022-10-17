@@ -234,7 +234,7 @@ td > code {
   }
 
   a {
-    border-bottom: 3px solid #fa5305;
+    border-bottom: 3px solid lighten($dark-gray, 20%);
     color: #505050;
     display: inline-block;
     font-size: .625rem;
@@ -247,9 +247,9 @@ td > code {
     transition: 300ms background ease;
 
     &:hover {
-      background-color: #fa5305;
-      border-bottom: 3px solid #fa5305;
-      color: #fff;
+      background-color: lighten($dark-gray, 20%);
+      border-bottom: 3px solid lighten($dark-gray, 20%);
+      color: $white;
       text-decoration: none;
     }
   }
