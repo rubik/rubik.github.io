@@ -3,13 +3,12 @@ author = "Michele Lacchia"
 title = "The KMeans problem"
 date = "2016-10-30"
 tags = ["python", "matplotlib", "machine-learning"]
-category = "notebooks"
 hasMath = true
 hasCode = true
 summary = "Mathematical explanation and Python implementation of the LLoyd's algorithm for the KMeans problem"
 +++
 
-In this notebook, we will implement an algorithm for the K-Means problem and visualize it with a Matplotlib animation.
+In this post, we will implement an algorithm for the K-Means problem and visualize it with a Matplotlib animation.
 
 ## A mathematical introduction
 In the K-Means problem, a set of $n$ observations $X = \{x_1, \ldots,

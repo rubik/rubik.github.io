@@ -2,7 +2,6 @@
 author = "Michele Lacchia"
 title = "A complete Kubernetes tutorial, part II: deploying an application"
 tags = ["kubernetes", "containers"]
-category = "posts"
 date = "2020-05-30"
 hasCode = true
 summary = "A complete Kubernetes tutorial series covering all the basics."

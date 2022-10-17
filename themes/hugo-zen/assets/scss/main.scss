@@ -148,7 +148,9 @@ pre {
   overflow: auto;
 
   code {
-    font-size: .84375;
+    display: block;
+    font-size: .875rem;
+    padding: .421875rem;
 
     span {
       font-size: .84375;

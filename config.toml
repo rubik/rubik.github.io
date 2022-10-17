@@ -12,7 +12,9 @@ noClasses = false
 
 [taxonomies]
 tag = "tags"
-category = "categories"
+
+[markup.goldmark.renderer]
+unsafe = true
 
 [params]
 author = "Michele Lacchia"

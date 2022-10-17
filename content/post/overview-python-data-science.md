@@ -2,7 +2,6 @@
 author = "Michele Lacchia"
 title = "An overview of great tools for data science"
 tags = ["python", "javascript", "big-list"]
-category = "posts"
 date = "2016-11-06"
 summary = "Overview of the most useful tools for data science: mainly Python and Javscript"
 +++

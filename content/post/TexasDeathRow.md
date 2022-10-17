@@ -3,7 +3,6 @@ author = "Michele Lacchia"
 title = "Exploration of Texas death row data"
 date = "2016-10-29"
 tags = ["python", "sklearn", "gensim", "altair"]
-category = "notebooks"
 hasMath = true
 hasCode = true
 summary = "Exploration of Texas death row data"

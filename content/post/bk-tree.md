@@ -3,7 +3,6 @@ date = "2017-04-03T20:39:53+02:00"
 title = "Interesting data structures: the BK-tree"
 author = "Michele Lacchia"
 tags = ["python","data-structures"]
-category = "post"
 hasMath = true
 hasCode = true
 +++
