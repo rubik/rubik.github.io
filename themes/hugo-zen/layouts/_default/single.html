@@ -18,10 +18,12 @@
     </article>
 </main>
 
-{{ if .Param "hasDisqus" }}
-{{ partial "disqus.html" . }}
-{{ else }}
-{{ partial "replybox.html" . }}
+{{ if not (in (string .Site.BaseURL) "localhost") }}
+  {{ if .Param "hasDisqus" }}
+  {{ partial "disqus.html" . }}
+  {{ else }}
+  {{ partial "replybox.html" . }}
+  {{ end }}
 {{ end }}
 
 {{ partial "footer.html" . }}

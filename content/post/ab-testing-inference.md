@@ -100,6 +100,14 @@ user. In fact, using a point null hypothesis would require a larger sample size
 for the same significance level, and running a test so long as to detect a
 statistically significant negative effect is overall harmful for the business.
 
+In particular, we distinguish between:
+
+* non-inferiority tests, where we test $H_0: \theta \leq 0$; and
+* superiority tests, where we test $H_0: \theta \leq \theta^\star$, with
+  $\theta^\star > 0$.
+
+TODO
+
 ## Errors
 Since hypothesis tests derive their conclusions from a sample, and therefore
 from limited information, the possibility of errors must be considered. There
@@ -353,7 +361,7 @@ An important observation about the definition of the p-value is that it
 mentions the null hypothesis as an assumption only. The p-value is a
 caracteristic of the testing procedure and is calculated from the sample data.
 It does not, directly or indirectly, define the probability of a hypothesis
-being true or false. Given the frequent misuse of this concent, it's important
+being true or false. Given the frequent misuse of this concept, it's important
 to stress that a p-value **is not**:
 
 * the probability of the outcome being "due to chance" (whatever that means);
@@ -384,6 +392,58 @@ certain, or unquestionable. Statistics is the science of estimating
 uncertainty. It cannot lead to certain conclusions, it can only suggest how
 close we are to having irrefutable evidence. Statistical methods provide means
 to estimate risk and control it as we deem appropriate.
+
+## Example
+Consider an A/B test that was designed with two variants, A and B, in which the
+primary metric is conversion rate. The null hypothesis is $H_0: \theta \leq 0$,
+where $\theta$ in this case represents the difference in conversion rates
+$\theta = p_B - p_A$ (a non-inferiority test). Prior to starting the test, the
+experiment designer required a significance of $\alpha = 0.05$ and a power of
+$1 - \beta = 0.8$ at $0.01$, as the historical conversion rate of the control
+variant is $7\\%$ and a difference of $1\\%$ between the two conversion rates is
+deemed important enough to detect with high power.
+
+After collecting the data, the results are as follows:
+
+<table>
+  <thead>
+    <tr>
+      <th>Variant</th>
+      <th>Users</th>
+      <th>Conversions</th>
+      <th>Conversion rate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A</td>
+      <td>7809</td>
+      <td>556</td>
+      <td>$\bar p_A = 7.12\%$</td>
+    </tr>
+    <tr>
+      <td>B</td>
+      <td>7823</td>
+      <td>641</td>
+      <td>$\bar p_B = 8.19\%$</td>
+    </tr>
+  </thead>
+</table>
+
+Is the difference in conversion rates significant? To answer this question we
+first calculate the test statistic:
+
+$$
+z = \frac{\bar p_B - \bar p_A}{\sqrt{\bar p_{A,B}(1 - \bar p_{A,B})(n_A^{-1} + n_B^{-1})}} \approx 2.5155
+$$
+
+where we chose the pooled z-test, and the pooled proportion was calculated as
+follows:
+
+$$
+\bar p_{A,B} = \frac{n_A p_A + n_B p_B}{n_A + n_B} = \frac{556 + 641}{7809 +
+7823} \approx 0.0766
+$$
 
 ## Summary
 TODO
