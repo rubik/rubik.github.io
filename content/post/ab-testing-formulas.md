@@ -3,7 +3,7 @@ author: "Michele Lacchia"
 title: "A/B testing foundations - part II: binary and continous responses"
 date: "2022-10-08"
 tags: ["math", "statistics", "ab-tests"]
-hasmath: true
+hasMath: true
 summary: "Statistical framework underlying online A/B testing: formulas for binary and continous responses."
 ---
 
