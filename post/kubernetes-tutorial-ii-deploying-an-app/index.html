@@ -1,247 +1,97 @@
-<!DOCTYPE html>
-<html lang="en-us">
-<head>
-<meta charset="utf-8">
-
-<link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" href="/static/icons/favicon-32x32.png" sizes="32x32">
-<link rel="icon" type="image/png" href="/static/icons/favicon-16x16.png" sizes="16x16">
-<link rel="manifest" href="/static/icons/manifest.json">
-<link rel="mask-icon" href="/static/icons/safari-pinned-tab.svg" color="#2ae2b1">
-<link rel="shortcut icon" href="/static/icons/favicon.ico">
-<meta name="msapplication-config" content="/static/icons/browserconfig.xml">
-<meta name="theme-color" content="#ffffff">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://fonts.googleapis.com/css?family=Rubik&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/css/style.css">
-
-
-
-
-<style>
-.hljs{display:block;overflow-x:auto;background:#191f26;color:#e6e1cf;padding:.5em}.hljs-comment,.hljs-meta,.hljs-quote{color:#5c6773;font-style:italic}.hljs-attr,.hljs-attribute,.hljs-link,.hljs-regexp,.hljs-selector-class,.hljs-selector-id,.hljs-template-variable,.hljs-variable{color:#f73}.hljs-builtin-name,.hljs-literal,.hljs-number,.hljs-params,.hljs-type{color:#fe9}.hljs-bullet,.hljs-string{color:#b8cc52}.hljs-built_in,.hljs-section,.hljs-title{color:#ffb454}.hljs-keyword,.hljs-selector-tag,.hljs-symbol{color:#f73}.hljs-name{color:#36a3d9}.hljs-tag{color:#00568d}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}.hljs-addition{color:#91b362}.hljs-deletion{color:#d96c75}
-</style>
-
-<script async defer data-domain="signal-to-noise.xyz" src="https://plausible.io/js/plausible.js"></script>
-
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-86380700-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-86380700-1');
-</script>
-
-
-
-<title>A complete Kubernetes tutorial, part II: deploying an application</title>
-<meta name="description" content="A complete Kubernetes tutorial series covering all the basics.">
-<script type="application/ld+json">
-{
-  "@context": "http://schema.org",
-  "@type": "BlogPosting",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https:\/\/signal-to-noise.xyz\/post\/kubernetes-tutorial-ii-deploying-an-app\/"
-  },
-  "headline": "A complete Kubernetes tutorial, part II: deploying an application",
-  "name": "A complete Kubernetes tutorial, part II: deploying an application",
-  "datePublished": "2020-05-30",
-  "dateModified": "20200530-00:00:00.000",
-  "author": {
-    "@type": "Person",
-    "name": "Michele Lacchia"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Signal to Noise",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https:\/\/signal-to-noise.xyz\/static\/images\/signal-to-noise.png"
-    }
-  },
-  "description": "A complete Kubernetes tutorial series covering all the basics.",
-  "keywords": "kubernetes,containers"
-}
-</script>
-</head>
-
-<body>
-  <div class="container">
-    <header role="banner">
-      <div class="header-logo">
-        <a href="/"><img src="/static/images/signal-to-noise.png" width="60" height="60" alt="Signal to Noise"></a>
-      </div>
-      
-    </header>
-
-
-
-
-<main role="main">
-    <article>
-        <h1 class="entry-title">A complete Kubernetes tutorial, part II: deploying an application</h1>
-        <span class="entry-meta"><time datetime="2020-05-30">May 30, 2020</time></span>,
-        <span class="entry-meta">Michele Lacchia</span>
-        <div class="post-after">
-              <div class="tags">
-                
-                    <a href="https://signal-to-noise.xyz//tags/kubernetes">kubernetes</a>
-                
-                    <a href="https://signal-to-noise.xyz//tags/containers">containers</a>
-                
-              </div>
-        </div>
-        <section>
-            <h2 id="preface">Preface</h2>
-<p>The goal of this tutorial series is to allow the reader to start deploying on
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel=apple-touch-icon sizes=180x180 href=/static/icons/apple-touch-icon.png><link rel=icon type=image/png href=/static/icons/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=/static/icons/favicon-16x16.png sizes=16x16><link rel=manifest href=/static/icons/manifest.json><link rel=mask-icon href=/static/icons/safari-pinned-tab.svg color=#2ae2b1><link rel="shortcut icon" href=/static/icons/favicon.ico><meta name=msapplication-config content="/static/icons/browserconfig.xml"><meta name=theme-color content="#ffffff"><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400&display=swap" rel=stylesheet><link rel=stylesheet href=https://signal-to-noise.xyz/scss/main.min.e6467fa1f1848851105e82aef15f7161ee4e0006adff8e97170707c543dff8b4.css integrity="sha256-5kZ/ofGEiFEQXoKu8V9xYe5OAAat/46XFwcHxUPf+LQ="><script async src="https://cdn.panelbear.com/analytics.js?site=7moiko9QLML"></script>
+<script>window.panelbear=window.panelbear||function(){(window.panelbear.q=window.panelbear.q||[]).push(arguments)},panelbear("config",{site:"7moiko9QLML"})</script><title>A complete Kubernetes tutorial, part II: deploying an application</title><meta name=description content="A complete Kubernetes tutorial series covering all the basics."><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/signal-to-noise.xyz\/post\/kubernetes-tutorial-ii-deploying-an-app\/"},"headline":"A complete Kubernetes tutorial, part II: deploying an application","name":"A complete Kubernetes tutorial, part II: deploying an application","datePublished":"2020-05-30","dateModified":"20200530-00:00:00.000","author":{"@type":"Person","name":"Michele Lacchia"},"publisher":{"@type":"Organization","name":"Signal to Noise","logo":{"@type":"ImageObject","url":"https:\/\/signal-to-noise.xyz\/static\/images\/signal-to-noise.png"}},"description":"A complete Kubernetes tutorial series covering all the basics.","keywords":"kubernetes,containers"}</script></head><body><div class=container><header role=banner><div class=header-logo><a href=/><img src=/static/images/signal-to-noise.png width=60 height=60 alt="Signal to Noise"></a></div></header><main role=main><article class=main-content><div class=post-meta><h1>A complete Kubernetes tutorial, part II: deploying an application</h1><span><time datetime=2020-05-30>May 30, 2020</time>, Michele Lacchia</span></div><div class=post-tags><a href=https://signal-to-noise.xyz//tags/kubernetes>kubernetes</a>
+<a href=https://signal-to-noise.xyz//tags/containers>containers</a></div><h2 id=preface>Preface</h2><p>The goal of this tutorial series is to allow the reader to start deploying on
 Kubernetes with a basic understanding of Kubernetes architectural principles.
 If you don&rsquo;t know what Kubernetes is or how it works, I highly recommend
-reading <a href="/post/kubernetes-tutorial/">part I</a> of this series.</p>
-<p>In this post, we dive into a practical example. We&rsquo;ll see many of the concepts
-explained in the first part of the series. This is the structure of the series:</p>
-<ul>
-<li>Part I: <a href="/post/kubernetes-tutorial/">Kubernetes basic concepts</a></li>
-<li>Part II: A practical and realistic example (this post)</li>
-<li>Part III: <a href="/post/kubernetes-tutorial-iii-best-practices/">Best practices</a></li>
-</ul>
-<h4 id="table-of-contents">Table of contents</h4>
-<ul>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#provisioning-a-kubernetes-cluster">Provisioning a Kubernetes cluster</a></li>
-<li><a href="#deploying-the-application">Deploying the application</a></li>
-<li><a href="#networking-between-pods">Networking between Pods</a></li>
-<li><a href="#adding-persistence">Adding persistence</a></li>
-<li><a href="#recap">Recap</a></li>
-<li><a href="#what-we-didnt-cover">What we didn&rsquo;t cover</a></li>
-</ul>
-<h2 id="introduction">Introduction</h2>
-<p>The application that we will deploy is a simple web application that, while
+reading <a href=/post/kubernetes-tutorial/>part I</a> of this series.</p><p>In this post, we dive into a practical example. We&rsquo;ll see many of the concepts
+explained in the first part of the series. This is the structure of the series:</p><ul><li>Part I: <a href=/post/kubernetes-tutorial/>Kubernetes basic concepts</a></li><li>Part II: A practical and realistic example (this post)</li><li>Part III: <a href=/post/kubernetes-tutorial-iii-best-practices/>Best practices</a></li></ul><h4 id=table-of-contents>Table of contents</h4><ul><li><a href=#introduction>Introduction</a></li><li><a href=#provisioning-a-kubernetes-cluster>Provisioning a Kubernetes cluster</a></li><li><a href=#deploying-the-application>Deploying the application</a></li><li><a href=#networking-between-pods>Networking between Pods</a></li><li><a href=#adding-persistence>Adding persistence</a></li><li><a href=#recap>Recap</a></li><li><a href=#what-we-didnt-cover>What we didn&rsquo;t cover</a></li></ul><h2 id=introduction>Introduction</h2><p>The application that we will deploy is a simple web application that, while
 minimal, is supposed to mimic a real-world architecture. It exposes two
 endpoints, <code>GET /users/:id</code> and <code>POST /users/:id</code>: the former returns the
 numeric value associated to a user, if present in the database, and 0
 otherwise; the second one increments the value associated to a user. There&rsquo;s an
 additional endpoint, <code>GET /healthz</code>, which simply returns a checkmark and it&rsquo;s
-used to test the connectivity to the application.</p>
-<p>For example, the following could be a valid HTTP session, assuming that our
+used to test the connectivity to the application.</p><p>For example, the following could be a valid HTTP session, assuming that our
 application is running on localhost:1323 and that we have
-<a href="https://httpie.org/">HTTPie</a> installed (I prefer it over cURL):</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># the GET method is the default one and can be omitted;</span>
-<span style="color:#75715e"># localhost is also the default host</span>
-$ http :1323/users/249  <span style="color:#75715e"># user 249 is not in the database, so we get 0</span>
-<span style="color:#ae81ff">0</span>
-$ http POST :1323/users/249  <span style="color:#75715e"># we increment the value associated with user 249</span>
-<span style="color:#ae81ff">1</span>
-$ http POST :1323/users/249
-<span style="color:#ae81ff">2</span>
-$ http POST :1323/users/249
-<span style="color:#ae81ff">3</span>
-$ http :1323/users/249
-<span style="color:#ae81ff">3</span>
-$ http :1323/users/32
-<span style="color:#ae81ff">0</span>
-</code></pre></div><p>We will not get into the details of how the Go application works, as that is
-completely orthogonal to the deployment, thanks to containers.</p>
-<p>The architecture of this web application is quite simple: an nginx instance
+<a href=https://httpie.org/ target=_blank rel="noopener noreferrer">HTTPie</a> installed (I prefer it over cURL):</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl><span class=c1># the GET method is the default one and can be omitted;</span>
+</span></span><span class=line><span class=cl><span class=c1># localhost is also the default host</span>
+</span></span><span class=line><span class=cl>$ http :1323/users/249  <span class=c1># user 249 is not in the database, so we get 0</span>
+</span></span><span class=line><span class=cl><span class=m>0</span>
+</span></span><span class=line><span class=cl>$ http POST :1323/users/249  <span class=c1># we increment the value associated with user 249</span>
+</span></span><span class=line><span class=cl><span class=m>1</span>
+</span></span><span class=line><span class=cl>$ http POST :1323/users/249
+</span></span><span class=line><span class=cl><span class=m>2</span>
+</span></span><span class=line><span class=cl>$ http POST :1323/users/249
+</span></span><span class=line><span class=cl><span class=m>3</span>
+</span></span><span class=line><span class=cl>$ http :1323/users/249
+</span></span><span class=line><span class=cl><span class=m>3</span>
+</span></span><span class=line><span class=cl>$ http :1323/users/32
+</span></span><span class=line><span class=cl><span class=m>0</span>
+</span></span></code></pre></div><p>We will not get into the details of how the Go application works, as that is
+completely orthogonal to the deployment, thanks to containers.</p><p>The architecture of this web application is quite simple: an nginx instance
 proxies all the traffic to a Go web server, which communicates with a Redis
-instance to store and retrieve data.</p>
-<figure>
-<img src="/static/images/kubernetes-tutorial-ii-Architecture.png" alt="Architecture of the application we will deploy" />
-<figcaption>
-    <strong>Fig. 1</strong>&emsp;An HTTP client interacts with the nginx instance,
-    which proxies all the traffic to the web application. We will also set up
-    the Redis instance and the corresponding persistence volume to make sure
-    our Redis data is not lost.
-</figcaption>
-</figure>
-<p>This application is, of course, a contrived example. In this case, an nginx
+instance to store and retrieve data.</p><figure><img src=/static/images/kubernetes-tutorial-ii-Architecture.png alt="Architecture of the application we will deploy"><figcaption><strong>Fig. 1</strong>&emsp;An HTTP client interacts with the nginx instance,
+which proxies all the traffic to the web application. We will also set up
+the Redis instance and the corresponding persistence volume to make sure
+our Redis data is not lost.</figcaption></figure><p>This application is, of course, a contrived example. In this case, an nginx
 instance isn&rsquo;t even strictly needed. However, nginx instances (or anything
 equivalent, for that matter) are frequently used to proxy the actual web
 applications in real scenarios, so I chose to include it. nginx could also
-serve static files, if your application needs them.</p>
-<p>The code for this web application, as well as the Dockerfiles and the manifest
+serve static files, if your application needs them.</p><p>The code for this web application, as well as the Dockerfiles and the manifest
 files are available at
-<a href="https://github.com/rubik/kubernetes-tutorial">rubik/kubernetes-tutorial</a>.</p>
-<h2 id="provisioning-a-kubernetes-cluster">Provisioning a Kubernetes cluster</h2>
-<p>If you would like to follow along, and I highly recommend doing so, you need to
-be able to connect to a Kubernetes cluster. There are two easy ways.</p>
-<h4 id="google-kubernetes-engine-gke">Google Kubernetes Engine (GKE)</h4>
-<p>The easiest way, which I recommend for this tutorial, is to create a brand new
-project on <a href="https://cloud.google.com/">Google Cloud</a> and enable GKE to
+<a href=https://github.com/rubik/kubernetes-tutorial target=_blank rel="noopener noreferrer">rubik/kubernetes-tutorial</a>.</p><h2 id=provisioning-a-kubernetes-cluster>Provisioning a Kubernetes cluster</h2><p>If you would like to follow along, and I highly recommend doing so, you need to
+be able to connect to a Kubernetes cluster. There are two easy ways.</p><h4 id=google-kubernetes-engine-gke>Google Kubernetes Engine (GKE)</h4><p>The easiest way, which I recommend for this tutorial, is to create a brand new
+project on <a href=https://cloud.google.com/ target=_blank rel="noopener noreferrer">Google Cloud</a> and enable GKE to
 provision a new Kubernetes cluster. At the end of the tutorial, you can delete
 the project and all its resources to avoid recurring charges. Note that unless
 you are enjoying your free tier, you will nonetheless incur charges with this
 method. On GKE, the master node is managed for free by Google Cloud, but you
 will pay for the Compute instances you use, as well as for any cloud load
-balancers you request.</p>
-<p>However, if you follow the tutorial and you delete the project when you are
+balancers you request.</p><p>However, if you follow the tutorial and you delete the project when you are
 done, you should expect charges in the order of a few dollars at most. You can
-even use Google Cloud&rsquo;s <a href="https://cloud.google.com/products/calculator/">Pricing
+even use Google Cloud&rsquo;s <a href=https://cloud.google.com/products/calculator/ target=_blank rel="noopener noreferrer">Pricing
 calculator</a> to estimate the
-charges.</p>
-<p>If you choose to do this, you will need to take the following steps to prepare
-your environment:</p>
-<ol>
-<li>install the <a href="https://cloud.google.com/sdk/install">Google Cloud SDK</a>;</li>
-<li>install the kubectl tool with <code>gcloud components install kubectl</code>;</li>
-<li>create a Kubernetes cluster from <a href="https://console.cloud.google.com/kubernetes">the
+charges.</p><p>If you choose to do this, you will need to take the following steps to prepare
+your environment:</p><ol><li>install the <a href=https://cloud.google.com/sdk/install target=_blank rel="noopener noreferrer">Google Cloud SDK</a>;</li><li>install the kubectl tool with <code>gcloud components install kubectl</code>;</li><li>create a Kubernetes cluster from <a href=https://console.cloud.google.com/kubernetes target=_blank rel="noopener noreferrer">the
 console</a> &mdash; note that it may take a
-few minutes for your cluster to become ready and operational;</li>
-<li>save the cluster credentials on your computer with <code>gcloud container clusters get-credentials CLUSTER_NAME</code>, where <code>CLUSTER_NAME</code> is the name of the
-cluster you have created in step 3.</li>
-</ol>
-<p>You are now ready to follow the tutorial. At the end, don&rsquo;t forget to clean up
+few minutes for your cluster to become ready and operational;</li><li>save the cluster credentials on your computer with <code>gcloud container clusters get-credentials CLUSTER_NAME</code>, where <code>CLUSTER_NAME</code> is the name of the
+cluster you have created in step 3.</li></ol><p>You are now ready to follow the tutorial. At the end, don&rsquo;t forget to clean up
 by deleting your cluster, any resources associated with it (e.g. load
 balancers) and your project (if you have created a brand new one for this
-tutorial).</p>
-<h4 id="minikube">Minikube</h4>
-<p>Alternatively, you can also run a single-node cluster on your local machine
-with <a href="https://github.com/kubernetes/minikube">Minikube</a>. Not all features all
+tutorial).</p><h4 id=minikube>Minikube</h4><p>Alternatively, you can also run a single-node cluster on your local machine
+with <a href=https://github.com/kubernetes/minikube target=_blank rel="noopener noreferrer">Minikube</a>. Not all features all
 supported out-of-the-box &mdash; e.g. to expose a load balancer you will need to use
 the <code>minikube tunnel</code> command. However, this is a valid alternative if you
-don&rsquo;t want to use GKE.</p>
-<p>You will need to take the following steps to prepare your environment:</p>
-<ol>
-<li>install <code>kubectl</code> &mdash; <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/">instructions
-here</a>;</li>
-<li>install Minikube &mdash; <a href="https://kubernetes.io/docs/tasks/tools/install-minikube/">instructions
-here</a>;</li>
-<li>run <code>minikube start</code> to create a local cluster.</li>
-</ol>
-<h2 id="deploying-the-application">Deploying the application</h2>
-<p>We&rsquo;ll start by writing the manifest files for the nginx and Go instances. These
+don&rsquo;t want to use GKE.</p><p>You will need to take the following steps to prepare your environment:</p><ol><li>install <code>kubectl</code> &mdash; <a href=https://kubernetes.io/docs/tasks/tools/install-kubectl/ target=_blank rel="noopener noreferrer">instructions
+here</a>;</li><li>install Minikube &mdash; <a href=https://kubernetes.io/docs/tasks/tools/install-minikube/ target=_blank rel="noopener noreferrer">instructions
+here</a>;</li><li>run <code>minikube start</code> to create a local cluster.</li></ol><h2 id=deploying-the-application>Deploying the application</h2><p>We&rsquo;ll start by writing the manifest files for the nginx and Go instances. These
 two components are both completely stateless: these instances don&rsquo;t need a
 stable network identity or persistent storage. They could be scaled up and down
-at any moment without issues.</p>
-<p>For these reasons, the
-<a href="/post/kubernetes-tutorial/#controller-objects"><strong>Deployment</strong></a> controller is
+at any moment without issues.</p><p>For these reasons, the
+<a href=/post/kubernetes-tutorial/#controller-objects><strong>Deployment</strong></a> controller is
 the right abstraction in this case. Let&rsquo;s create the manifest the nginx
-instance:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">frontend</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">2</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">matchLabels</span>:
-      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
-  <span style="color:#f92672">template</span>:
-    <span style="color:#f92672">metadata</span>:
-      <span style="color:#f92672">labels</span>:
-        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
-    <span style="color:#f92672">spec</span>:
-      <span style="color:#f92672">containers</span>:
-      - <span style="color:#f92672">args</span>: [<span style="color:#e6db74">&#39;nginx&#39;</span>, <span style="color:#e6db74">&#39;-g&#39;</span>, <span style="color:#e6db74">&#39;daemon off;&#39;</span>]
-        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">c1524db4f1/kubernetes-tutorial-frontend:v0.2.0</span>
-        <span style="color:#f92672">imagePullPolicy</span>: <span style="color:#ae81ff">Always</span>
-        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
-        <span style="color:#f92672">ports</span>:
-        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">80</span>
-      <span style="color:#f92672">restartPolicy</span>: <span style="color:#ae81ff">Always</span>
-</code></pre></div><p>This manifest file instructs Kubernetes to create a Deployment called
+instance:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>apps/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Deployment</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>frontend</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>replicas</span><span class=p>:</span><span class=w> </span><span class=m>2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>selector</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>matchLabels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>web</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>web</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>containers</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>args</span><span class=p>:</span><span class=w> </span><span class=p>[</span><span class=s1>&#39;nginx&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;-g&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;daemon off;&#39;</span><span class=p>]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>c1524db4f1/kubernetes-tutorial-frontend:v0.2.0</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>imagePullPolicy</span><span class=p>:</span><span class=w> </span><span class=l>Always</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>nginx</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>ports</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>containerPort</span><span class=p>:</span><span class=w> </span><span class=m>80</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>restartPolicy</span><span class=p>:</span><span class=w> </span><span class=l>Always</span><span class=w>
+</span></span></span></code></pre></div><p>This manifest file instructs Kubernetes to create a Deployment called
 <code>frontend</code>. Each Pod managed by the Deployment will be created according to the
 spec template: it will be built from the image
 <code>c1524db4f1/kubernetes-tutorial-frontend:v0.2.0</code> and will expose port 80.
@@ -250,361 +100,290 @@ Deployment will manage two nginx instances. Additionally, we define the restart
 policy as &ldquo;Always&rdquo;. This ensures that the container will be restarted in all
 cases (even if it exists with a success code). We want our nginx instance to be
 always up, so that&rsquo;s the appropriate policy. Other possible values are
-OnFailure and Never.</p>
-<p>Observe that the <code>spec.selector</code> field is mandatory: the Deployment needs to
+OnFailure and Never.</p><p>Observe that the <code>spec.selector</code> field is mandatory: the Deployment needs to
 know which Pods to manage. In this case, it controls all the Pods with label
 <code>app=web</code>. All the Pods created by this spec have that label, as defined by
-<code>spec.template.metadata.labels</code>.</p>
-<p>The actual application is packaged in the Docker image
-<a href="https://hub.docker.com/repository/docker/c1524db4f1/kubernetes-tutorial-frontend">c1524db4f1/kubernetes-tutorial-frontend</a>,
+<code>spec.template.metadata.labels</code>.</p><p>The actual application is packaged in the Docker image
+<a href=https://hub.docker.com/repository/docker/c1524db4f1/kubernetes-tutorial-frontend target=_blank rel="noopener noreferrer">c1524db4f1/kubernetes-tutorial-frontend</a>,
 which was created specifically for this tutorial. Similarly, the backend app&rsquo;s
 image is
-<a href="https://hub.docker.com/repository/docker/c1524db4f1/kubernetes-tutorial-backend">c1524db4f1/kubernetes-tutorial-backend</a>.</p>
-<p>Let&rsquo;s submit this manifest file to Kubernetes. We do so by saving the manifest
-file to <code>deploy/frontend/20-deployment.yaml</code> and running</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl apply -f deploy/frontend/20-deployment.yaml
-</code></pre></div><p>We can check the status of this Deployment with</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl get deployments
-NAME       READY   UP-TO-DATE   AVAILABLE   AGE
-frontend   2/2     <span style="color:#ae81ff">2</span>            <span style="color:#ae81ff">2</span>            4s
-</code></pre></div><p>The API informs us that the Deployment <code>frontend</code> is up to date, available, and
+<a href=https://hub.docker.com/repository/docker/c1524db4f1/kubernetes-tutorial-backend target=_blank rel="noopener noreferrer">c1524db4f1/kubernetes-tutorial-backend</a>.</p><p>Let&rsquo;s submit this manifest file to Kubernetes. We do so by saving the manifest
+file to <code>deploy/frontend/20-deployment.yaml</code> and running</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl apply -f deploy/frontend/20-deployment.yaml
+</span></span></code></pre></div><p>We can check the status of this Deployment with</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl get deployments
+</span></span><span class=line><span class=cl>NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span class=line><span class=cl>frontend   2/2     <span class=m>2</span>            <span class=m>2</span>            4s
+</span></span></code></pre></div><p>The API informs us that the Deployment <code>frontend</code> is up to date, available, and
 its Pods are all ready. We can also query the state of all the Pods (by
-default, this will only display Pods in the <code>default</code> namespace):</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl get pods
-NAME                        READY   STATUS    RESTARTS   AGE
-frontend-557854f87f-924f8   1/1     Running   <span style="color:#ae81ff">0</span>           7s
-frontend-557854f87f-fvmgb   1/1     Running   <span style="color:#ae81ff">0</span>           7s
-</code></pre></div><p>These Pods have a special name because they were created by the Deployment
+default, this will only display Pods in the <code>default</code> namespace):</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl get pods
+</span></span><span class=line><span class=cl>NAME                        READY   STATUS    RESTARTS   AGE
+</span></span><span class=line><span class=cl>frontend-557854f87f-924f8   1/1     Running   <span class=m>0</span>           7s
+</span></span><span class=line><span class=cl>frontend-557854f87f-fvmgb   1/1     Running   <span class=m>0</span>           7s
+</span></span></code></pre></div><p>These Pods have a special name because they were created by the Deployment
 controller. Their status is Running, so all is fine. Other possible status
-values are:</p>
-<ul>
-<li>Pending: if the configuration has been accepted by the Kubernetes API, but
+values are:</p><ul><li>Pending: if the configuration has been accepted by the Kubernetes API, but
 one or more containers have not been created; a Pod could remain in Pending
 state forever if it cannot be scheduled (e.g. there are no available nodes or
-ports) &mdash; more details are found with the command <code>kubectl describe pod &lt;pod name&gt;</code>;</li>
-<li>Success: if all containers in the Pod have terminated successfully, and will
-not be restarted;</li>
-<li>Failure: if at least one container in the Pod has terminated in failure, i.e.
+ports) &mdash; more details are found with the command <code>kubectl describe pod &lt;pod name></code>;</li><li>Success: if all containers in the Pod have terminated successfully, and will
+not be restarted;</li><li>Failure: if at least one container in the Pod has terminated in failure, i.e.
 it exited with a non-zero exit code or it was forcefully terminated by the
-system;</li>
-<li>Unknown: if the state of the Pod is not known to the control plane; this
-could indicate the presence of communication issues.</li>
-</ul>
-<h4 id="deployment-updates">Deployment updates</h4>
-<p>Finally, let&rsquo;s consider Deployment updates. If we make changes to the manifest
-file, we can push the update with <code>kubectl apply -f &lt;manifest-file&gt;</code>.
+system;</li><li>Unknown: if the state of the Pod is not known to the control plane; this
+could indicate the presence of communication issues.</li></ul><h4 id=deployment-updates>Deployment updates</h4><p>Finally, let&rsquo;s consider Deployment updates. If we make changes to the manifest
+file, we can push the update with <code>kubectl apply -f &lt;manifest-file></code>.
 Kubernetes will compare the old version with the new one and, if it finds any
-differences, it will take steps to reach the desired state.</p>
-<p>If we update the image version, for example, the Deployment controller will
+differences, it will take steps to reach the desired state.</p><p>If we update the image version, for example, the Deployment controller will
 create a new set of Pods with the new container image, and will gradually scale
 up the new replica set. At the same time, it will scale down the replica set
 with the previous version. This update strategy is called <strong>RollingUpdate</strong>.
 There are other strategies available. Notably, the <strong>Recreate</strong> one, which is
 quite handy during development. It consists in terminating all the running
-instances and then recreating them with the newer version.</p>
-<p>While the <strong>RollingUpdate</strong> strategy can prevent downtime, if configured
+instances and then recreating them with the newer version.</p><p>While the <strong>RollingUpdate</strong> strategy can prevent downtime, if configured
 appropriately, that&rsquo;s not possible with the <strong>Recreate</strong> one. Let&rsquo;s configure
 our update to prevent downtime. We&rsquo;ll add the following configuration to the
-<code>spec</code> object:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">strategy</span>:
-  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">RollingUpdate</span>
-  <span style="color:#f92672">rollingUpdate</span>:
-    <span style="color:#f92672">maxSurge</span>: <span style="color:#ae81ff">1</span>
-    <span style="color:#f92672">maxUnavailable</span>: <span style="color:#ae81ff">0</span>
-</code></pre></div><p>With the above parameters, the frontend Deployment will create one additional
+<code>spec</code> object:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>strategy</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>RollingUpdate</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>rollingUpdate</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>maxSurge</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>maxUnavailable</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span></span></span></code></pre></div><p>With the above parameters, the frontend Deployment will create one additional
 Pod during the update and it will ensure that no Pods are unavailable at any
 time. Additional update strategies are discussed
-<a href="https://blog.container-solutions.com/kubernetes-deployment-strategies">here</a>.</p>
-<blockquote>
-<p><strong>Heads up</strong> The pods in the old replica sets are terminated and the
+<a href=https://blog.container-solutions.com/kubernetes-deployment-strategies target=_blank rel="noopener noreferrer">here</a>.</p><blockquote><p><strong>Heads up</strong> The pods in the old replica sets are terminated and the
 traffic switches to the new pods when they are ready. But how does Kubernetes
 know when the new pods are ready to accept traffic? Actually, it doesn&rsquo;t, and
 it will consider the new pods ready as soon as the container process starts.
 Of course, that is rarely the desired behavior, so we can instruct Kubernetes
 to poll the pods periodically to determine if they are ready or not, alive or
-not. That is accomplished by setting up <a href="/post/kubernetes-tutorial-iii-best-practices/#health-checks">health
-checks</a>.</p>
-</blockquote>
-<h4 id="final-configuration">Final configuration</h4>
-<p>With those improvements, the configuration for our frontend Deployment looks
-like this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">frontend</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">2</span>
-  <span style="color:#f92672">strategy</span>:
-    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">RollingUpdate</span>
-    <span style="color:#f92672">rollingUpdate</span>:
-      <span style="color:#f92672">maxSurge</span>: <span style="color:#ae81ff">1</span>
-      <span style="color:#f92672">maxUnavailable</span>: <span style="color:#ae81ff">0</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">matchLabels</span>:
-      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
-      <span style="color:#f92672">service</span>: <span style="color:#ae81ff">nginx</span>
-  <span style="color:#f92672">template</span>:
-    <span style="color:#f92672">metadata</span>:
-      <span style="color:#f92672">labels</span>:
-        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
-        <span style="color:#f92672">service</span>: <span style="color:#ae81ff">nginx</span>
-    <span style="color:#f92672">spec</span>:
-      <span style="color:#f92672">containers</span>:
-      - <span style="color:#f92672">args</span>: [<span style="color:#e6db74">&#39;nginx&#39;</span>, <span style="color:#e6db74">&#39;-g&#39;</span>, <span style="color:#e6db74">&#39;daemon off;&#39;</span>]
-        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">c1524db4f1/kubernetes-tutorial-frontend:v0.2.0</span>
-        <span style="color:#f92672">imagePullPolicy</span>: <span style="color:#ae81ff">Always</span>
-        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
-        <span style="color:#f92672">ports</span>:
-        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">80</span>
-      <span style="color:#f92672">restartPolicy</span>: <span style="color:#ae81ff">Always</span>
-</code></pre></div><p>After submitting the manifest with</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl apply -f deploy/frontend/20-deployment.yaml
-</code></pre></div><p>we see that the number of Pods immediately increases to three (due to
+not. That is accomplished by setting up <a href=/post/kubernetes-tutorial-iii-best-practices/#health-checks>health
+checks</a>.</p></blockquote><h4 id=final-configuration>Final configuration</h4><p>With those improvements, the configuration for our frontend Deployment looks
+like this:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>apps/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Deployment</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>frontend</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>replicas</span><span class=p>:</span><span class=w> </span><span class=m>2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>strategy</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>RollingUpdate</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>rollingUpdate</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>maxSurge</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>maxUnavailable</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>selector</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>matchLabels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>web</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>nginx</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>web</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>nginx</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>containers</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>args</span><span class=p>:</span><span class=w> </span><span class=p>[</span><span class=s1>&#39;nginx&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;-g&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;daemon off;&#39;</span><span class=p>]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>c1524db4f1/kubernetes-tutorial-frontend:v0.2.0</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>imagePullPolicy</span><span class=p>:</span><span class=w> </span><span class=l>Always</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>nginx</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>ports</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>containerPort</span><span class=p>:</span><span class=w> </span><span class=m>80</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>restartPolicy</span><span class=p>:</span><span class=w> </span><span class=l>Always</span><span class=w>
+</span></span></span></code></pre></div><p>After submitting the manifest with</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl apply -f deploy/frontend/20-deployment.yaml
+</span></span></code></pre></div><p>we see that the number of Pods immediately increases to three (due to
 <code>maxSurge: 1</code>). When the new Pod is ready, Kubernetes starts terminating the
 old Pods and creating new ones. This process happens gradually one by one,
 because we specified <code>maxUnavailable: 0</code>, which forces Kubernetes to maintain
 two fully ready Pods at any time (as we set <code>replicas: 2</code>). Had we specified
-<code>maxUnavailable: 1</code>, Kubernetes would have upgraded two Pods at a time.</p>
-<p>For our application, we&rsquo;ll create a similar Deployment manifest. It is
+<code>maxUnavailable: 1</code>, Kubernetes would have upgraded two Pods at a time.</p><p>For our application, we&rsquo;ll create a similar Deployment manifest. It is
 essentially the same, so we will not discuss it in detail. We save the
-following configuration in <code>deploy/backend/20-deployment.yaml</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">backend</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">2</span>
-  <span style="color:#f92672">strategy</span>:
-    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">RollingUpdate</span>
-    <span style="color:#f92672">rollingUpdate</span>:
-      <span style="color:#f92672">maxSurge</span>: <span style="color:#ae81ff">1</span>
-      <span style="color:#f92672">maxUnavailable</span>: <span style="color:#ae81ff">0</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">matchLabels</span>:
-      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
-      <span style="color:#f92672">service</span>: <span style="color:#ae81ff">app</span>
-  <span style="color:#f92672">template</span>:
-    <span style="color:#f92672">metadata</span>:
-      <span style="color:#f92672">labels</span>:
-        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
-        <span style="color:#f92672">service</span>: <span style="color:#ae81ff">app</span>
-    <span style="color:#f92672">spec</span>:
-      <span style="color:#f92672">containers</span>:
-      - <span style="color:#f92672">args</span>: [<span style="color:#e6db74">&#39;/bin/app&#39;</span>]
-        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">c1524db4f1/kubernetes-tutorial-backend:v0.3.0</span>
-        <span style="color:#f92672">env</span>:
-          - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">REDIS_URL</span>
-            <span style="color:#f92672">value</span>: <span style="color:#ae81ff">redis:6379</span>
-        <span style="color:#f92672">imagePullPolicy</span>: <span style="color:#ae81ff">Always</span>
-        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">app</span>
-        <span style="color:#f92672">ports</span>:
-        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">1323</span>
-      <span style="color:#f92672">restartPolicy</span>: <span style="color:#ae81ff">Always</span>
-</code></pre></div><p>This manifest is almost identical to the previous one, with the only
+following configuration in <code>deploy/backend/20-deployment.yaml</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>apps/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Deployment</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>backend</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>replicas</span><span class=p>:</span><span class=w> </span><span class=m>2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>strategy</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>RollingUpdate</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>rollingUpdate</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>maxSurge</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>maxUnavailable</span><span class=p>:</span><span class=w> </span><span class=m>0</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>selector</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>matchLabels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>web</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>app</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>web</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>app</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>containers</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>args</span><span class=p>:</span><span class=w> </span><span class=p>[</span><span class=s1>&#39;/bin/app&#39;</span><span class=p>]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>c1524db4f1/kubernetes-tutorial-backend:v0.3.0</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>env</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>REDIS_URL</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>value</span><span class=p>:</span><span class=w> </span><span class=l>redis:6379</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>imagePullPolicy</span><span class=p>:</span><span class=w> </span><span class=l>Always</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>app</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>ports</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>containerPort</span><span class=p>:</span><span class=w> </span><span class=m>1323</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>restartPolicy</span><span class=p>:</span><span class=w> </span><span class=l>Always</span><span class=w>
+</span></span></span></code></pre></div><p>This manifest is almost identical to the previous one, with the only
 differences being the container image and command, and the <code>env</code> field. As the
 name implies, the <code>env</code> field allows us to inject environment variables inside
 the container. In this case, we specify the variable <code>REDIS_URL</code> which we will
-need later.</p>
-<p>After deploying, this is the output of <code>kubectl get pods</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">NAME                        READY   STATUS    RESTARTS   AGE
-backend-78d87dd74b-pk7tr    1/1     Running   <span style="color:#ae81ff">0</span>          14m
-backend-78d87dd74b-wth2f    1/1     Running   <span style="color:#ae81ff">0</span>          14m
-frontend-59f5cf4948-96drd   1/1     Running   <span style="color:#ae81ff">0</span>          23m
-frontend-59f5cf4948-gcrll   1/1     Running   <span style="color:#ae81ff">0</span>          23m
-</code></pre></div><p>We didn&rsquo;t deploy those Pods directly. Instead, they are managed by the
+need later.</p><p>After deploying, this is the output of <code>kubectl get pods</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>NAME                        READY   STATUS    RESTARTS   AGE
+</span></span><span class=line><span class=cl>backend-78d87dd74b-pk7tr    1/1     Running   <span class=m>0</span>          14m
+</span></span><span class=line><span class=cl>backend-78d87dd74b-wth2f    1/1     Running   <span class=m>0</span>          14m
+</span></span><span class=line><span class=cl>frontend-59f5cf4948-96drd   1/1     Running   <span class=m>0</span>          23m
+</span></span><span class=line><span class=cl>frontend-59f5cf4948-gcrll   1/1     Running   <span class=m>0</span>          23m
+</span></span></code></pre></div><p>We didn&rsquo;t deploy those Pods directly. Instead, they are managed by the
 Deployment controllers. We can inspect the currently active deployments by
-running <code>kubectl get deployments</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
-frontend                    2/2     <span style="color:#ae81ff">2</span>            <span style="color:#ae81ff">2</span>           23m
-backend                     2/2     <span style="color:#ae81ff">2</span>            <span style="color:#ae81ff">2</span>           14m
-</code></pre></div><figure>
-<img src="/static/images/kubernetes-tutorial-ii-Architecture - 1.png" alt="Status of the cluster after the deployments" />
-<figcaption>
-    <strong>Fig. 2</strong>&emsp;This is how the cluster looks like at this
-    point. We have deployed the frontend and backend components of our
-    architecture, but they are currently doing nothing as there is no
-    networking between them or the external world.
-</figcaption>
-</figure>
-<h2 id="networking-between-pods">Networking between Pods</h2>
-<p>We are now ready to set up the Services that will allow our Pods to
+running <code>kubectl get deployments</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span class=line><span class=cl>frontend                    2/2     <span class=m>2</span>            <span class=m>2</span>           23m
+</span></span><span class=line><span class=cl>backend                     2/2     <span class=m>2</span>            <span class=m>2</span>           14m
+</span></span></code></pre></div><figure><img src="/static/images/kubernetes-tutorial-ii-Architecture - 1.png" alt="Status of the cluster after the deployments"><figcaption><strong>Fig. 2</strong>&emsp;This is how the cluster looks like at this
+point. We have deployed the frontend and backend components of our
+architecture, but they are currently doing nothing as there is no
+networking between them or the external world.</figcaption></figure><h2 id=networking-between-pods>Networking between Pods</h2><p>We are now ready to set up the Services that will allow our Pods to
 communicate. We will create a LoadBalancer Service for the nginx Pods, since
 they need to be reached from outside the cluster, and a ClusterIP Service for
 the Go application. If you need to, you can refresh your knowledge about
-Kubernetes Services <a href="/post/kubernetes-tutorial/#services">here</a>.</p>
-<p>This is the manifest file that declares the LoadBalancer Service for our nginx
-Pods:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">LoadBalancer</span>
-  <span style="color:#f92672">ports</span>:
-  - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;80&#34;</span>
-    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">80</span>
-    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">80</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
-    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">nginx</span>
-</code></pre></div><p>This manifest specifies that the Service is a LoadBalancer and that it needs to
+Kubernetes Services <a href=/post/kubernetes-tutorial/#services>here</a>.</p><p>This is the manifest file that declares the LoadBalancer Service for our nginx
+Pods:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Service</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>nginx</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>LoadBalancer</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>ports</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;80&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>80</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>targetPort</span><span class=p>:</span><span class=w> </span><span class=m>80</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>selector</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>web</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>nginx</span><span class=w>
+</span></span></span></code></pre></div><p>This manifest specifies that the Service is a LoadBalancer and that it needs to
 forward traffic from port 80 (<code>port</code>), to port 80 (<code>targetPort</code>) of the
-selected Pods. We select Pods that have the labels <code>app: web</code> and <code>service: nginx</code>, which are the same ones we used in the nginx Deployment.</p>
-<p>As before, we save this manifest to <code>deploy/frontend/30-service.yaml</code> and
-submit it to the Kubernetes API with</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl apply -f deploy/frontend/30-service.yaml
-</code></pre></div><p>As mentioned above, for the Go application we&rsquo;ll deploy a ClusterIP Service.
+selected Pods. We select Pods that have the labels <code>app: web</code> and <code>service: nginx</code>, which are the same ones we used in the nginx Deployment.</p><p>As before, we save this manifest to <code>deploy/frontend/30-service.yaml</code> and
+submit it to the Kubernetes API with</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl apply -f deploy/frontend/30-service.yaml
+</span></span></code></pre></div><p>As mentioned above, for the Go application we&rsquo;ll deploy a ClusterIP Service.
 That&rsquo;s because it&rsquo;s proxied by nginx, so all its traffic comes from inside the
-cluster. The manifest file is quite simple like the previous one:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">app</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">ClusterIP</span>
-  <span style="color:#f92672">ports</span>:
-  - <span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;1323&#34;</span>
-    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">1323</span>
-    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">1323</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">web</span>
-    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">app</span>
-</code></pre></div><p>We save it in <code>deploy/backend/30-service.yaml</code> and deploy it:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl apply -f deploy/backend/30-service.yaml
-</code></pre></div><p>We can inspect the status of the running Services (again, in the <code>default</code>
-namespace, which is the one we&rsquo;re working with) with the following command:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl get svc
-NAME         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT<span style="color:#f92672">(</span>S<span style="color:#f92672">)</span>        AGE
-app          ClusterIP      10.97.226.151   &lt;none&gt;        1323/TCP       1m10s
-nginx        LoadBalancer   10.97.210.57    &lt;pending&gt;     80:31494/TCP   1m14
-</code></pre></div><p>As we can see, the ClusterIP has no external IP, while the LoadBalancer shows
+cluster. The manifest file is quite simple like the previous one:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Service</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>app</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>ClusterIP</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>ports</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;1323&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>1323</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>targetPort</span><span class=p>:</span><span class=w> </span><span class=m>1323</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>selector</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>web</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>app</span><span class=w>
+</span></span></span></code></pre></div><p>We save it in <code>deploy/backend/30-service.yaml</code> and deploy it:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl apply -f deploy/backend/30-service.yaml
+</span></span></code></pre></div><p>We can inspect the status of the running Services (again, in the <code>default</code>
+namespace, which is the one we&rsquo;re working with) with the following command:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl get svc
+</span></span><span class=line><span class=cl>NAME         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT<span class=o>(</span>S<span class=o>)</span>        AGE
+</span></span><span class=line><span class=cl>app          ClusterIP      10.97.226.151   &lt;none&gt;        1323/TCP       1m10s
+</span></span><span class=line><span class=cl>nginx        LoadBalancer   10.97.210.57    &lt;pending&gt;     80:31494/TCP   1m14
+</span></span></code></pre></div><p>As we can see, the ClusterIP has no external IP, while the LoadBalancer shows
 &ldquo;pending&rdquo;. That&rsquo;s because my cluster is local and runs through Minikube. If we
 were communicating with a cloud Kubernetes installation (e.g. GKE), the load
 balancer would be provisioned automatically and the external IP would appear
 after a few seconds. In this case, however, we need to run <code>minikube tunnel</code>
 in a separate shell in order to obtain an external IP. After launching that
-command separately, we can check the status of our Services again:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl get svc
-NAME         TYPE           CLUSTER-IP      EXTERNAL-IP    PORT<span style="color:#f92672">(</span>S<span style="color:#f92672">)</span>        AGE
-app          ClusterIP      10.97.226.151   &lt;none&gt;         1323/TCP       1m24s
-nginx        LoadBalancer   10.97.210.57    10.97.210.57   80:31494/TCP   1m28s
-</code></pre></div><p>We can now test the connectivity to our application:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$  http 10.97.210.57/healthz
-HTTP/1.1 <span style="color:#ae81ff">200</span> OK
-Connection: keep-alive
-Content-Length: <span style="color:#ae81ff">3</span>
-Content-Type: text/plain; charset<span style="color:#f92672">=</span>UTF-8
-Date: Sun, <span style="color:#ae81ff">24</span> Nov <span style="color:#ae81ff">2019</span> 18:02:31 GMT
-Server: nginx/1.17.5
-
-✓
-</code></pre></div><p>This response is generated by our Go application, which in turn is proxied by
+command separately, we can check the status of our Services again:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl get svc
+</span></span><span class=line><span class=cl>NAME         TYPE           CLUSTER-IP      EXTERNAL-IP    PORT<span class=o>(</span>S<span class=o>)</span>        AGE
+</span></span><span class=line><span class=cl>app          ClusterIP      10.97.226.151   &lt;none&gt;         1323/TCP       1m24s
+</span></span><span class=line><span class=cl>nginx        LoadBalancer   10.97.210.57    10.97.210.57   80:31494/TCP   1m28s
+</span></span></code></pre></div><p>We can now test the connectivity to our application:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$  http 10.97.210.57/healthz
+</span></span><span class=line><span class=cl>HTTP/1.1 <span class=m>200</span> OK
+</span></span><span class=line><span class=cl>Connection: keep-alive
+</span></span><span class=line><span class=cl>Content-Length: <span class=m>3</span>
+</span></span><span class=line><span class=cl>Content-Type: text/plain<span class=p>;</span> <span class=nv>charset</span><span class=o>=</span>UTF-8
+</span></span><span class=line><span class=cl>Date: Sun, <span class=m>24</span> Nov <span class=m>2019</span> 18:02:31 GMT
+</span></span><span class=line><span class=cl>Server: nginx/1.17.5
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>✓
+</span></span></code></pre></div><p>This response is generated by our Go application, which in turn is proxied by
 the nginx instances. This is a good point to learn about a new command:
-<code>kubectl logs</code>. It allows us to read the logs produced by our Pods:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl logs frontend-99d9cfbc9-dbbdj
-192.168.99.1 - - <span style="color:#f92672">[</span>24/Nov/2019:18:02:31 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /healthz HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">3</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;HTTPie/1.0.3&#34;</span>
-$ kubectl logs frontend-99d9cfbc9-dknvq
-$
-</code></pre></div><p>As we can see, our request was routed through the Pod
+<code>kubectl logs</code>. It allows us to read the logs produced by our Pods:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl logs frontend-99d9cfbc9-dbbdj
+</span></span><span class=line><span class=cl>192.168.99.1 - - <span class=o>[</span>24/Nov/2019:18:02:31 +0000<span class=o>]</span> <span class=s2>&#34;GET /healthz HTTP/1.1&#34;</span> <span class=m>200</span> <span class=m>3</span> <span class=s2>&#34;-&#34;</span> <span class=s2>&#34;HTTPie/1.0.3&#34;</span>
+</span></span><span class=line><span class=cl>$ kubectl logs frontend-99d9cfbc9-dknvq
+</span></span><span class=line><span class=cl>$
+</span></span></code></pre></div><p>As we can see, our request was routed through the Pod
 <code>frontend-99d9cfbc9-dbbdj</code>, while the other Pod hasn&rsquo;t served any traffic yet.
 We can fetch the output of our backend pods too, although the Go application is
-configured not to log accesses, so we only see the program start output:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl logs backend-78d87dd74b-pk7tr
-
-   ____    __
-  / __/___/ /  ___
- / _// __/ _ <span style="color:#ae81ff">\/</span> _ <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>/___/<span style="color:#ae81ff">\_</span>_/_//_/<span style="color:#ae81ff">\_</span>__/ v3.3.10-dev
-High performance, minimalist Go web framework
-https://echo.labstack.com
-____________________________________O/_______
-                                    O<span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>⇨ http server started on <span style="color:#f92672">[</span>::<span style="color:#f92672">]</span>:1323
-</code></pre></div><figure>
-<img src="/static/images/kubernetes-tutorial-ii-Architecture - 2.png" alt="Status of the cluster after the deployments" />
-<figcaption>
-    <strong>Fig. 3</strong>&emsp;The cluster can now communicate with the
-    external world and the pods are communicating between them. It's now a
-    functional cluster. The user endpoints are not working yet, as they depend
-    on Redis.
-</figcaption>
-</figure>
-<h2 id="adding-persistence">Adding persistence</h2>
-<p>The cluster is now functional, but to make the tutorial more realistic we are
+configured not to log accesses, so we only see the program start output:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl logs backend-78d87dd74b-pk7tr
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>   ____    __
+</span></span><span class=line><span class=cl>  / __/___/ /  ___
+</span></span><span class=line><span class=cl> / _// __/ _ <span class=se>\/</span> _ <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>/___/<span class=se>\_</span>_/_//_/<span class=se>\_</span>__/ v3.3.10-dev
+</span></span><span class=line><span class=cl>High performance, minimalist Go web framework
+</span></span><span class=line><span class=cl>https://echo.labstack.com
+</span></span><span class=line><span class=cl>____________________________________O/_______
+</span></span><span class=line><span class=cl>                                    O<span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>⇨ http server started on <span class=o>[</span>::<span class=o>]</span>:1323
+</span></span></code></pre></div><figure><img src="/static/images/kubernetes-tutorial-ii-Architecture - 2.png" alt="Status of the cluster after the deployments"><figcaption><strong>Fig. 3</strong>&emsp;The cluster can now communicate with the
+external world and the pods are communicating between them. It's now a
+functional cluster. The user endpoints are not working yet, as they depend
+on Redis.</figcaption></figure><h2 id=adding-persistence>Adding persistence</h2><p>The cluster is now functional, but to make the tutorial more realistic we are
 going to add persistence through Redis. That will enable us to call the users
-endpoints which we described at the beginning of the post.</p>
-<p>Before deploying the Redis container, we will take care of storage. In
+endpoints which we described at the beginning of the post.</p><p>Before deploying the Redis container, we will take care of storage. In
 Kubernetes, storage resources are represented by <strong>PersistentVolume</strong> objects.
 These resources are consumed by <strong>PersistentVolumeClaim</strong> objects, just like
 Pods consume node compute resources. Therefore, we start by deploying the
-following PersistentVolumeClaim:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolumeClaim</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">labels</span>:
-    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">redis</span>
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">redis-data</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">accessModes</span>:
-  - <span style="color:#ae81ff">ReadWriteOnce</span>
-  <span style="color:#f92672">resources</span>:
-    <span style="color:#f92672">requests</span>:
-      <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">10Gi</span>
-</code></pre></div><p>In the above specification, there are two important configuration options.</p>
-<p>The <strong>access mode</strong> describes how the volume is mounted; the possible values
-are:</p>
-<ol>
-<li><code>ReadWriteOnce</code> – the volume can be mounted as read-write by a
-single node</li>
-<li><code>ReadOnlyMany</code> – the volume can be mounted as read-only by many
-nodes</li>
-<li><code>ReadWriteMany</code> – the volume can be mounted as read-write by many
-nodes</li>
-</ol>
-<p>Not every storage provider supports all the access modes. E.g. an
-<a href="https://kubernetes.io/docs/concepts/storage/volumes/#awselasticblockstore"><code>awsElasticBlockStore</code></a>
+following PersistentVolumeClaim:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>PersistentVolumeClaim</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>redis-data</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>accessModes</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>ReadWriteOnce</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>resources</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>requests</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>storage</span><span class=p>:</span><span class=w> </span><span class=l>10Gi</span><span class=w>
+</span></span></span></code></pre></div><p>In the above specification, there are two important configuration options.</p><p>The <strong>access mode</strong> describes how the volume is mounted; the possible values
+are:</p><ol><li><code>ReadWriteOnce</code> – the volume can be mounted as read-write by a
+single node</li><li><code>ReadOnlyMany</code> – the volume can be mounted as read-only by many
+nodes</li><li><code>ReadWriteMany</code> – the volume can be mounted as read-write by many
+nodes</li></ol><p>Not every storage provider supports all the access modes. E.g. an
+<a href=https://kubernetes.io/docs/concepts/storage/volumes/#awselasticblockstore target=_blank rel="noopener noreferrer"><code>awsElasticBlockStore</code></a>
 volume only supports <code>ReadWriteOnce</code>, whereas a
-<a href="https://kubernetes.io/docs/concepts/storage/volumes/#gcepersistentdisk"><code>gcePersistentDisk</code></a>
+<a href=https://kubernetes.io/docs/concepts/storage/volumes/#gcepersistentdisk target=_blank rel="noopener noreferrer"><code>gcePersistentDisk</code></a>
 supports both <code>ReadWriteOnce</code> and <code>ReadOnlyMany</code>. Importantly, a volume can
-only be mounted using one access mode at a time, even if it supports many.</p>
-<p>The <strong>resources request</strong> specifies how much storage we request — we ask
+only be mounted using one access mode at a time, even if it supports many.</p><p>The <strong>resources request</strong> specifies how much storage we request — we ask
 for 10GB in this case. If in the future we need more storage, we can request a
 larger volume for a PersistentVolumeClaim by editing the configuration and
 applying it again. Kubernetes will resize the existing volume instead of
-creating a new PersistentVolume.  Currently, one can only resize volumes
-containing a filesystem if the filesystem is XFS, ext3 or ext4.</p>
-<p>We save the PersistentVolumeClaim configuration in
+creating a new PersistentVolume. Currently, one can only resize volumes
+containing a filesystem if the filesystem is XFS, ext3 or ext4.</p><p>We save the PersistentVolumeClaim configuration in
 <code>deploy/redis/10-persistentvolumeclaim.yaml</code> and we apply it with the usual
-command:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl apply -f deploy/redis/10-persistentvolumeclaim.yaml
-</code></pre></div><p>We can verify that the volume was provisioned by inspecting the volume claims
-and the volumes:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl get pvc
-NAME         STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-redis-data   Bound    pvc-75fc6d82-7b14-40b5-beb3-e50c6015323a   10Gi       RWO            standard       30s
-</code></pre></div><p>The <code>STATUS</code> column indicates that the claim is bound to a volume, which is
+command:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl apply -f deploy/redis/10-persistentvolumeclaim.yaml
+</span></span></code></pre></div><p>We can verify that the volume was provisioned by inspecting the volume claims
+and the volumes:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl get pvc
+</span></span><span class=line><span class=cl>NAME         STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+</span></span><span class=line><span class=cl>redis-data   Bound    pvc-75fc6d82-7b14-40b5-beb3-e50c6015323a   10Gi       RWO            standard       30s
+</span></span></code></pre></div><p>The <code>STATUS</code> column indicates that the claim is bound to a volume, which is
 shown in the <code>VOLUME</code> column. We can request information about that particular
-volume as follows:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl get pv pvc-75fc6d82-7b14-40b5-beb3-e50c6015323a
-NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                STORAGECLASS   REASON   AGE
-pvc-75fc6d82-7b14-40b5-beb3-e50c6015323a   10Gi       RWO            Delete           Bound    default/redis-data   standard
-</code></pre></div><p>Note that the <code>RECLAIM POLICY</code> is set to <code>Delete</code>. That means that if the
+volume as follows:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl get pv pvc-75fc6d82-7b14-40b5-beb3-e50c6015323a
+</span></span><span class=line><span class=cl>NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                STORAGECLASS   REASON   AGE
+</span></span><span class=line><span class=cl>pvc-75fc6d82-7b14-40b5-beb3-e50c6015323a   10Gi       RWO            Delete           Bound    default/redis-data   standard
+</span></span></code></pre></div><p>Note that the <code>RECLAIM POLICY</code> is set to <code>Delete</code>. That means that if the
 PersistentVolumeClaim is deleted, Kubernetes will remove both the Volume it is
 bound to, as well as the associated storage asset. The other option is
 <code>Retain</code>. With this mode, the PersistentVolume object will not be deleted, but
 the volume will be considered &ldquo;released&rdquo;. The cluster administrator will need
-to perform <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#retain">manual
+to perform <a href=https://kubernetes.io/docs/concepts/storage/persistent-volumes/#retain target=_blank rel="noopener noreferrer">manual
 reclamation</a>
-of the resource.</p>
-<p>We are finally ready to deploy Redis with persistence enabled. Since our Redis
+of the resource.</p><p>We are finally ready to deploy Redis with persistence enabled. Since our Redis
 instance needs to sync to persistence storage, it&rsquo;s a stateful application. The
 correct abstraction for this kind of application is the <strong>StatefulSet</strong>
 controller. Like a Deployment controller, it takes care of managing Pods in a
 ReplicaSet. However, Pods controlled by a StatefulSet are not interchangeable:
 each Pod has a unique identifier that is maintained no matter where it is
-scheduled.</p>
-<blockquote>
-<p><strong>Heads up</strong> All replicas of a Deployment share the same
+scheduled.</p><blockquote><p><strong>Heads up</strong> All replicas of a Deployment share the same
 PersistentVolumeClaim. Since the replica Pods created are identical to each
 other, only volumes with modes ReadOnlyMany or ReadWriteMany can work in this
 setting. Even Deployments with one replica using a ReadWriteOnce volume are
@@ -614,204 +393,118 @@ may fail in a deadlock as the second Pod can&rsquo;t start because the
 ReadWriteOnce volume is already in use, and the first Pod won&rsquo;t be removed
 because the second Pod has not yet started. Instead, it&rsquo;s best to use a
 StatefulSet with ReadWriteOnce volumes, which is what we are doing in this
-case even if we only have a single Redis instance.</p>
-</blockquote>
-<p>A StatefulSet is configured almost identically to a Deployment:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">StatefulSet</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">redis</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">matchLabels</span>:
-      <span style="color:#f92672">service</span>: <span style="color:#ae81ff">redis</span>
-  <span style="color:#f92672">serviceName</span>: <span style="color:#ae81ff">redis</span>
-  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
-  <span style="color:#f92672">template</span>:
-    <span style="color:#f92672">metadata</span>:
-      <span style="color:#f92672">labels</span>:
-        <span style="color:#f92672">service</span>: <span style="color:#ae81ff">redis</span>
-    <span style="color:#f92672">spec</span>:
-      <span style="color:#f92672">containers</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">redis</span>
-        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">redis:6.0.3-alpine</span>
-        <span style="color:#f92672">args</span>: [<span style="color:#e6db74">&#34;--appendonly&#34;</span>, <span style="color:#e6db74">&#34;no&#34;</span>, <span style="color:#e6db74">&#34;--save&#34;</span>, <span style="color:#e6db74">&#34;300&#34;</span>, <span style="color:#e6db74">&#34;1&#34;</span>, <span style="color:#e6db74">&#34;--save&#34;</span>, <span style="color:#e6db74">&#34;30&#34;</span>, <span style="color:#e6db74">&#34;1000&#34;</span>]
-        <span style="color:#f92672">ports</span>:
-          - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">6379</span>
-            <span style="color:#f92672">name</span>: <span style="color:#ae81ff">redis</span>
-        <span style="color:#f92672">volumeMounts</span>:
-        - <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/data</span>
-          <span style="color:#f92672">name</span>: <span style="color:#ae81ff">redis-data</span>
-      <span style="color:#f92672">volumes</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">redis-data</span>
-        <span style="color:#f92672">persistentVolumeClaim</span>:
-          <span style="color:#f92672">claimName</span>: <span style="color:#ae81ff">redis-data</span>
-</code></pre></div><p>Notably, we declare the volume <code>redis-data</code>, bound to the PersistentVolumeClaim
+case even if we only have a single Redis instance.</p></blockquote><p>A StatefulSet is configured almost identically to a Deployment:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>apps/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>StatefulSet</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>selector</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>matchLabels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>serviceName</span><span class=p>:</span><span class=w> </span><span class=l>redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>replicas</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>containers</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>redis:6.0.3-alpine</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>args</span><span class=p>:</span><span class=w> </span><span class=p>[</span><span class=s2>&#34;--appendonly&#34;</span><span class=p>,</span><span class=w> </span><span class=s2>&#34;no&#34;</span><span class=p>,</span><span class=w> </span><span class=s2>&#34;--save&#34;</span><span class=p>,</span><span class=w> </span><span class=s2>&#34;300&#34;</span><span class=p>,</span><span class=w> </span><span class=s2>&#34;1&#34;</span><span class=p>,</span><span class=w> </span><span class=s2>&#34;--save&#34;</span><span class=p>,</span><span class=w> </span><span class=s2>&#34;30&#34;</span><span class=p>,</span><span class=w> </span><span class=s2>&#34;1000&#34;</span><span class=p>]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>ports</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span>- <span class=nt>containerPort</span><span class=p>:</span><span class=w> </span><span class=m>6379</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>volumeMounts</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>mountPath</span><span class=p>:</span><span class=w> </span><span class=l>/data</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>redis-data</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>volumes</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>redis-data</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>persistentVolumeClaim</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>claimName</span><span class=p>:</span><span class=w> </span><span class=l>redis-data</span><span class=w>
+</span></span></span></code></pre></div><p>Notably, we declare the volume <code>redis-data</code>, bound to the PersistentVolumeClaim
 <code>redis-data</code>, which is mounted at <code>/data</code>. The <code>redis</code> Docker image stores data
 at <code>/data</code> by default. The additional arguments in <code>args</code> just instruct Redis
 to save data at a certain frequency. The above configuration is saved in
-<code>deploy/redis/20-statefulset.yaml</code> and applied with the usual command</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl apply -f deploy/redis/20-statefulset.yaml
-</code></pre></div><p>Finally, we need to deploy a Service to ensure that our Redis instance can be
+<code>deploy/redis/20-statefulset.yaml</code> and applied with the usual command</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl apply -f deploy/redis/20-statefulset.yaml
+</span></span></code></pre></div><p>Finally, we need to deploy a Service to ensure that our Redis instance can be
 reached. Since it only has to communicate with Pods inside the cluster, a
-ClusterIP Service is sufficient:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">redis</span>
-  <span style="color:#f92672">labels</span>:
-    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">redis</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">ClusterIP</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">service</span>: <span style="color:#ae81ff">redis</span>
-  <span style="color:#f92672">ports</span>:
-  - <span style="color:#f92672">port</span>: <span style="color:#ae81ff">6379</span>
-    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">6379</span>
-</code></pre></div><p>We call the Service <code>redis</code>, so that it can be reached by our backend
-application (recall that we defined the environment variable <code>REDIS_URL</code>).</p>
-<p>Finally! The cluster is now fully functional.</p>
-<figure>
-<img src="/static/images/kubernetes-tutorial-ii-Architecture.png" alt="Final state of the cluster" />
-<figcaption>
-    <strong>Fig. 3</strong>&emsp;Final state of the cluster. Redis, backed by
-    persistent storage, is queried by the backend application. External traffic
-    to the backend application is proxied by nginx.
-</figcaption>
-</figure>
-<p>We can test the application behavior by calling the /users endpoints:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ http 10.103.127.182/healthz
-✓
-$ http 10.103.127.182/users/10  <span style="color:#75715e"># user 10 does not exist, we get 0</span>
-<span style="color:#ae81ff">0</span>
-$ http 10.103.127.182/users/10  <span style="color:#75715e"># user 10 does not exist, we get 0</span>
-<span style="color:#ae81ff">0</span>
-$ http POST 10.103.127.182/users/10  <span style="color:#75715e"># increment user 10</span>
-<span style="color:#ae81ff">1</span>
-$ http 10.103.127.182/users/10  <span style="color:#75715e"># now we get 1</span>
-<span style="color:#ae81ff">1</span>
-$ http POST 10.103.127.182/users/10  <span style="color:#75715e"># increment user 10 again</span>
-<span style="color:#ae81ff">2</span>
-$ http POST 10.103.127.182/users/10  <span style="color:#75715e"># ...</span>
-<span style="color:#ae81ff">3</span>
-$ http POST 10.103.127.182/users/10
-<span style="color:#ae81ff">4</span>
-$ http 10.103.127.182/users/10
-<span style="color:#ae81ff">4</span>
-</code></pre></div><p>Remember that we are querying the external IP that we read from <code>kubectl get svc</code> (and running <code>minikube tunnel</code> as well).</p>
-<h4 id="aside-dns-resolution-within-the-cluster">Aside: DNS resolution within the cluster</h4>
-<p>You might be asking yourself, how does the backend app find the Redis Service
-IP?  This is a good question. Kubernetes offers a DNS cluster addon Service
+ClusterIP Service is sufficient:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Service</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>ClusterIP</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>selector</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>service</span><span class=p>:</span><span class=w> </span><span class=l>redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>ports</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>6379</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>targetPort</span><span class=p>:</span><span class=w> </span><span class=m>6379</span><span class=w>
+</span></span></span></code></pre></div><p>We call the Service <code>redis</code>, so that it can be reached by our backend
+application (recall that we defined the environment variable <code>REDIS_URL</code>).</p><p>Finally! The cluster is now fully functional.</p><figure><img src=/static/images/kubernetes-tutorial-ii-Architecture.png alt="Final state of the cluster"><figcaption><strong>Fig. 3</strong>&emsp;Final state of the cluster. Redis, backed by
+persistent storage, is queried by the backend application. External traffic
+to the backend application is proxied by nginx.</figcaption></figure><p>We can test the application behavior by calling the /users endpoints:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ http 10.103.127.182/healthz
+</span></span><span class=line><span class=cl>✓
+</span></span><span class=line><span class=cl>$ http 10.103.127.182/users/10  <span class=c1># user 10 does not exist, we get 0</span>
+</span></span><span class=line><span class=cl><span class=m>0</span>
+</span></span><span class=line><span class=cl>$ http 10.103.127.182/users/10  <span class=c1># user 10 does not exist, we get 0</span>
+</span></span><span class=line><span class=cl><span class=m>0</span>
+</span></span><span class=line><span class=cl>$ http POST 10.103.127.182/users/10  <span class=c1># increment user 10</span>
+</span></span><span class=line><span class=cl><span class=m>1</span>
+</span></span><span class=line><span class=cl>$ http 10.103.127.182/users/10  <span class=c1># now we get 1</span>
+</span></span><span class=line><span class=cl><span class=m>1</span>
+</span></span><span class=line><span class=cl>$ http POST 10.103.127.182/users/10  <span class=c1># increment user 10 again</span>
+</span></span><span class=line><span class=cl><span class=m>2</span>
+</span></span><span class=line><span class=cl>$ http POST 10.103.127.182/users/10  <span class=c1># ...</span>
+</span></span><span class=line><span class=cl><span class=m>3</span>
+</span></span><span class=line><span class=cl>$ http POST 10.103.127.182/users/10
+</span></span><span class=line><span class=cl><span class=m>4</span>
+</span></span><span class=line><span class=cl>$ http 10.103.127.182/users/10
+</span></span><span class=line><span class=cl><span class=m>4</span>
+</span></span></code></pre></div><p>Remember that we are querying the external IP that we read from <code>kubectl get svc</code> (and running <code>minikube tunnel</code> as well).</p><h4 id=aside-dns-resolution-within-the-cluster>Aside: DNS resolution within the cluster</h4><p>You might be asking yourself, how does the backend app find the Redis Service
+IP? This is a good question. Kubernetes offers a DNS cluster addon Service
 that runs as the kube-dns Service in the <code>kube-system</code> namespace. You can check
-if your cluster is running kube-dns by running the following command:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl get svc -n kube-system
-NAME       TYPE        CLUSTER-IP   EXTERNAL-IP   PORT<span style="color:#f92672">(</span>S<span style="color:#f92672">)</span>                  AGE
-kube-dns   ClusterIP   10.96.0.10   &lt;none&gt;        53/UDP,53/TCP,9153/TCP   2h
-</code></pre></div><p>If this Service is running, then it automatically assigns a DNS record to each
-Service name. Otherwise, the default A/AAAA record format for a Service is</p>
-<pre><code>{service name}.{namespace}.svc.{cluster domain}
+if your cluster is running kube-dns by running the following command:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl get svc -n kube-system
+</span></span><span class=line><span class=cl>NAME       TYPE        CLUSTER-IP   EXTERNAL-IP   PORT<span class=o>(</span>S<span class=o>)</span>                  AGE
+</span></span><span class=line><span class=cl>kube-dns   ClusterIP   10.96.0.10   &lt;none&gt;        53/UDP,53/TCP,9153/TCP   2h
+</span></span></code></pre></div><p>If this Service is running, then it automatically assigns a DNS record to each
+Service name. Otherwise, the default A/AAAA record format for a Service is</p><pre tabindex=0><code>{service name}.{namespace}.svc.{cluster domain}
 </code></pre><p>where the default value for <code>{cluster domain}</code> is usually <code>cluster.local</code>. We
-can test the DNS resolution from a Pod with <code>nslookup</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ kubectl exec -it backend-78d87dd74b-pk7tr -- nslookup redis
-nslookup: can<span style="color:#e6db74">&#39;t resolve &#39;</span><span style="color:#f92672">(</span>null<span style="color:#f92672">)</span><span style="color:#960050;background-color:#1e0010">&#39;</span>: Name does not resolve
-
-Name:      redis
-Address 1: 10.97.34.93 redis.default.svc.cluster.local
-</code></pre></div><p>Do not pay attention to the first line of the nslookup output. It&rsquo;s a
-weirdly-worded message that <a href="https://stackoverflow.com/a/57066045/448496">doesn&rsquo;t actually indicate an
+can test the DNS resolution from a Pod with <code>nslookup</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ kubectl <span class=nb>exec</span> -it backend-78d87dd74b-pk7tr -- nslookup redis
+</span></span><span class=line><span class=cl>nslookup: can<span class=s1>&#39;t resolve &#39;</span><span class=o>(</span>null<span class=o>)</span><span class=err>&#39;</span>: Name does not resolve
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Name:      redis
+</span></span><span class=line><span class=cl>Address 1: 10.97.34.93 redis.default.svc.cluster.local
+</span></span></code></pre></div><p>Do not pay attention to the first line of the nslookup output. It&rsquo;s a
+weirdly-worded message that <a href=https://stackoverflow.com/a/57066045/448496 target=_blank rel="noopener noreferrer">doesn&rsquo;t actually indicate an
 error</a>. The output tells us that
 indeed, the <code>redis</code> name resolves to 10.97.34.93, which is the ClusterIP of the
-Redis Service.</p>
-<h2 id="recap">Recap</h2>
-<ul>
-<li>We created Deployments and StatefulSets to deploy the application layer,
+Redis Service.</p><h2 id=recap>Recap</h2><ul><li>We created Deployments and StatefulSets to deploy the application layer,
 Services to implement networking between Pods and a PersistentVolumeClaim to
-configure storage.</li>
-<li>We mentioned health checks, which should always be implemented and
-configured.</li>
-<li>We briefly touched on the topic of DNS resolution.</li>
-<li>Throughout the tutorial, we used several useful <code>kubectl</code> subcommands:
-<code>kubectl apply</code>, <code>kubectl get</code>, <code>kubectl describe</code>, <code>kubectl logs</code>.</li>
-</ul>
-<h2 id="what-we-didnt-cover">What we didn&rsquo;t cover</h2>
-<ul>
-<li>If you don&rsquo;t want to use a managed solution like Google Kubernetes Engine
+configure storage.</li><li>We mentioned health checks, which should always be implemented and
+configured.</li><li>We briefly touched on the topic of DNS resolution.</li><li>Throughout the tutorial, we used several useful <code>kubectl</code> subcommands:
+<code>kubectl apply</code>, <code>kubectl get</code>, <code>kubectl describe</code>, <code>kubectl logs</code>.</li></ul><h2 id=what-we-didnt-cover>What we didn&rsquo;t cover</h2><ul><li>If you don&rsquo;t want to use a managed solution like Google Kubernetes Engine
 (GKE) or Amazon Elastic Kubernetes Service (EKS), you will have to set up
-Kubernetes yourself on VMs or bare metal, and that is not simple.  If you are
+Kubernetes yourself on VMs or bare metal, and that is not simple. If you are
 interested, I recommend you read the
-<a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/"><code>kubeadm</code></a>
-documentation or the excellent <a href="https://github.com/kelseyhightower/kubernetes-the-hard-way">Kubernetes The Hard
+<a href=https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/ target=_blank rel="noopener noreferrer"><code>kubeadm</code></a>
+documentation or the excellent <a href=https://github.com/kelseyhightower/kubernetes-the-hard-way target=_blank rel="noopener noreferrer">Kubernetes The Hard
 Way</a> series by
-Kelsey Hightower.</li>
-<li>We defined the environment variable <code>REDIS_URL</code> directly in the backend
+Kelsey Hightower.</li><li>We defined the environment variable <code>REDIS_URL</code> directly in the backend
 Deployment configuration. When the configuration gets bigger, it&rsquo;s best to
 use
-<a href="https://kubernetes.io/docs/concepts/configuration/configmap/"><code>ConfigMaps</code></a>.</li>
-<li>We didn&rsquo;t cover Ingresses or TLS termination. Personally I find the <a href="https://kubernetes.github.io/ingress-nginx/">nginx
+<a href=https://kubernetes.io/docs/concepts/configuration/configmap/ target=_blank rel="noopener noreferrer"><code>ConfigMaps</code></a>.</li><li>We didn&rsquo;t cover Ingresses or TLS termination. Personally I find the <a href=https://kubernetes.github.io/ingress-nginx/ target=_blank rel="noopener noreferrer">nginx
 Ingress controller</a> and
-<a href="https://cert-manager.io/">cert-manager</a> quite powerful and easy to setup.
+<a href=https://cert-manager.io/ target=_blank rel="noopener noreferrer">cert-manager</a> quite powerful and easy to setup.
 Cert-manager handles the provisioning and renewal of Let&rsquo;s Encrypt
-certificates automatically.</li>
-<li>If your Kubernetes cluster is accessed by multiple users, you should
-configure <a href="https://kubernetes.io/docs/reference/access-authn-authz/rbac/">role-based access control
-(RBAC)</a>.</li>
-</ul>
-<h2 id="conclusion">Conclusion</h2>
-<p>In this second part we deployed an toy application that resembled a real-world
+certificates automatically.</li><li>If your Kubernetes cluster is accessed by multiple users, you should
+configure <a href=https://kubernetes.io/docs/reference/access-authn-authz/rbac/ target=_blank rel="noopener noreferrer">role-based access control
+(RBAC)</a>.</li></ul><h2 id=conclusion>Conclusion</h2><p>In this second part we deployed an toy application that resembled a real-world
 one. I encourage you to start experimenting with your applications. Before you
-begin, you may want to take a look at some <a href="/post/kubernetes-tutorial-iii-best-practices/">best
+begin, you may want to take a look at some <a href=/post/kubernetes-tutorial-iii-best-practices/>best
 practices</a>, so that you can
-form good habits from the start. I also recommend taking a look at some <a href="/post/kubernetes-tools/">useful
+form good habits from the start. I also recommend taking a look at some <a href=/post/kubernetes-tools/>useful
 tools</a> that make working with Kubernetes easier and
-more efficient.</p>
-
-        </section>
-    </article>
-</main>
-
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-
-(function() {
-      
-      
-      if (window.location.hostname == "localhost")
-                return;
-
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      var disqus_shortname = 'signal-to-noise';
-      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-
-	<footer role="contentinfo">
-		<div class="hr"></div>
-		<div class="footer-link">
-            <ul>
-                <li><script>document.write('<'+'a'+' '+'h'+'r'+'e'+'f'+'='+"'"+'m'+'a'+'i'+'&'+'#'+'1'+'0'+
-'8'+';'+'t'+'o'+'&'+'#'+'5'+'8'+';'+'&'+'#'+'1'+'0'+'9'+';'+'i'+'c'+'h'+'&'+
-'#'+'1'+'0'+'1'+';'+'&'+'#'+'1'+'0'+'8'+';'+'%'+'6'+'5'+'l'+'%'+'6'+'1'+'c'+
-'c'+'%'+'6'+'8'+'i'+'a'+'%'+'&'+'#'+'5'+'2'+';'+'0'+'%'+'6'+'&'+'#'+'5'+'5'+
-';'+'&'+'#'+'1'+'0'+'9'+';'+'&'+'#'+'9'+'7'+';'+'&'+'#'+'1'+'0'+'5'+';'+'l'+
-'%'+'&'+'#'+'5'+'0'+';'+'E'+'%'+'6'+'3'+'o'+'m'+"'"+'>'+'E'+'m'+'a'+'i'+'&'+
-'#'+'1'+'0'+'8'+';'+'<'+'/'+'a'+'>');</script></li>
-                <li><a href="https://github.com/rubik/" target="_blank" rel="noopener">GitHub</a></li>
-                <li><a href="https://www.linkedin.com/in/michele-lacchia/" target="_blank" rel="noopener">LinkedIn</a></li>
-                <li><a href="/page/about/">About me</a></li>
-                <li><a href="http://feeds.feedburner.com/signal-to-noise">RSS</a></li>
-            </ul>
-
-		</div>
-		<div class="copyright">Created by Michele Lacchia, built with Hugo</div>
-	</footer>
-</div>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-
-<script src="//instant.page/1.0.0" type="module" integrity="sha384-6w2SekMzCkuMQ9sEbq0cLviD/yR2HfA/+ekmKiBnFlsoSvb/VmQFSi/umVShadQI"></script>
-</body>
-</html>
-
+more efficient.</p></article></main><div id=disqus_thread></div><script type=text/javascript>(function(){if(window.location.hostname=="localhost")return;var t,e=document.createElement("script");e.type="text/javascript",e.async=!0,t="signal-to-noise",e.src="//"+t+".disqus.com/embed.js",(document.getElementsByTagName("head")[0]||document.getElementsByTagName("body")[0]).appendChild(e)})()</script><noscript>Please enable JavaScript to view the <a href=http://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><footer role=contentinfo><div class=hr></div><div class=footer-links><ul><li><script>document.write("<a href='mai&#108;to&#58;&#109;ich&#101;&#108;%65l%"+"6"+"1"+"c"+"c"+"%"+"6"+"8"+"i"+"a"+"%"+"&"+"#"+"5"+"2"+";"+"0"+"%"+"6"+"&"+"#"+"5"+"5"+";"+"&"+"#"+"1"+"0"+"9"+";"+"&"+"#"+"9"+"7"+";"+"&"+"#"+"1"+"0"+"5"+";"+"l"+"%"+"&"+"#"+"5"+"0"+";"+"E"+"%"+"6"+"3"+"o"+"m"+"'"+">"+"E"+"m"+"a"+"i"+"&"+"#"+"1"+"0"+"8"+";"+"<"+"/"+"a"+">")</script></li><li><a href=https://github.com/rubik/ target=_blank rel=noopener>GitHub</a></li><li><a href=https://www.linkedin.com/in/michele-lacchia/ target=_blank rel=noopener>LinkedIn</a></li><li><a href=/page/about/>About me</a></li><li><a href=http://feeds.feedburner.com/signal-to-noise>RSS</a></li></ul></div><div class=copyright>Created by Michele Lacchia, built with Hugo</div></footer></div><script defer src=//instant.page/5.1.1 type=module integrity=sha384-MWfCL6g1OTGsbSwfuMHc8+8J2u71/LA8dzlIN3ycajckxuZZmF+DNjdm7O6H3PSq></script></body></html>
