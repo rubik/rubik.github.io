@@ -255,7 +255,7 @@ td > code {
   }
 }
 
-#disqus_thread {
+.comments {
   margin: 0 auto;
   max-width: 740px;
 }
@@ -421,7 +421,7 @@ figure {
     display: block;
   }
 
-  #disqus_thread {
+  .comments {
     max-width: 100%;
     padding: 0 10px;
   }

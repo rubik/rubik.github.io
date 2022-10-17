@@ -18,6 +18,10 @@
     </article>
 </main>
 
+{{ if .Param "hasDisqus" }}
 {{ partial "disqus.html" . }}
+{{ else }}
+{{ partial "replybox.html" . }}
+{{ end }}
 
 {{ partial "footer.html" . }}
