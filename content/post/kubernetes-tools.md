@@ -3,7 +3,6 @@ author = "Michele Lacchia"
 title = "Kubernetes tools and plugins for enhanced productivity"
 tags = ["kubernetes", "containers", "big-list"]
 date = "2020-06-07"
-hasCode = true
 summary = "A list of useful Kubernetes tools for enhanced productivity."
 +++
 

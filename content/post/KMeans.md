@@ -4,7 +4,6 @@ title = "The KMeans problem"
 date = "2016-10-30"
 tags = ["python", "matplotlib", "machine-learning"]
 hasMath = true
-hasCode = true
 summary = "Mathematical explanation and Python implementation of the LLoyd's algorithm for the KMeans problem"
 +++
 

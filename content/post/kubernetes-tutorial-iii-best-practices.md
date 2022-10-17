@@ -3,7 +3,6 @@ author = "Michele Lacchia"
 title = "A complete Kubernetes tutorial, part III: best practices"
 tags = ["kubernetes", "containers"]
 date = "2020-06-01"
-hasCode = true
 summary = "A complete Kubernetes tutorial series covering all the basics."
 +++
 
