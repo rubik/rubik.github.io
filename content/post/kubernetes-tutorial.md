@@ -2,7 +2,6 @@
 author = "Michele Lacchia"
 title = "A complete Kubernetes tutorial, part I: the basic concepts"
 tags = ["kubernetes", "containers"]
-category = "posts"
 date = "2019-11-11"
 summary = "A complete Kubernetes tutorial series covering all the basics."
 +++
@@ -81,7 +80,7 @@ the desired state, remediation actions are applied. These can include
 scheduling or unscheduling workloads, for example.
 
 <figure>
-<img src="/static/images/kubernetes-Architecture.png" alt="Architecture of a Kubernetes cluster" />
+<img width="623" src="/static/images/kubernetes-Architecture.png" alt="Architecture of a Kubernetes cluster" />
 <figcaption>
     <strong>Fig. 1</strong>&emsp;A client, like kubectl, interacts with the
     Kubernetes API. The master node takes care of managing pods on the worker
@@ -248,7 +247,7 @@ This type exposes the Service on a cluster-internal IP address. This is useful
 for exposing Services running inside the same cluster to each other.
 
 <figure>
-<img src="/static/images/kubernetes-ClusterIP.png" alt="A ClusterIP Service" />
+<img width="452" src="/static/images/kubernetes-ClusterIP.png" alt="A ClusterIP Service" />
 <figcaption>
     <strong>Fig. 2</strong>&emsp;A ClusterIP Service can be reached from inside the
     cluster. It routes traffic to all Pods matching its label selector. In this
@@ -263,7 +262,7 @@ and can be used to access the Pods from outside the cluster.  A ClusterIP
 Service, to which the NodePort Service routes, is automatically created.
 
 <figure>
-<img src="/static/images/kubernetes-NodePort.png" alt="A NodePort Service" />
+<img width="452" src="/static/images/kubernetes-NodePort.png" alt="A NodePort Service" />
 <figcaption>
     <strong>Fig. 3</strong>&emsp;A NodePort Service exposes its Pods on each node at
     a random port chosen in the range 30000-32767. This port can be customized
@@ -282,7 +281,7 @@ ClusterIP Services, to which the external load balancer routes, are
 automatically created.
 
 <figure>
-<img src="/static/images/kubernetes-LoadBalancer.png" alt="A NodePort Service" />
+<img width="482" src="/static/images/kubernetes-LoadBalancer.png" alt="A NodePort Service" />
 <figcaption>
     <strong>Fig. 4</strong>&emsp;A LoadBalancer Service creates the corresponding
     NodePort Service and provisions a cloud load balancer automatically.

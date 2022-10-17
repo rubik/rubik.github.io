@@ -3,14 +3,14 @@ author = "Michele Lacchia"
 title = "Exploration of Texas death row data"
 date = "2016-10-29"
 tags = ["python", "sklearn", "gensim", "altair"]
-category = "notebooks"
 hasMath = true
+hasCode = true
 summary = "Exploration of Texas death row data"
 +++
 
-On the site [Texas Department of Criminal Justice]([http://www.tdcj.state.tx.us](www.tdcj.state.tx.us)) there's a page which lists all the people that have been executed since 1982, when the death penalty was reinstated, along with their last statement. The data is [here](http://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html). In this project we are going to explore the data and see if we can apply topic modeling to the statements.
+On the site of the [Texas Department of Criminal Justice](https://www.tdcj.state.tx.us) there's a page which lists all the people that have been executed since 1982, when the death penalty was reinstated, along with their last statement. The data is [here](https://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html). In this project we are going to explore the data and see if we can apply topic modeling to the statements.
 
-# Setup
+## Setup
 We are going to use the following packages:
 
 * `scrapy` to scrape the data
@@ -45,7 +45,7 @@ def pie(ax, *args, **kwargs):
     ax.axis('equal')
 ```
 
-# Scraping the data
+## Scraping the data
 I used [Scrapy](https://scrapy.org/) to obtain all the data. In the first iteration of this project I was using `requests` and `BeautifulSoup`. However, the code quickly became messy and even though I was using `concurrent.futures` to send asynchronous requests it was unbearably slow. Hence my decision to switch to Scrapy. I had already used it, and it's really easy to setup. I won't post the complete code here, because Scrapy requires a whole project to run. The important part is the spider, which is contained in a single class. If you've already used Scrapy, the code is very easy to follow, with minor adjustments for errors in the original page (see people #416 and #419 for an example).
 
 
@@ -56,7 +56,7 @@ class TexasDeathSpider(scrapy.Spider):
     name = 'texas_death'
     allowed_domains = ['www.tdcj.state.tx.us']
     start_urls = (
-        'http://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html',
+        'https://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html',
     )
 
     def parse(self, response):
@@ -123,7 +123,7 @@ Unfortunately many times the additional information is missing and we are served
 
 The additional information is rarely present, leaving us with only 151 people with additional information out of 538. I decided to extract only the gender from the additional information, as it's relatively easy to guess it for the missing people.
 
-# Cleaning and processing the data
+## Cleaning and processing the data
 We'll now clean the data we have to see if there's anything interesting in it.
 
 
@@ -164,7 +164,7 @@ people.head()
 
 
 <div>
-<table border="1" class="dataframe">
+<table>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -296,7 +296,7 @@ def _read_date(date):
 people.date_execution = people.date_execution.map(_read_date)
 ```
 
-The gender column is a bit more complicated to fill, since in theory there are a few names that are considered 'unisex' ([this site](http://www.babynameguide.com/categoryunisex.asp?strCat=Unisex) has a comprehensive list). Let's check the names of the people for which we are missing the gender.
+The gender column is a bit more complicated to fill, since in theory there are a few names that are considered 'unisex' (<s>babynameguide.com has a comprehensive list</s> UPDATE (2022): the site is no longer operational). Let's check the names of the people for which we are missing the gender.
 
 
 ```python
@@ -434,10 +434,10 @@ people.info()
     memory usage: 42.1+ KB
 
 
-# Data visualization
+## Data visualization
 We'll first observe the general characteristics of the dataset by visualizing the most important ones.
 
-## Distribution of race, age and sex
+### Distribution of race, age and sex
 Let's start by plotting the race distribution as a pie chart.
 
 
@@ -462,7 +462,7 @@ plt.show(fig)
 ![png](/TexasDeathRow_files/TexasDeathRow_32_0.png)
 
 
-The population data was taken from the [2010 US Census](http://www.census.gov/prod/cen2010/briefs/c2010br-02.pdf) (PDF). It's pretty clear that White people are underrepresented in the death row data, while Black people are considerably overrepresented. People of Hispanic descent are roughly proportional. Although it would be very interesting to investigate into the causes of this disproportion, we have too little data and our main goal is to analyze the statements, so we will not venture further.
+The population data was taken from the [2010 US Census](https://www.census.gov/prod/cen2010/briefs/c2010br-02.pdf) (PDF). It's pretty clear that White people are underrepresented in the death row data, while Black people are considerably overrepresented. People of Hispanic descent are roughly proportional. Although it would be very interesting to investigate into the causes of this disproportion, we have too little data and our main goal is to analyze the statements, so we will not venture further.
 
 Let's visualize the age with respect to race.
 
@@ -535,11 +535,11 @@ show(Chart(people[['race', 'gender']].dropna()).mark_bar().encode(
 ![png](/TexasDeathRow_files/TexasDeathRow_38_2.png)
 
 
-Not surprisingly, the overwhelming majority of executed offenders is male. That is because under [Texas statutes](https://en.wikipedia.org/wiki/Capital_punishment_in_Texas#Capital_offenses) death penalty is generally sought for murders, and men are more likely to commit a violent crime (data from [this survey](http://www.bjs.gov/content/pub/pdf/cvus0702.pdf) (PDF) from the U.S. department of Justice, table 38). As to why is it so, it is still debated. [Wikipedia](https://en.wikipedia.org/wiki/Sex_differences_in_crime#Aggression_and_violence_among_peers_and_in_relationships) enumerates some of the current theories, with references if you desire to read further. An interesting quote from the linked paragraph is reported here:
+Not surprisingly, the overwhelming majority of executed offenders is male. That is because under [Texas statutes](https://en.wikipedia.org/wiki/Capital_punishment_in_Texas#Capital_offenses) death penalty is generally sought for murders, and men are more likely to commit a violent crime (data from [this survey](https://www.bjs.gov/content/pub/pdf/cvus0702.pdf) (PDF) from the U.S. department of Justice, table 38). As to why is it so, it is still debated. [Wikipedia](https://en.wikipedia.org/wiki/Sex_differences_in_crime#Aggression_and_violence_among_peers_and_in_relationships) enumerates some of the current theories, with references if you desire to read further. An interesting quote from the linked paragraph is reported here:
 
 > Another 2011 review published in the journal of Aggression and Violent Behavior also found that although minor domestic violence was equal, more severe violence was perpetrated by men.
 
-## Statement length
+### Statement length
 We'll count the number of sentences in each statement. We'll make use of the amazing package `textblob`, which has a better API than `nltk` but uses it behind the scenes. We store the blobs because we'll need them later as well.
 
 
@@ -616,7 +616,7 @@ The statement is from Shaka Sankofa, a.k.a. Gary Graham, who was found guilty in
 
 Although he denied committing the murder until his very end, he admitted that at the time of Lambert's death he was on a week-long spree of armed robberies, assaults, attempted murders and one rape. Wikipedia has a [page](https://en.wikipedia.org/wiki/Shaka_Sankofa) on him if you wish to read more.
 
-## Number of executions per year
+### Number of executions per year
 For this one, a line chart is a better fit.
 
 
@@ -651,9 +651,9 @@ show(Chart(people).mark_line().encode(
 ![png](/TexasDeathRow_files/TexasDeathRow_48_2.png)
 
 
-It looks like executions peaked in year 2000 at 40. That's quite a lot: about one every 9 days. Year 2000 has been called ['A Watershed Year of Change'](http://www.deathpenaltyinfo.org/2000-year-end-report-watershed-year-change), because numerous exonerations revealed persistent errors in the administration of capital punishment and increased public awareness. Many capital punishment advocates changed their mind and joined the growing movement that called for reforms and ultimately the abolishment of death penalty. This also serves as a good explanation for the downward trend that follows year 2000.
+It looks like executions peaked in year 2000 at 40. That's quite a lot: about one every 9 days. Year 2000 has been called ['A Watershed Year of Change'](https://www.deathpenaltyinfo.org/2000-year-end-report-watershed-year-change), because numerous exonerations revealed persistent errors in the administration of capital punishment and increased public awareness. Many capital punishment advocates changed their mind and joined the growing movement that called for reforms and ultimately the abolishment of death penalty. This also serves as a good explanation for the downward trend that follows year 2000.
 
-## Crimes map
+### Crimes map
 We'll make a heat map of the counties where the crimes were committed, and for that we'll need the geographic centre of each county. I found an extremely useful table curated by the Wikipedia user Michael J, which among a wealth of other data also has coordinates for each county. The table is available [here](https://en.wikipedia.org/wiki/User:Michael_J/County_table).
 
 Since there are no links to follow, a whole Scrapy spider is redundant, but we'll use the convenient Scrapy selector.
@@ -693,7 +693,7 @@ counties.head()
 
 
 <div>
-<table border="1" class="dataframe">
+<table>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -751,7 +751,7 @@ county_count.head()
 
 
 <div>
-<table border="1" class="dataframe">
+<table>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -803,7 +803,7 @@ county_data.head()
 
 
 <div>
-<table border="1" class="dataframe">
+<table>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -887,7 +887,7 @@ county_count.sort_values(by='count', ascending=False).head(10)
 
 
 <div>
-<table border="1" class="dataframe">
+<table>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -952,10 +952,10 @@ county_count.sort_values(by='count', ascending=False).head(10)
 
 
 
-# Data analysis
+## Data analysis
 We finally get to the analysis of the statements, which will be divided in three parts. First we will conduct a very simple frequency analysis, then we will perform some sentiment analysis on the text. Finally we will attempt to organize the statements in clusters.
 
-## Frequency analysis
+### Frequency analysis
 The statements contain some non-ASCII characters, which we will replace for easier processing. There is also spurious text in the form of `(Spanish)`, `(English)`, which is added to specify the language in which the statement was spoken.
 
 
@@ -1051,7 +1051,7 @@ If it wasn't already clear before, the word 'love' really is an exception: it oc
 
 From what we have seen until now, we might think that the statements can be roughly divided in two or three groups: those that focus on family, forgiveness and people in general, and those that have religious content. The third group might represent the statements in which the person quickly addresses the Warden and says they are ready or that they decline to give a statement. We'll check this hypothesis later when we'll attempt topic modeling.
 
-## Sentiment analysis
+### Sentiment analysis
 Before moving on to the last part of the analysis, I'll insert a brief aside about sentiment analysis. We'll be using the package `textblob`, which builds stands on the shoulders of giants (the famous `NLTK` package), providing at the same time a modern API that is a pleasure to work with. The core concept in `textblob` is that of a 'blob', or a segment of text.
 
 
@@ -1125,7 +1125,7 @@ people_with_stmt[['race', 'sentiment_polarity']].groupby(people_with_stmt['race'
 
 
 <div>
-<table border="1" class="dataframe">
+<table>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -1170,7 +1170,7 @@ people_with_stmt[['race', 'sentiment_subjectivity']].groupby(people_with_stmt['r
 
 
 <div>
-<table border="1" class="dataframe">
+<table>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -1204,7 +1204,7 @@ people_with_stmt[['race', 'sentiment_subjectivity']].groupby(people_with_stmt['r
 
 
 
-## Topic modelling with `scikit-learn`
+### Topic modelling with `scikit-learn`
 We'll employ LSA, or Latent Semantical Analysis, to group the statements in clusters. The statements will be vectorized with `TfidfVectorizer`, in order to obtain a matrix of frequencies. Rows represent the documents, while the columns represent unique words. Every row is normalized with respect to the Euclidean norm. The SVD algorithm is applied with the goal to reduce the number of columns (that is, of features). With fewer columns, the new matrix will have a smaller rank. The consequence of this is that some dimensions are combined and depend on more than one term. Example:
 
 $$(\text{car}, \text{bike}, \text{bicycle}) \longrightarrow (\text{car}, \alpha_1 \times \text{bike} + \alpha_2 \times \text{bicycle})$$
@@ -1231,7 +1231,7 @@ pipe = make_pipeline(
 X_s = pipe.fit_transform(people_with_stmt.last_statement)
 ```
 
-As expected, the shape of the resulting matrix is $(\text{n\_statements}, \text{n\_components})$:
+As expected, the shape of the resulting matrix is $(n_{\text{statements}},\\;n_{\text{components}})$:
 
 
 ```python
@@ -1360,10 +1360,10 @@ print_topics(3)
 
 The topics are not at all like we envisioned, and there's too much overlap. It appears that six clusters is indeed a better model.
 
-### Other `scikit-learn` models
+#### Other `scikit-learn` models
 I also tried to fit a `MeanShift` model and a `DBSCAN` model. Unfortunately, the results weren't acceptable: the first one was either finding ten (or more) clusters or just one. The latter yielded slightly better results (at first sight), finding three clusters, but that was misleading: $97\%$ of the data was classified in the same cluster. For these reasons I dropped them and I won't show the code here, although it's very similar to what we have just done with `KMeans` (the `scikit-learn` API is amazingly consistent).
 
-## Topic modelling with `gensim`
+### Topic modelling with `gensim`
 Finally, I wanted to try out `gensim`, which is a package built specifically for topic modeling. The first thing to do is tokenization.
 
 
@@ -1415,5 +1415,5 @@ lsi_model = LsiModel(tfidf_model[corpus], id2word=dictionary, num_topics=3)
 
 The result is quite different from what we got from `KMeans`. Here, the clusters are slightly better defined: one for shorter statements directed to the Warden, one for the family and lastly one with mixed words (even from a religious lexicon).
 
-# Wrapping up
-We analyzed a very interesting dataset, and even though it was fairly small in size, it provided us with quite a number of thought-provoking insights, that could be the starting point for further analysis. The goal of this exploration wasn't to reach a definitive conclusion about the dataset, but rather to put together different aspects of data analysis and visualization. This was also an opportunity to acquaint myself with various Python libraries.
+## Wrapping up
+We analyzed a very interesting dataset, and even though it was fairly small in size, it provided us with quite a number of thought-provoking insights that could be the starting point for further analysis. The goal of this exploration wasn't to reach a definitive conclusion about the dataset, but rather to put together different aspects of data analysis and visualization. This was also an opportunity to acquaint myself with various Python libraries.

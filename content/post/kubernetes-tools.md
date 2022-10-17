@@ -2,15 +2,16 @@
 author = "Michele Lacchia"
 title = "Kubernetes tools and plugins for enhanced productivity"
 tags = ["kubernetes", "containers", "big-list"]
-category = "posts"
 date = "2020-06-07"
 summary = "A list of useful Kubernetes tools for enhanced productivity."
 +++
 
-<div class="img-with-copyright">
-<img itemprop="image" title="A pipeline" src="/static/images/port-containers.jpg" />
-<div class="copyright"><span>Photo by <a href="https://unsplash.com/@timelabpro?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Timelab Pro</a> on <a href="https://unsplash.com/s/photos/port-containers?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>.<span style="clear:both"></span></span></div>
-</div>
+<figure>
+    <img itemprop="image" title="A pipeline" src="/static/images/port-containers.jpg" />
+    <div class="copyright">
+        Photo by&nbsp;<a href="https://unsplash.com/@timelabpro?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Timelab Pro</a>&nbsp;on&nbsp;<a href="https://unsplash.com/s/photos/port-containers?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>.
+    </div>
+</figure>
 
 `kubectl` is a great tool, but when the clusters start to multiply and each one
 has several namespaces, staying productive can become a challenge. In this

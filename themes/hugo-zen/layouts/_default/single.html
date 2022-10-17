@@ -3,20 +3,18 @@
 {{ $baseurl := .Site.BaseURL }}
 
 <main role="main">
-    <article>
-        <h1 class="entry-title">{{ .Title }}</h1>
-        <span class="entry-meta"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 02, 2006" }}</time></span>,
-        <span class="entry-meta">{{ .Params.author }}</span>
-        <div class="post-after">
-              <div class="tags">
-                {{ range .Params.tags }}
-                    <a href="{{ $baseurl }}/tags/{{ . | urlize }}">{{ . }}</a>
-                {{ end }}
-              </div>
+    <article class="main-content">
+        <div class="post-meta">
+          <h1>{{ .Title }}</h1>
+          <span>
+            <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 02, 2006" }}</time>, {{ .Params.author }}</span>
         </div>
-        <section>
-            {{ .Content }}
-        </section>
+        <div class="post-tags">
+          {{ range .Params.tags }}
+              <a href="{{ $baseurl }}/tags/{{ . | urlize }}">{{ . }}</a>
+          {{ end }}
+        </div>
+        {{ .Content }}
     </article>
 </main>
 

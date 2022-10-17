@@ -3,7 +3,6 @@ date = "2017-04-03T20:39:53+02:00"
 title = "Interesting data structures: the BK-tree"
 author = "Michele Lacchia"
 tags = ["python","data-structures"]
-category = "post"
 hasMath = true
 +++
 
@@ -15,7 +14,7 @@ a set of axioms in order to ensure it's well-behaved. The exact reason why this
 is required will be explained in the "[Search](#search)" paragraph below.
 
 The BK-tree data structure was proposed by [Burkhard and Keller in
-1973](http://dl.acm.org/citation.cfm?doid=362003.362025) as a solution to the
+1973](https://dl.acm.org/citation.cfm?doid=362003.362025) as a solution to the
 problem of searching a set of keys to find a key which is closest to a given
 query key. The naive way to solve this problem is to simply compare the query
 key with every element of the set; if the comparison is done in constant time,
@@ -46,7 +45,7 @@ add the other words by calculating their distance from the root. In our case,
 we can choose "some" to be the root element. Then, after adding the two
 subsequent words the tree would look like this:
 
-<p class="centered">
+<p class="text-center">
 <img src="/static/images/bk-tree-1.png" width="200" />
 </p>
 
@@ -56,7 +55,7 @@ Observe that the distance between "mole" and "some" is again $2$, so we add
 it to the tree as a child of "soft", with an edge corresponding to their
 distance. After adding all the words we obtain the following tree:
 
-<p class="centered">
+<p class="text-center">
 <img src="/static/images/bk-tree-2.png" width="320" />
 </p>
 
@@ -122,7 +121,7 @@ of an arbitrary node $A$ inside the tree, which we calculated to be at a distanc
 x, A)$ from the query key. This situation is summarized in the following
 figure:
 
-<p class="centered">
+<p class="text-center">
 <img src="/static/images/bk-tree-3.png" width="350" />
 </p>
 
