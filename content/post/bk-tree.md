@@ -4,6 +4,7 @@ title = "Interesting data structures: the BK-tree"
 author = "Michele Lacchia"
 tags = ["python","data-structures"]
 hasMath = true
+hasDisqus = true
 +++
 
 A BK-tree is a tree data structure specialized to index data in a [metric

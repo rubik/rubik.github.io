@@ -4,6 +4,7 @@ title = "A complete Kubernetes tutorial, part I: the basic concepts"
 tags = ["kubernetes", "containers"]
 date = "2019-11-11"
 summary = "A complete Kubernetes tutorial series covering all the basics."
+hasDisqus = true
 +++
 
 ## Preface
