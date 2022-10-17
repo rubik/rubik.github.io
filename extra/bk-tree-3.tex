@@ -1,0 +1,25 @@
+\documentclass[convert]{standalone}
+%\documentclass{article}
+\usepackage{forest}
+
+
+\begin{document}
+\pgfkeys{/pgf/inner sep=1.4em}
+\begin{forest}
+    for tree={%
+        circle,
+        draw,
+        ultra thick,
+        minimum height=1.5cm,
+        inner sep=1
+    },
+    [$\bullet$
+        [A, edge=dashed,
+             [B, edge label={node[pos=0.4,left]{$x$}}]
+             [$\bullet$,edge=dashed]
+             [$\bullet$,edge=dashed]
+             [$\bullet$,edge=dashed]
+        ]
+    ]
+\end{forest}
+\end{document}

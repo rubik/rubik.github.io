@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="{{ with .Site.LanguageCode }}{{ . }}{{ else }}en-US{{ end }}">
+<head>
+{{ partial "head.html" }}
+{{ $isHomePage := eq .Title .Site.Title }}
+<title>{{ .Title }}</title>
+<meta name="description" content="{{ .Params.summary }}">
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ .RelPermalink | absURL }}"
+  },
+  "headline": "{{ .Title }}",
+  "name": "{{ .Title }}",
+  "datePublished": "{{ .Date.Format "2006-01-02" }}",
+  "dateModified": "{{ .Lastmod.Format "20060102-15:04:05.000" }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ .Params.author }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ .Site.Params.publisherName }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ .Site.Params.logo | absURL }}"
+    }
+  },
+  "description": "{{ .Params.summary }}",
+  "keywords": "{{ delimit .Params.tags "," }}"
+}
+</script>
+</head>
+
+<body>
+  <div class="container">
+    <header role="banner">
+      <div class="header-logo">
+        <a href="/"><img src="{{ .Site.Params.logo }}" width="60" height="60" alt="{{ .Site.Title }}"></a>
+      </div>
+      {{ if eq $isHomePage true }}<h1 class="site-title">{{ .Site.Title }}</h1>{{ end }}
+    </header>

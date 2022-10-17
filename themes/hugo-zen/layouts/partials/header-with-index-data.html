@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="{{ with .Site.LanguageCode }}{{ . }}{{ else }}en-US{{ end }}">
+<head>
+{{ partial "head.html" }}
+{{ $isHomePage := eq .Title .Site.Title }}
+{{ $site := .Site }}
+<title>{{ .Title }}</title>
+<meta name="description" content="Blog about Python, math, data science and software development in general.">
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Blog",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ $site.BaseURL }}"
+  },
+  "image": "{{ "/static/images/avatar.png" | absURL }}",
+  "headline": "{{ .Title }}",
+  "name": "{{ .Title }}",
+  "datePublished": "20162910-00:00:00.000",
+  "dateModified": "{{ .Lastmod.Format "20060102-15:04:05.000" }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ $site.Params.author }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ $site.Params.publisherName }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ $site.Params.logo | absURL }}"
+    }
+  },
+  "description": "Blog about Python, math, data science and software development in general.",
+  "blogPosts": [
+    {{ $list := (where .Data.Pages ".Params.hidefromhome" "!=" "true") }}
+    {{ $len := (len $list) }}
+    {{ range $index, $element := $list }}
+        {
+          "@context": "http://schema.org",
+          "@type": "BlogPosting",
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "{{ $element.RelPermalink | absURL }}"
+          },
+          "headline": "{{ $element.Title }}",
+          "name": "{{ $element.Title }}",
+          "datePublished": "{{ $element.Date.Format "2006-01-02" }}",
+          "dateModified": "{{ $element.Lastmod.Format "20060102-15:04:05.000" }}",
+          "author": {
+            "@type": "Person",
+            "name": "{{ $element.Params.author }}"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "{{ $site.Params.publisherName }}",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "{{ $site.Params.logo | absURL }}"
+            }
+          },
+          {{ if $element.Params.tags }}
+          "keywords": "{{ delimit $element.Params.tags "," }}",
+          {{ end }}
+          "description": "{{ $element.Params.summary }}"
+        }{{ if ne (add 1 $index) $len }},{{ end }}
+    {{ end }}
+  ]
+}
+</script>
+</head>
+
+<body>
+  <div class="container">
+    <header role="banner">
+      <div class="header-logo">
+        <a href="/"><img src="{{ .Site.Params.logo }}" width="60" height="60" alt="{{ .Site.Title }}"></a>
+      </div>
+      {{ if eq $isHomePage true }}<h1 class="site-title">{{ .Site.Title }}</h1>{{ end }}
+    </header>
