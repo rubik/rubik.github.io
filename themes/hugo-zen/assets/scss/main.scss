@@ -348,9 +348,17 @@ figure {
   justify-content: space-between;
   margin: 0;
   margin-bottom: 1.25rem;
-  margin-left: -5%;
   text-align: center;
-  width: 110%;
+
+  &.xl {
+    margin-left: -5%;
+    width: 110%;
+  }
+
+  img {
+    margin-left: auto;
+    margin-right: auto;
+  }
 
   table {
     margin: 0 auto;
