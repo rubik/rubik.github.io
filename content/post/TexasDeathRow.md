@@ -9,7 +9,7 @@ hasCode = true
 summary = "Exploration of Texas death row data"
 +++
 
-On the site of the [Texas Department of Criminal Justice](http://www.tdcj.state.tx.us) there's a page which lists all the people that have been executed since 1982, when the death penalty was reinstated, along with their last statement. The data is [here](http://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html). In this project we are going to explore the data and see if we can apply topic modeling to the statements.
+On the site of the [Texas Department of Criminal Justice](https://www.tdcj.state.tx.us) there's a page which lists all the people that have been executed since 1982, when the death penalty was reinstated, along with their last statement. The data is [here](https://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html). In this project we are going to explore the data and see if we can apply topic modeling to the statements.
 
 # Setup
 We are going to use the following packages:
@@ -57,7 +57,7 @@ class TexasDeathSpider(scrapy.Spider):
     name = 'texas_death'
     allowed_domains = ['www.tdcj.state.tx.us']
     start_urls = (
-        'http://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html',
+        'https://www.tdcj.state.tx.us/death_row/dr_executed_offenders.html',
     )
 
     def parse(self, response):
@@ -463,7 +463,7 @@ plt.show(fig)
 ![png](/TexasDeathRow_files/TexasDeathRow_32_0.png)
 
 
-The population data was taken from the [2010 US Census](http://www.census.gov/prod/cen2010/briefs/c2010br-02.pdf) (PDF). It's pretty clear that White people are underrepresented in the death row data, while Black people are considerably overrepresented. People of Hispanic descent are roughly proportional. Although it would be very interesting to investigate into the causes of this disproportion, we have too little data and our main goal is to analyze the statements, so we will not venture further.
+The population data was taken from the [2010 US Census](https://www.census.gov/prod/cen2010/briefs/c2010br-02.pdf) (PDF). It's pretty clear that White people are underrepresented in the death row data, while Black people are considerably overrepresented. People of Hispanic descent are roughly proportional. Although it would be very interesting to investigate into the causes of this disproportion, we have too little data and our main goal is to analyze the statements, so we will not venture further.
 
 Let's visualize the age with respect to race.
 
@@ -536,7 +536,7 @@ show(Chart(people[['race', 'gender']].dropna()).mark_bar().encode(
 ![png](/TexasDeathRow_files/TexasDeathRow_38_2.png)
 
 
-Not surprisingly, the overwhelming majority of executed offenders is male. That is because under [Texas statutes](https://en.wikipedia.org/wiki/Capital_punishment_in_Texas#Capital_offenses) death penalty is generally sought for murders, and men are more likely to commit a violent crime (data from [this survey](http://www.bjs.gov/content/pub/pdf/cvus0702.pdf) (PDF) from the U.S. department of Justice, table 38). As to why is it so, it is still debated. [Wikipedia](https://en.wikipedia.org/wiki/Sex_differences_in_crime#Aggression_and_violence_among_peers_and_in_relationships) enumerates some of the current theories, with references if you desire to read further. An interesting quote from the linked paragraph is reported here:
+Not surprisingly, the overwhelming majority of executed offenders is male. That is because under [Texas statutes](https://en.wikipedia.org/wiki/Capital_punishment_in_Texas#Capital_offenses) death penalty is generally sought for murders, and men are more likely to commit a violent crime (data from [this survey](https://www.bjs.gov/content/pub/pdf/cvus0702.pdf) (PDF) from the U.S. department of Justice, table 38). As to why is it so, it is still debated. [Wikipedia](https://en.wikipedia.org/wiki/Sex_differences_in_crime#Aggression_and_violence_among_peers_and_in_relationships) enumerates some of the current theories, with references if you desire to read further. An interesting quote from the linked paragraph is reported here:
 
 > Another 2011 review published in the journal of Aggression and Violent Behavior also found that although minor domestic violence was equal, more severe violence was perpetrated by men.
 
@@ -652,7 +652,7 @@ show(Chart(people).mark_line().encode(
 ![png](/TexasDeathRow_files/TexasDeathRow_48_2.png)
 
 
-It looks like executions peaked in year 2000 at 40. That's quite a lot: about one every 9 days. Year 2000 has been called ['A Watershed Year of Change'](http://www.deathpenaltyinfo.org/2000-year-end-report-watershed-year-change), because numerous exonerations revealed persistent errors in the administration of capital punishment and increased public awareness. Many capital punishment advocates changed their mind and joined the growing movement that called for reforms and ultimately the abolishment of death penalty. This also serves as a good explanation for the downward trend that follows year 2000.
+It looks like executions peaked in year 2000 at 40. That's quite a lot: about one every 9 days. Year 2000 has been called ['A Watershed Year of Change'](https://www.deathpenaltyinfo.org/2000-year-end-report-watershed-year-change), because numerous exonerations revealed persistent errors in the administration of capital punishment and increased public awareness. Many capital punishment advocates changed their mind and joined the growing movement that called for reforms and ultimately the abolishment of death penalty. This also serves as a good explanation for the downward trend that follows year 2000.
 
 ## Crimes map
 We'll make a heat map of the counties where the crimes were committed, and for that we'll need the geographic centre of each county. I found an extremely useful table curated by the Wikipedia user Michael J, which among a wealth of other data also has coordinates for each county. The table is available [here](https://en.wikipedia.org/wiki/User:Michael_J/County_table).

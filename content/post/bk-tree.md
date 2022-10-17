@@ -16,7 +16,7 @@ a set of axioms in order to ensure it's well-behaved. The exact reason why this
 is required will be explained in the "[Search](#search)" paragraph below.
 
 The BK-tree data structure was proposed by [Burkhard and Keller in
-1973](http://dl.acm.org/citation.cfm?doid=362003.362025) as a solution to the
+1973](https://dl.acm.org/citation.cfm?doid=362003.362025) as a solution to the
 problem of searching a set of keys to find a key which is closest to a given
 query key. The naive way to solve this problem is to simply compare the query
 key with every element of the set; if the comparison is done in constant time,

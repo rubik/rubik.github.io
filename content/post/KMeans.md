@@ -109,7 +109,7 @@ def kmeans(X, k):
     return new_m, clusters
 ```
 
-In the minimal implementation above, we chose to check whether the updated centroids are very close to each other: the [`np.isclose`](https://numpy.org/doc/stable/reference/generated/numpy.isclose.html) function compares value with default tolerances of $10^{-5}$ and $10^{-8}$. Those are, respectively, the relative tolerance and the absolute tolerance. We want to avoid strict equality because floating point math is not exact. I encourage you to read Goldberg's ["What Every Computer Scientist Should Know About Floating-Point Arithmetic"](http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html) if you want to examine this topic in greater depth.
+In the minimal implementation above, we chose to check whether the updated centroids are very close to each other: the [`np.isclose`](https://numpy.org/doc/stable/reference/generated/numpy.isclose.html) function compares value with default tolerances of $10^{-5}$ and $10^{-8}$. Those are, respectively, the relative tolerance and the absolute tolerance. We want to avoid strict equality because floating point math is not exact. I encourage you to read Goldberg's ["What Every Computer Scientist Should Know About Floating-Point Arithmetic"](https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html) if you want to examine this topic in greater depth.
 
 There are other ways in which we could have interrupted the algorithm: we can impose a maximum number of iterations, or stop once the total energy of the clusters has gone below a certain threshold.
 
@@ -136,7 +136,7 @@ def plot_clusters(X, m, clusters):
     plt.show()
 ```
 
-We'll generate the data with the function [`make_blobs`](http://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_blobs.html) from `scikit-learn`.
+We'll generate the data with the function [`make_blobs`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_blobs.html) from `scikit-learn`.
 
 
 ```python

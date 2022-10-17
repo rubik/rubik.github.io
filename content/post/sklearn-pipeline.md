@@ -11,7 +11,7 @@ summary = "Making the case for sklearn's Pipeline object"
 <figure>
     <img itemprop="image" title="A pipeline" src="/static/images/pipes.jpg" />
     <div class="copyright">
-        Copyright:&nbsp;<a href="http://www.istockphoto.com/portfolio/visualgo">visualgo</a>.
+        Copyright:&nbsp;<a href="https://www.istockphoto.com/portfolio/visualgo">visualgo</a>.
     </div>
 </figure>
 
