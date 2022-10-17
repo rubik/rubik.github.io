@@ -5,8 +5,10 @@ theme = "hugo-zen"
 name = "Michele Lacchia"
 copyright = "Created by Michele Lacchia, built with Hugo"
 disqusShortname = "signal-to-noise"
-googleAnalytics = "UA-86380700-1"
 enableRobotsTXT = true
+
+[markup.highlight]
+noClasses = false
 
 [taxonomies]
 tag = "tags"
@@ -26,6 +28,3 @@ document.write('<'+'a'+' '+'h'+'r'+'e'+'f'+'='+"'"+'m'+'a'+'i'+'&'+'#'+'1'+'0'+
 ';'+'&'+'#'+'1'+'0'+'9'+';'+'&'+'#'+'9'+'7'+';'+'&'+'#'+'1'+'0'+'5'+';'+'l'+
 '%'+'&'+'#'+'5'+'0'+';'+'E'+'%'+'6'+'3'+'o'+'m'+"'"+'>'+'E'+'m'+'a'+'i'+'&'+
 '#'+'1'+'0'+'8'+';'+'<'+'/'+'a'+'>');"""
-
-[markup.goldmark.renderer]
-unsafe = true

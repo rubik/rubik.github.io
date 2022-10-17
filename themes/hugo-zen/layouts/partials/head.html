@@ -14,10 +14,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400&display=swap" rel="stylesheet">
 {{ $style := resources.Get "scss/main.scss" | resources.ToCSS | resources.Minify | resources.Fingerprint }}
 <link rel="stylesheet" href="{{ $style.Permalink }}">
-<!-- from //cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/hopscotch.min.css -->
-<style>
-.hljs{display:block;overflow-x:auto;background:#191f26;color:#e6e1cf;font-size:.84375rem;padding:.5em}.hljs-comment,.hljs-meta,.hljs-quote{color:#5c6773;font-style:italic}.hljs-attr,.hljs-attribute,.hljs-link,.hljs-regexp,.hljs-selector-class,.hljs-selector-id,.hljs-template-variable,.hljs-variable{color:#f73}.hljs-builtin-name,.hljs-literal,.hljs-number,.hljs-params,.hljs-type{color:#fe9}.hljs-bullet,.hljs-string{color:#b8cc52}.hljs-built_in,.hljs-section,.hljs-title{color:#ffb454}.hljs-keyword,.hljs-selector-tag,.hljs-symbol{color:#f73}.hljs-name{color:#36a3d9}.hljs-tag{color:#00568d}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}.hljs-addition{color:#91b362}.hljs-deletion{color:#d96c75}
-</style>
 {{ if .RSSLink }}
   <link href="{{ .RSSLink }}" rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" />
   <link href="{{ .RSSLink }}" rel="feed" type="application/rss+xml" title="{{ .Site.Title }}" />
