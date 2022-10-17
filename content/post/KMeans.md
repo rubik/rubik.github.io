@@ -252,7 +252,7 @@ make_animation(X, m=m, k=4, frames=20)
 
 
 <figure>
-  <video width="600.0" height="400.0" controls autoplay loop>
+  <video width="600.0" controls autoplay loop>
     <source type="video/mp4" src="data:video/mp4;base64,AAAAHGZ0eXBNNFYgAAACAGlzb21pc28yYXZjMQAAAAhmcmVlAAFKlG1kYXQAAAKtBgX//6ncRem9
   5tlIt5Ys2CDZI+7veDI2NCAtIGNvcmUgMTQ4IHIyNzA4IDg2YjcxOTggLSBILjI2NC9NUEVHLTQg
   QVZDIGNvZGVjIC0gQ29weWxlZnQgMjAwMy0yMDE2IC0gaHR0cDovL3d3dy52aWRlb2xhbi5vcmcv
@@ -1777,7 +1777,7 @@ make_animation(X_dense, k=11)
 
 
 <figure>
-  <video width="600.0" height="400.0" controls autoplay loop>
+  <video width="600.0" controls autoplay loop>
     <source type="video/mp4" src="data:video/mp4;base64,AAAAHGZ0eXBNNFYgAAACAGlzb21pc28yYXZjMQAAAAhmcmVlAAINNG1kYXQAAAKtBgX//6ncRem9
   5tlIt5Ys2CDZI+7veDI2NCAtIGNvcmUgMTQ4IHIyNzA4IDg2YjcxOTggLSBILjI2NC9NUEVHLTQg
   QVZDIGNvZGVjIC0gQ29weWxlZnQgMjAwMy0yMDE2IC0gaHR0cDovL3d3dy52aWRlb2xhbi5vcmcv

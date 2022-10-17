@@ -358,7 +358,8 @@ figure {
     width: 110%;
   }
 
-  img {
+  img,
+  video {
     margin-left: auto;
     margin-right: auto;
   }
@@ -402,6 +403,12 @@ figure {
     > * {
       grid-column: 2;
       overflow-x: scroll;
+    }
+  }
+
+  figure {
+    video {
+      max-width: 100%;
     }
   }
 
