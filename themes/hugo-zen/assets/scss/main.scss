@@ -355,9 +355,14 @@ figure {
   margin-bottom: 1.25rem;
   text-align: center;
 
+  &.pad {
+    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
   &.xl {
-    margin-left: -5%;
-    width: 110%;
+    grid-column: 2 / -2;
+    overflow-x: scroll;
   }
 
   img,

@@ -1,6 +1,6 @@
 ---
 author: "Michele Lacchia"
-title: "A/B testing foundations - part I: statistical inference and hypothesis testing"
+title: "A/B testing fundamentals - part I: statistical inference and hypothesis testing"
 date: "2022-10-08"
 tags: ["math", "statistics", "ab-tests"]
 hasMath: true
@@ -15,13 +15,13 @@ same time to determine which version leaves the maximum impact and drives
 business metrics, most commonly conversion rate and average revenue per user
 (ARPU).
 
-This series of posts explores the statistical framework behind controlled
-trials with a focus on online A/B testing, and it assumes some basic knowledge
-about calculus, random variables, and statistics. In this first post we'll
-describe the foundation to A/B testing: statistical inference through
-hypothesis testing.
+This series of posts explores the statistical framework (with a frequentist
+approach) behind controlled trials with a focus on online A/B testing, and it
+assumes some basic knowledge about calculus, random variables, and statistics.
+In this first post we'll describe the foundation to A/B testing: statistical
+inference through hypothesis testing.
 
-### A/B testing foundations series
+### A/B testing fundamentals series
 * Part I: Statistical inference and hypothsis testing (this post)
 * [Part II: Formulas for binary and continous responses](/post/ab-testing-formulas/)
 * Part III: Streaming algorithms and segment analysis
@@ -201,17 +201,28 @@ difference to be statistically significant.
 With the basic definitions in place, we can now define the full operating
 procedure for a statistically sound test:
 
-1. we formulate a hypothesis to be tested, and we select the appropriate
-   statistical test;
-2. we choose a target significance level $\alpha \in (0, 1)$ to control Type I
+1. we formulate a business hypothesis, e.g. "the checkout redesign in variant B
+   will increase the conversion rate"
+2. we convert the business hypothesis into a null hypothesis and a
+   corresponding statistical model; e.g. the above statement could be
+   converted into:
+
+   <blockquote>$H_0$: the true difference in conversion rate between
+   variant B and variant A (control) is less than or equal to $0$.<br><br>
+
+   All test observations are independent and identically distributed.
+   Statistical analysis will be performed once the data on all users has been
+   collected.
+   </blockquote>
+3. we choose a target significance level $\alpha \in (0, 1)$ to control Type I
    errors;
-3. we choose a target power $1 - \beta \in (0, 1)$ to control Type II errors,
+4. we choose a target power $1 - \beta \in (0, 1)$ to control Type II errors,
    along with a minimum effect of interest $\delta > 0$;
-4. we calculate the sample size per variant required to achieve the target
+5. we calculate the sample size per variant required to achieve the target
    power;
-5. we collect data until the target sample size is met;
-6. we calculate a p-value for each variant;
-7. we conclude the test by accepting or rejecting the null hypothesis.
+6. we collect data until the target sample size is met;
+7. we calculate a p-value for each variant;
+8. we conclude the test by accepting or rejecting the null hypothesis.
 
 ## Test statistics
 Performing a hypothesis test on a specific sample yields a single test
@@ -240,7 +251,7 @@ The following table lists some common test statistics. In the formulas:
   $$s_{\text{pooled}} = \frac{(n_1 - 1)s_1^2 + (n_2 - 1)s_2^2}{n_1 + n_2 - 2}$$
 * $\nu$ is calculated according to [Welch's t-test formula](https://en.wikipedia.org/wiki/Welch%27s_t-test)
 
-<table class="xl">
+<table class="xl pad">
     <thead>
         <tr>
             <td>Name</td>
@@ -310,7 +321,8 @@ following table:
 * $p_0$ is the hypothesized population proportion
 * $d_p$ is the hypothesized difference in proportions
 
-<table class="xl">
+<figure class="xl pad">
+  <table>
     <thead>
         <tr>
             <td>Name</td>
@@ -343,7 +355,8 @@ following table:
             <td>$$p_2 - p_1 = d_p$$</td>
         </tr>
     </tbody>
-</table>
+  </table>
+</figure>
 
 The reason these are z-tests and not t-tests is that the variance of a
 proportion is a function of the proportion itself. Once the proportion has been
@@ -395,13 +408,15 @@ to estimate risk and control it as we deem appropriate.
 
 ## Example
 Consider an A/B test that was designed with two variants, A and B, in which the
-primary metric is conversion rate. The null hypothesis is $H_0: \theta \leq 0$,
-where $\theta$ in this case represents the difference in conversion rates
-$\theta = p_B - p_A$ (a non-inferiority test). Prior to starting the test, the
-experiment designer required a significance of $\alpha = 0.05$ and a power of
-$1 - \beta = 0.8$ at $0.01$, as the historical conversion rate of the control
-variant is $7\\%$ and a difference of $1\\%$ between the two conversion rates is
-deemed important enough to detect with high power.
+primary metric is conversion rate. Since the goal is to determine whether
+variant B performs better than control A, a non-inferiority test is chosen. The
+null hypothesis is thus $H_0: \theta \leq 0$, where $\theta$ in this case
+represents the difference in conversion rates $\theta = p_B - p_A$. Prior to
+starting the test, the experiment designer required a significance of $\alpha =
+0.05$ and a power of $1 - \beta = 0.8$ at $\delta = 0.01$, as the historical
+conversion rate of the control variant is $7\\%$ and a difference of $1\\%$
+between the two conversion rates is deemed important enough to detect with high
+power.
 
 After collecting the data, the results are as follows:
 
@@ -430,23 +445,60 @@ After collecting the data, the results are as follows:
   </thead>
 </table>
 
-Is the difference in conversion rates significant? To answer this question we
-first calculate the test statistic:
-
-$$
-z = \frac{\bar p_B - \bar p_A}{\sqrt{\bar p_{A,B}(1 - \bar p_{A,B})(n_A^{-1} + n_B^{-1})}} \approx 2.5155
-$$
-
-where we chose the pooled z-test, and the pooled proportion was calculated as
-follows:
+The test statistic $z$ is calculated with a pooled z-test. For the calculation
+of the p-value, the null hypothesis will be evaluated at $\theta = 0$, which is
+the closest point to the alternative hypothesis, and thus will lead to more
+conservative p-values. The pooled proportion is:
 
 $$
 \bar p_{A,B} = \frac{n_A p_A + n_B p_B}{n_A + n_B} = \frac{556 + 641}{7809 +
-7823} \approx 0.0766
+7823}
 $$
 
+And therefore,
+
+$$
+z = \frac{\bar p_B - \bar p_A}{\sqrt{\bar p_{A,B}(1 - \bar p_{A,B})(n_A^{-1} +
+n_B^{-1})}} \approx 2.5244
+$$
+
+As per the table above, the sampling distribution of this statistic is
+$\mathcal N(0, 1)$, which makes the calculation of the p-value straightforward:
+
+$$
+\text{p-value} = 1 - \Phi(z) \approx 0.0058 < \alpha
+$$
+
+Visually, we can represent the calculated test statistic and the required
+significance level as follows:
+
+<figure class="pad">
+  <img src="/static/images/ab-testing-significance.png"
+       alt="Significance level and test statistic"
+       title="Significance level and test statistic">
+</figure>
+
+In the chart above, the significance region is shaded in green, and the
+calculated test statistic is in red. The p-value is the region to the right of
+the test statistic under the standard normal curve, and it's clearly smaller
+than the significance region in green:
+
+<figure class="pad">
+  <img src="/static/images/ab-testing-p-value.png"
+       alt="p-value representation"
+       title="p-value representation">
+</figure>
+
+The experiment is concluded by rejecting the null hypothesis and accepting the
+alternative one as a result, since $\text{p-value} < \alpha$.
+
 ## Summary
-TODO
+In this post we illustrated the fundamental concepts underpinning proper
+statistical A/B testing with frequentist methods, with an overview of
+hypothesis testing and the types of errors that can be committed. In the second
+part, we described some common test statistics and we discussed the concept of
+p-values more in depth, to avoid some very common pitfalls and
+misunderstandings.
 
 The [next post](/post/ab-testing-formulas/) will describe in detail how the
 formulas for the target sample size is derived in some common scenarios.
