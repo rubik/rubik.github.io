@@ -24,9 +24,8 @@ inference through hypothesis testing.
 ### A/B testing fundamentals series
 * Part I: Statistical inference and hypothsis testing (this post)
 * [Part II: Formulas for binary and continous responses](/post/ab-testing-formulas/)
-* Part III: Streaming algorithms and segment analysis
-* Part IV: Group sequential tests
-* Part V: Multivariate tests
+* Part III: Group sequential tests
+* Part IV: Multivariate tests
 
 ## Hypothesis testing
 Statistical inference is the application of statistical methods to learn the

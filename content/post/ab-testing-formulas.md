@@ -17,9 +17,8 @@ I recommend reading part I of the series linked below.
 ### A/B testing fundamentals series
 * [Part I: Statistical inference and hypothsis testing](/post/ab-testing-inference)
 * Part II: Formulas for binary and continous responses (this post)
-* Part III: Streaming algorithms and segment analysis
-* Part IV: Group sequential tests
-* Part V: Multivariate tests
+* Part III: Group sequential tests
+* Part IV: Multivariate tests
 
 
 ## Binary responses with equal sample sizes
@@ -288,7 +287,7 @@ the sample size calculated using the normal approximation above
 results in values that are too low, in the sense that the power of the test is
 lower than $1 - \beta$ at $\theta = \delta$.
 [Casagrande, Pike, and Smith (1978b)](https://doi.org/10.2307/2530613) derived
-the following adjustment (called "continuity correction"),
+the following adjustment (using the so-called "continuity correction"),
 
 $$
 \begin{align}
@@ -303,5 +302,5 @@ $(4)$ provide good approximations.
 
 
 ## Unequal sample sizes
-## Other hypothesis tests
 ## Continuous responses
+## One-pass algorithms
