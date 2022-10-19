@@ -93,20 +93,18 @@ variant B and the control in an A/B test. A test for a composite null
 hypothesis is called _one-tailed test_, as the critical area for statistical
 significance is only at the tail of interest.
 
-Testing a composite null hypothesis is what usually makes the most sense in an
-online A/B test, as we are interested in detecting and estimating effects in
-only one direction: e.g. an increase in conversion rate or average revenue per
-user. In fact, using a point null hypothesis would require a larger sample size
-for the same significance level, and running a test so long as to detect a
-statistically significant negative effect is overall harmful for the business.
-
 In particular, we distinguish between:
 
 * non-inferiority tests, where we test $H_0: \theta \leq 0$; and
 * superiority tests, where we test $H_0: \theta \leq \theta^\star$, with
   $\theta^\star > 0$.
 
-TODO
+Testing a composite null hypothesis is what usually makes the most sense in an
+online A/B test, as we are interested in detecting and estimating effects in
+only one direction: e.g. an increase in conversion rate or average revenue per
+user. In fact, using a point null hypothesis would require a larger sample size
+for the same significance level, and running a test so long as to detect a
+statistically significant negative effect is overall harmful for the business.
 
 ## Errors
 Since hypothesis tests derive their conclusions from a sample, and therefore
@@ -251,7 +249,8 @@ The following table lists some common test statistics. In the formulas:
   $$s_{\text{pooled}} = \frac{(n_1 - 1)s_1^2 + (n_2 - 1)s_2^2}{n_1 + n_2 - 2}$$
 * $\nu$ is calculated according to [Welch's t-test formula](https://en.wikipedia.org/wiki/Welch%27s_t-test)
 
-<table class="xl pad">
+<figure class="xl pad">
+  <table>
     <thead>
         <tr>
             <td>Name</td>
@@ -298,7 +297,8 @@ The following table lists some common test statistics. In the formulas:
             <td>$$\mu_2 - \mu_1 = d_0$$</td>
         </tr>
     </tbody>
-</table>
+  </table>
+</figure>
 
 The z-tests are used
 when the populations variances are known; t-tests are used otherwise.
