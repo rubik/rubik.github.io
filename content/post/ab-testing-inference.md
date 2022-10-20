@@ -4,7 +4,7 @@ title: "A/B testing fundamentals - part I: statistical inference and hypothesis 
 date: "2022-10-08"
 tags: ["math", "statistics", "ab-tests"]
 hasMath: true
-draft: true
+draft: false
 summary: "Statistical framework underlying online A/B testing using a frequentist approach to hypothesis testing."
 ---
 
@@ -216,10 +216,18 @@ procedure for a statistically sound test:
 4. we choose a target power $1 - \beta \in (0, 1)$ to control Type II errors,
    along with a minimum effect of interest $\delta > 0$;
 5. we calculate the sample size per variant required to achieve the target
-   power;
+   power at $\delta$;
 6. we collect data until the target sample size is met;
 7. we calculate a p-value for each variant;
 8. we conclude the test by accepting or rejecting the null hypothesis.
+
+<blockquote class="bg-warning">
+Beware! You should only assess the A/B testing results <strong>at the
+end</strong> of the experiment, once all data has been collected. Calculating
+p-values multiple times with the intent to stop the test while the required
+sample size has not been achieved exposes you to a much larger Type I error
+than anticipated. More on this in Part III of this series.
+</blockquote>
 
 ## Test statistics
 Performing a hypothesis test on a specific sample yields a single test

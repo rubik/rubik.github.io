@@ -4,7 +4,7 @@ title: "A/B testing fundamentals - part II: binary and continous responses"
 date: "2022-10-08"
 tags: ["math", "statistics", "ab-tests"]
 hasMath: true
-draft: true
+draft: false
 summary: "Statistical framework underlying online A/B testing: formulas for binary and continous responses."
 ---
 
@@ -302,5 +302,13 @@ $(4)$ provide good approximations.
 
 
 ## Unequal sample sizes
+Usually it's best to run A/B tests with an equal number of users in each test
+variant. However, even with equal allocation the sample sizes in each variant
+will rarely be the same. We can derive a similar formula to $(4)$ and $(5)$ in
+this case as well.
+
+Assume the sample size in variant A is $n$, and the sample size in variant B is
+$m$, with $m = rn$ for some $r > 0$.
+
 ## Continuous responses
 ## One-pass algorithms

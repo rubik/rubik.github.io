@@ -2,7 +2,8 @@
 @import './highlight';
 
 $white: #fff;
-$neon-green: #1abf93;
+$warning:#d7291e;
+$accent: #1abf93;
 $light-gray: #f9f9f9;
 $dark-gray: #222;
 
@@ -59,11 +60,11 @@ h6 {
 }
 
 a {
-  color: $neon-green;
+  color: $accent;
 }
 
 a:hover {
-  color: lighten($neon-green, 10%);
+  color: lighten($accent, 10%);
 }
 
 img {
@@ -142,6 +143,11 @@ pre,
 table,
 ul {
   margin-bottom: 1.25rem;
+}
+
+ol li:last-child p,
+ul li:last-child p {
+  margin-bottom: 0;
 }
 
 pre {
@@ -299,6 +305,11 @@ td > code {
   li:first-child::before {
     content: none;
   }
+}
+
+.bg-warning {
+  background-color: lighten($warning, 40%);
+  border-color: $warning;
 }
 
 table {
