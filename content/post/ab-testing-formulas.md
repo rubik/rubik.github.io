@@ -100,78 +100,78 @@ normally distributed:
 
 <p class="non-mobile">
 $$
-\Delta_n \sim \mathcal N(\theta, \sigma_{\Delta n}^2 n^{-1}),
-\quad\quad \sigma_{\Delta n}^2 = p_1(1 - p_1) + p_2(1 - p_2)
+\Delta_n \sim \mathcal N(\theta, \sigma_{\Delta n}^2),
+\quad\quad \sigma_{\Delta n}^2 = [p_1(1 - p_1) + p_2(1 - p_2)] / n
 $$
 </p>
 
 <p class="mobile">
 $$
-\Delta_n \sim \mathcal N(\theta, \sigma_{\Delta n}^2 n^{-1}),\ \text{with}
+\Delta_n \sim \mathcal N(\theta, \sigma_{\Delta n}^2),\ \text{with}
 $$
 $$
-\quad\quad \sigma_{\Delta n}^2 = p_1(1 - p_1) + p_2(1 - p_2)
+\quad\quad \sigma_{\Delta n}^2 = [p_1(1 - p_1) + p_2(1 - p_2)] / n
 $$
 </p>
 
 We can then define our test statistic:
 
 $$
-Z_n = \frac{\Delta_n \sqrt{n}}{\sigma_{\Delta n}}
+Z_n = \frac{\Delta_n}{\sigma_{\Delta n}}
 $$
 
-and it's easy to verify that $Z_n \sim \mathcal N(\theta \sigma_{\Delta n}^{-1}
-\sqrt{n}, 1)$, a standard normal distribution under $H_0$. However, since the
+and it's easy to verify that $Z_n \sim \mathcal N(\theta \sigma_{\Delta n}^{-1}, 1)$, a standard normal distribution under $H_0$. However, since the
 standard deviation $\sigma_{\Delta n}$ depends on $p_1$ and $p_2$, which are
-unknown, we'll need to replace it with a suitable estimator. From $(1)$, we
-know that the sample means $\bar X_n$ and $\bar Y_n$ are unbiased estimators of
-the proportions $p_1$ and $p_2$. Thus we can define
+unknown, we'll need to replace it with a suitable estimator. Thus we define
 
 $$
 \begin{align\*}
-\hat \sigma_{\Delta n}^2 = \bar X_n(1 - \bar X_n) + \bar Y_n(1 - \bar Y_n)
+\hat \sigma_{\Delta n}^2 = \frac{2\bar W_n(1 - \bar W_n)}{n}
 \end{align\*}
 $$
+
+where we used the pooled variance estimator and $\bar W_n = (\bar X_n + \bar
+Y_n) / 2$.
 
 Our revised test statistic is now
 
 $$
 \begin{align}
-Z_n^\prime = \frac{\Delta_n \sqrt{n}}{\hat \sigma_{\Delta n}}
+Z_n^\prime = \frac{\Delta_n}{\hat \sigma_{\Delta n}}
 \end{align}
 $$
 
 This statistic is still approximately normal for large $n$ values. In online
 controlled experiments we usually deal with much larger samples, and thus we
 can safely use the normal approximation and assume $Z_n^\prime \sim \mathcal
-N(\theta \hat \sigma_{\Delta n}^{-1} \sqrt{n}, 1)$.
+N(\theta \hat \sigma_{\Delta n}^{-1}, 1)$.
 
 <blockquote>
 <strong>Note</strong>: the test statistic defined above is the so-called
-"unpooled" statistic for this test. The "pooled" version $Z_{n,\
+"pooled" statistic for this test. The "unpooled" version $Z_{n,\
 \text{pooled}}^\prime$ is defined just like $Z_n^\prime$, except for the
 variance estimate:
 
 <p class="non-mobile">
 $$
-Z_{n,\ \text{pooled}}^\prime = \frac{\Delta_n \sqrt n}{\hat \sigma_{\Delta n,\ \text{pooled}}},\quad\quad\hat \sigma_{\Delta n,\ \text{pooled}}^2 = 2\bar p_n(1 - \bar p_n)
-$$
-</p>
-<p class="mobile">
-$$
-Z_{n,\ \text{pooled}}^\prime = \frac{\Delta_n \sqrt n}{\hat \sigma_{\Delta n,\ \text{pooled}}},\ \text{with}
-$$
-$$
-\hat \sigma_{\Delta n,\ \text{pooled}}^2 = 2\bar p_n(1 - \bar p_n)
+Z_{n,\ \text{unpooled}}^\prime = \frac{\Delta_n}{\hat \sigma_{\Delta n,\ \text{unpooled}}},\quad\quad\hat \sigma_{\Delta n,\ \text{unpooled}}^2 = \bar X_n(1 - \bar X_n) + \bar Y_n(1 - \bar Y_n)
 $$
 </p>
 
-where $\bar p_n = (\bar X_n + \bar Y_n) / 2$. The pooled statistic is also
-normally distributed for large values of $n$. The unpooled version has worse
-small-sample properties than the pooled version, but they are asymptotically
-equivalent as $n$ goes to infinity. The large sample sizes normally encountered
-in online A/B testing render them essentially equal in practice. More details
-and simulation results can be found
+<p class="mobile">
+$$
+Z_{n,\ \text{unpooled}}^\prime = \frac{\Delta_n}{\hat \sigma_{\Delta n,\ \text{unpooled}}},\ \text{pooled}}},\ \text{with}
+$$
+$$
+\hat \sigma_{\Delta n,\ \text{unpooled}}^2 = \bar X_n(1 - \bar X_n) + \bar Y_n(1 - \bar Y_n)
+$$
+</p>
+
+The unpooled statistic is also normally distributed for large values of $n$.
+The unpooled version has worse small-sample properties than the pooled version,
+but they are asymptotically equivalent as $n$ goes to infinity. The large
+sample sizes normally encountered in online A/B testing render them essentially
+equal in practice. More details and simulation results can be found
 [here](https://stats.stackexchange.com/a/573144).
 </blockquote>
 
@@ -247,15 +247,16 @@ n}$ depends on $\bar X_n$ and $\bar Y_n$, which are observable only after the
 experiment is completed. Thus we can define
 
 $$
-s^2 = \pi_1 (1 - \pi_1) + \pi_2 (1 - \pi_2)
+s_{\text{pooled}}^2 = 2 \pi (1 - \pi) n^{-1},\qquad\qquad \pi = (\pi_1 + \pi_2)
+/ 2
 $$
 
 as an estimate of $\hat \sigma_{\Delta n}^2$, where $\pi_1$ and $\pi_2$ are
-hypothesized by the designer of the experiment and are such that $\pi_2 - \pi_1 =
-\delta$. In practice, $\pi_1$ is derived from existing available data (such as
-conversion data from Google Analytics or a similar tracking tool), and $\pi_2$ is
-calculated after defining the minimum effect of interest $\delta$. Ideally,
-historical data should be:
+hypothesized by the designer of the experiment and are such that $\pi_2 - \pi_1
+= \delta$. In practice, $\pi_1$ is derived from existing available data (such
+as conversion data from Google Analytics or a similar tracking tool), and
+$\pi_2$ is calculated after defining the minimum effect of interest $\delta$.
+Ideally, historical data should be:
 
 * recent enough to be representative for the A/B test;
 * without outliers (like holidays for an e-commerce site); and
@@ -266,14 +267,14 @@ Finally we can solve for $n$ and obtain
 
 $$
 \begin{align}
-n = \frac{{\left[\Phi^{-1}(1 - \alpha) + \Phi^{-1}(1 - \beta)\right]}^2 s^2}{\delta^2}
+n = \frac{{2 \pi (1 - \pi) \left[\Phi^{-1}(1 - \alpha) + \Phi^{-1}(1 - \beta)\right]}^2}{\delta^2}
 \end{align}
 $$
 
 Observe that the sample size $n$ required to attain power $1 - \beta$ and
 maintain significance $\alpha$:
 
-1. is directly proportional to the variance $\hat \sigma_{\Delta n}^2$
+1. is directly proportional to the variance $\pi (1 - \pi)$
 2. is inversely proportional to the square of the minimum effect of interest
    $\delta$
 
@@ -304,10 +305,12 @@ $(4)$ provide good approximations.
 ## Unequal sample sizes
 Usually it's best to run A/B tests with an equal number of users in each test
 variant. However, even with equal allocation the sample sizes in each variant
-will rarely be the same. We can derive a similar formula to $(4)$ and $(5)$ in
-this case as well. For this case as well we consider a one-tailed
-non-inferiority test with null hypothesis $H_0: \theta \leq 0$, significance
-$\alpha \in (0, 1)$, and power $1 - \beta \in (0, 1)$ at $\theta = \delta > 0$.
+will rarely be exactly the same. We can derive a similar formula to $(4)$ and
+$(5)$ in this case as well. As before, we consider a one-tailed non-inferiority
+test with null hypothesis $H_0: \theta \leq 0$, significance $\alpha \in (0,
+1)$, and power $1 - \beta \in (0, 1)$ at $\theta = \delta > 0$. The
+calculations are largely the same, with a few minor differences. Therefore
+we'll skip a few elementary steps.
 
 Assume the sample size in variant A is $n$, and the sample size in variant B is
 $m$, with $m = rn$ for some $r > 0$. As before, we model each observation as a
@@ -338,7 +341,7 @@ $$
 \end{align}
 $$
 
-We'll define the difference of sample means as $\Delta_{n, m} = \bar Y_m - \bar
+We define the difference of sample means as $\Delta_{n, m} = \bar Y_m - \bar
 X_n$. The pooled estimator for the variance of the difference is
 
 $$
@@ -353,8 +356,7 @@ $$
 Z_{n, m}^\prime = \frac{\Delta_{n, m}}{\hat \sigma_{\Delta n, m}}
 $$
 
-As a consequence of the Central Limit Theorem, for large values of $n$ and $m$,
-the sampling distribution of this statistic is $\mathcal N(\theta\hat
+The sampling distribution of this statistic is $\mathcal N(\theta\hat
 \sigma_{\Delta n, m}^{-1}, 1)$.
 
 Simple algebra shows that the critical value for this statistic is again $c =
@@ -382,7 +384,7 @@ $$
 Since $\hat \sigma_{\Delta n, m}$ depends on $\bar X_n$ and $\bar Y_m$, which are observable only after the experiment is completed, we define
 
 $$
-s_{\text{pooled}}^2 = (1 + r)\pi (1 - \pi)(n^{-1} + m^{-1}),\qquad \pi = (\pi_1 + r \pi_2) / (1 + r)
+s_{\text{pooled}}^2 = \pi (1 - \pi)(n^{-1} + m^{-1}),\qquad \pi = (\pi_1 + r \pi_2) / (1 + r)
 $$
 
 as an estimate of $\hat \sigma_{\Delta n, m}^2$, where $\pi_1$ and $\pi_2$ are
@@ -392,7 +394,7 @@ Finally, we substitute $m = rn$ and we solve for $n$, obtaining:
 
 $$
 \begin{align}
-n = \frac{{\left[\Phi^{-1}(1 - \alpha) + \Phi^{-1}(1 - \beta)\right]}^2 s^2}{\delta^2}
+n = \frac{1 + r}{r}\frac{\pi (1 - \pi) {\left[\Phi^{-1}(1 - \alpha) + \Phi^{-1}(1 - \beta)\right]}^2}{\delta^2}
 \end{align}
 $$
 
