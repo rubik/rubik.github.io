@@ -69,8 +69,8 @@ I](/post/ab-testing-inference/#types-of-hypotheses).
 Let's define the sample mean to be
 
 $$
-\bar X_i = \frac 1n \sum_{i = 1}^n X_i,\quad
-\bar Y_i = \frac 1n \sum_{i = 1}^n Y_i
+\bar X_n = \frac 1n \sum_{i = 1}^n X_i,\quad
+\bar Y_n = \frac 1n \sum_{i = 1}^n Y_i
 $$
 
 It can be observed that in this case it corresponds to the _sample conversion
@@ -214,7 +214,7 @@ values of $\theta$, and lower for lower values.
 $$
 \begin{aligned}
 1 - \beta &= 1 - \operatorname{Pr}(\text{Accept } H_0 \mid H_0 \text{ is false}) =\\\\
-&= 1 - \operatorname{Pr}(|Z_n^\prime| \leq c \mid \theta \neq 0) =\\\\
+&= 1 - \operatorname{Pr}(|Z_n^\prime| \leq c \mid \theta = \delta) =\\\\
 &= \operatorname{Pr}(|Z_n^\prime| > c \mid \theta = \delta) =\\\\
 &= \operatorname{Pr}(Z_n^\prime > c \mid \theta = \delta) + \operatorname{Pr}(Z_n^\prime < -c \mid \theta = \delta)
 \end{aligned}
@@ -232,13 +232,13 @@ $$
 
 Recall from $(3)$ that we found that in order to limit the Type I error at
 the desired significance level $\alpha$, the critical value $c$ must be equal
-to $\Phi^{-1}(1 - \alpha/2)$. Therefore,
+to $\Phi^{-1}(1 - \alpha)$. Therefore,
 
 $$
 \begin{aligned}
-\Phi^{-1}(1 - \beta) &= \Phi^{-1}(1 - \Phi(\Phi^{-1}(1 - \alpha/2) - \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n})) =\\\\
-&= \Phi^{-1}(\Phi(-\Phi^{-1}(1 - \alpha/2) + \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n})) =\\\\
-&= -\Phi^{-1}(1 - \alpha/2) + \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n}\\\\
+\Phi^{-1}(1 - \beta) &= \Phi^{-1}(1 - \Phi(\Phi^{-1}(1 - \alpha) - \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n})) =\\\\
+&= \Phi^{-1}(\Phi(-\Phi^{-1}(1 - \alpha) + \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n})) =\\\\
+&= -\Phi^{-1}(1 - \alpha) + \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n}\\\\
 \end{aligned}
 $$
 
@@ -247,13 +247,13 @@ n}$ depends on $\bar X_n$ and $\bar Y_n$, which are observable only after the
 experiment is completed. Thus we can define
 
 $$
-s^2 = P_1 (1 - P_1) + P_2 (1 - P_2)
+s^2 = \pi_1 (1 - \pi_1) + \pi_2 (1 - \pi_2)
 $$
 
-as an estimate of $\hat \sigma_{\Delta n}^2$, where $P_1$ and $P_2$ are
-hypothesized by the designer of the experiment and are such that $P_2 - P_1 =
-\delta$. In practice, $P_1$ is derived from existing available data (such as
-conversion data from Google Analytics or a similar tracking tool), and $P_2$ is
+as an estimate of $\hat \sigma_{\Delta n}^2$, where $\pi_1$ and $\pi_2$ are
+hypothesized by the designer of the experiment and are such that $\pi_2 - \pi_1 =
+\delta$. In practice, $\pi_1$ is derived from existing available data (such as
+conversion data from Google Analytics or a similar tracking tool), and $\pi_2$ is
 calculated after defining the minimum effect of interest $\delta$. Ideally,
 historical data should be:
 
@@ -266,7 +266,7 @@ Finally we can solve for $n$ and obtain
 
 $$
 \begin{align}
-n = \frac{{\left[\Phi^{-1}(1 - \alpha/2) + \Phi^{-1}(1 - \beta)\right]}^2 s^2}{\delta^2}
+n = \frac{{\left[\Phi^{-1}(1 - \alpha) + \Phi^{-1}(1 - \beta)\right]}^2 s^2}{\delta^2}
 \end{align}
 $$
 
@@ -305,10 +305,104 @@ $(4)$ provide good approximations.
 Usually it's best to run A/B tests with an equal number of users in each test
 variant. However, even with equal allocation the sample sizes in each variant
 will rarely be the same. We can derive a similar formula to $(4)$ and $(5)$ in
-this case as well.
+this case as well. For this case as well we consider a one-tailed
+non-inferiority test with null hypothesis $H_0: \theta \leq 0$, significance
+$\alpha \in (0, 1)$, and power $1 - \beta \in (0, 1)$ at $\theta = \delta > 0$.
 
 Assume the sample size in variant A is $n$, and the sample size in variant B is
-$m$, with $m = rn$ for some $r > 0$.
+$m$, with $m = rn$ for some $r > 0$. As before, we model each observation as a
+Bernoulli random variable:
+
+$$
+\begin{align\*}
+X_i &\sim \operatorname{Bernoulli}(p_1)\\\\
+Y_j &\sim \operatorname{Bernoulli}(p_2)
+\end{align\*}
+$$
+
+with $i = 1, \ldots, n$ and $j = 1, \ldots, m$. The sample means then are:
+
+$$
+\bar X_n = \frac 1n \sum_{i = 1}^n X_i,\quad
+\bar Y_m = \frac 1n \sum_{j = 1}^m Y_j
+$$
+
+For sufficiently large $n$ and $m$, it holds that
+
+$$
+\begin{align}
+\begin{split}
+\bar X_n &\sim \mathcal N(p_1, p_1(1 - p_1) / n)\\\\
+\bar Y_m &\sim \mathcal N(p_2, p_2(1 - p_2) / m)
+\end{split}
+\end{align}
+$$
+
+We'll define the difference of sample means as $\Delta_{n, m} = \bar Y_m - \bar
+X_n$. The pooled estimator for the variance of the difference is
+
+$$
+\hat \sigma_{\Delta n, m}^2 = \bar W_{n, m}(1 - \bar W_{n, m}) (n^{-1} +
+m^{-1})
+$$
+
+where $\bar W_{n, m} = (\bar X_n + r \bar Y_m) / (1 + r)$. The test statistic
+is then
+
+$$
+Z_{n, m}^\prime = \frac{\Delta_{n, m}}{\hat \sigma_{\Delta n, m}}
+$$
+
+As a consequence of the Central Limit Theorem, for large values of $n$ and $m$,
+the sampling distribution of this statistic is $\mathcal N(\theta\hat
+\sigma_{\Delta n, m}^{-1}, 1)$.
+
+Simple algebra shows that the critical value for this statistic is again $c =
+\Phi^{-1}(1 - \alpha)$. At $\theta = \delta$, the power of the test is required
+to be $1 - \beta$:
+
+$$
+\begin{aligned}
+1 - \beta &= 1 - \operatorname{Pr}(\text{Accept } H_0 \mid H_0 \text{ is false}) =\\\\
+&= 1 - \operatorname{Pr}(Z_n^\prime \leq c \mid \theta = \delta) =\\\\
+&= 1 - \Phi(c - \delta\hat \sigma_{\Delta n, m}^{-1})
+\end{aligned}
+$$
+
+By substituting $c = \Phi^{-1}(1 - \alpha)$, we obtain:
+
+$$
+\begin{aligned}
+\Phi^{-1}(1 - \beta) &= \Phi^{-1}(1 - \Phi(\Phi^{-1}(1 - \alpha) - \delta\hat \sigma_{\Delta n, m}^{-1})) =\\\\
+&= \Phi^{-1}(\Phi(-\Phi^{-1}(1 - \alpha) + \delta\hat \sigma_{\Delta n, m}^{-1} )) =\\\\
+&= -\Phi^{-1}(1 - \alpha) + \delta\hat \sigma_{\Delta n, m}^{-1}\\\\
+\end{aligned}
+$$
+
+Since $\hat \sigma_{\Delta n, m}$ depends on $\bar X_n$ and $\bar Y_m$, which are observable only after the experiment is completed, we define
+
+$$
+s_{\text{pooled}}^2 = (1 + r)\pi (1 - \pi)(n^{-1} + m^{-1}),\qquad \pi = (\pi_1 + r \pi_2) / (1 + r)
+$$
+
+as an estimate of $\hat \sigma_{\Delta n, m}^2$, where $\pi_1$ and $\pi_2$ are
+hypothesized by the designer of the experiment and are such that $\pi_2 - \pi_1 = \delta$.
+
+Finally, we substitute $m = rn$ and we solve for $n$, obtaining:
+
+$$
+\begin{align}
+n = \frac{{\left[\Phi^{-1}(1 - \alpha) + \Phi^{-1}(1 - \beta)\right]}^2 s^2}{\delta^2}
+\end{align}
+$$
+
+The continuity-corrected value $n^\star$ is
+
+$$
+\begin{align}
+n^\star = \frac{n}{4}{\left(1 + \sqrt{1 + \frac{2(1 + r)}{n r \delta}}\right)}^2
+\end{align}
+$$
 
 ## Continuous responses
 ## One-pass algorithms
