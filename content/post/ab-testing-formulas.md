@@ -32,10 +32,10 @@ $p$, which takes the value $1$ with probability $p$ and value $0$ with
 probability $1 - p$:
 
 $$
-\begin{align\*}
+\begin{aligned}
 X_i &\sim \operatorname{Bernoulli}(p_1)\\\\
 Y_i &\sim \operatorname{Bernoulli}(p_2)
-\end{align\*}
+\end{aligned}
 $$
 
 We'll further assume that different observations in the same test arm are
@@ -49,10 +49,10 @@ appropriate.
 The goal of our A/B experiment is to evaluate the one-tailed hypothesis test
 
 $$
-\begin{align\*}
+\begin{aligned}
 H_0&: \theta \leq 0\\\\
 H_a&: \theta > 0
-\end{align\*}\quad\quad\theta = p_2 - p_1
+\end{aligned}\quad\quad\theta = p_2 - p_1
 $$
 
 where the null hypothesis $H_0$ is that there's no difference in the
@@ -86,12 +86,12 @@ Y_n$ and $\sqrt n (\bar Y_n - p_2)$. Hence in practice, for a sufficiently
 large $n$,
 
 $$
-\begin{align}
+\begin{aligned}
 \begin{split}
 \bar X_n &\sim \mathcal N(p_1, p_1(1 - p_1) / n)\\\\
 \bar Y_n &\sim \mathcal N(p_2, p_2(1 - p_2) / n)
 \end{split}
-\end{align}
+\end{aligned}
 $$
 
 We are interested in the difference of sample means, $\Delta_n = \bar Y_n -
@@ -125,9 +125,9 @@ standard deviation $\sigma_{\Delta n}$ depends on $p_1$ and $p_2$, which are
 unknown, we'll need to replace it with a suitable estimator. Thus we define
 
 $$
-\begin{align\*}
+\begin{aligned}
 \hat \sigma_{\Delta n}^2 = \frac{2\bar W_n(1 - \bar W_n)}{n}
-\end{align\*}
+\end{aligned}
 $$
 
 where we used the pooled variance estimator and $\bar W_n = (\bar X_n + \bar
@@ -136,9 +136,9 @@ Y_n) / 2$.
 Our revised test statistic is now
 
 $$
-\begin{align}
+\begin{aligned}
 Z_n^\prime = \frac{\Delta_n}{\hat \sigma_{\Delta n}}
-\end{align}
+\end{aligned}
 $$
 
 This statistic is still approximately normal for large $n$ values. In online
@@ -230,7 +230,7 @@ $$
 \end{aligned}
 $$
 
-Recall from $(3)$ that we found that in order to limit the Type I error at
+Recall from $(1)$ that we found that in order to limit the Type I error at
 the desired significance level $\alpha$, the critical value $c$ must be equal
 to $\Phi^{-1}(1 - \alpha)$. Therefore,
 
@@ -298,18 +298,18 @@ $$
 
 which provides values very close to the exact sample size. The exact
 calculation of the sample size requires an iterative procedure involving
-binomial distributions, and thus it's rarely used in practice. $(5)$ or even
-$(4)$ provide good approximations.
+binomial distributions, and thus it's rarely used in practice. $(3)$ or even
+$(2)$ provide good approximations.
 
 
 ## Unequal sample sizes
-Usually it's best to run A/B tests with an equal number of users in each test
-variant. However, even with equal allocation the sample sizes in each variant
-will rarely be exactly the same. We can derive a similar formula to $(4)$ and
-$(5)$ in this case as well. As before, we consider a one-tailed non-inferiority
-test with null hypothesis $H_0: \theta \leq 0$, significance $\alpha \in (0,
-1)$, and power $1 - \beta \in (0, 1)$ at $\theta = \delta > 0$. The
-calculations are largely the same, with a few minor differences. Therefore
+The most efficient A/B tests are those with equal sample size allocations.
+However, in some specific cases an experimenter may want to design a test with
+unequal allocations for a variety of reasons. We can derive a similar formula
+to $(2)$ and $(3)$ in this case as well. As before, we consider a one-tailed
+non-inferiority test with null hypothesis $H_0: \theta \leq 0$, significance
+$\alpha \in (0, 1)$, and power $1 - \beta \in (0, 1)$ at $\theta = \delta > 0$.
+The calculations are largely the same, with a few minor differences. Therefore
 we'll skip a few elementary steps.
 
 Assume the sample size in variant A is $n$, and the sample size in variant B is
@@ -317,28 +317,28 @@ $m$, with $m = rn$ for some $r > 0$. As before, we model each observation as a
 Bernoulli random variable:
 
 $$
-\begin{align\*}
-X_i &\sim \operatorname{Bernoulli}(p_1)\\\\
-Y_j &\sim \operatorname{Bernoulli}(p_2)
-\end{align\*}
+\begin{aligned}
+X_i &\sim \operatorname{Bernoulli}(p_1)\qquad\qquad i = 1, \ldots, n\\\\
+Y_j &\sim \operatorname{Bernoulli}(p_2)\qquad\qquad j = 1, \ldots, m
+\end{aligned}
 $$
 
-with $i = 1, \ldots, n$ and $j = 1, \ldots, m$. The sample means then are:
+The sample means then are:
 
 $$
 \bar X_n = \frac 1n \sum_{i = 1}^n X_i,\quad
 \bar Y_m = \frac 1n \sum_{j = 1}^m Y_j
 $$
 
-For sufficiently large $n$ and $m$, it holds that
+For sufficiently large values of $n$ and $m$, it holds that
 
 $$
-\begin{align}
+\begin{aligned}
 \begin{split}
 \bar X_n &\sim \mathcal N(p_1, p_1(1 - p_1) / n)\\\\
 \bar Y_m &\sim \mathcal N(p_2, p_2(1 - p_2) / m)
 \end{split}
-\end{align}
+\end{aligned}
 $$
 
 We define the difference of sample means as $\Delta_{n, m} = \bar Y_m - \bar
@@ -353,11 +353,11 @@ where $\bar W_{n, m} = (\bar X_n + r \bar Y_m) / (1 + r)$. The test statistic
 is then
 
 $$
-Z_{n, m}^\prime = \frac{\Delta_{n, m}}{\hat \sigma_{\Delta n, m}}
+Z_{n, m}^\prime = \frac{\Delta_{n, m}}{\hat \sigma_{\Delta n, m}},
 $$
 
-The sampling distribution of this statistic is $\mathcal N(\theta\hat
-\sigma_{\Delta n, m}^{-1}, 1)$.
+with sampling distribution $\mathcal N(\theta\hat \sigma_{\Delta n, m}^{-1},
+1)$.
 
 Simple algebra shows that the critical value for this statistic is again $c =
 \Phi^{-1}(1 - \alpha)$. At $\theta = \delta$, the power of the test is required
@@ -381,7 +381,8 @@ $$
 \end{aligned}
 $$
 
-Since $\hat \sigma_{\Delta n, m}$ depends on $\bar X_n$ and $\bar Y_m$, which are observable only after the experiment is completed, we define
+Since $\hat \sigma_{\Delta n, m}$ depends on $\bar X_n$ and $\bar Y_m$, which
+are observable only after the experiment is completed, we define
 
 $$
 s_{\text{pooled}}^2 = \pi (1 - \pi)(n^{-1} + m^{-1}),\qquad \pi = (\pi_1 + r \pi_2) / (1 + r)
@@ -407,4 +408,13 @@ n^\star = \frac{n}{4}{\left(1 + \sqrt{1 + \frac{2(1 + r)}{n r \delta}}\right)}^2
 $$
 
 ## Continuous responses
+In online A/B testing there are several continuous variables of interest, the
+most important of which usually are: average order value (AOV), and average
+revenue per user (ARPU). ARPU is defined as the product between conversion rate
+and AOV.
+
+These continous variables are not normally distributed, but if the observations
+are independent, the sample means will are normally distributed, thanks to the
+Central Limit Theorem.
+
 ## One-pass algorithms
