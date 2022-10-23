@@ -61,9 +61,9 @@ the null hypothesis with Type I error $\alpha \in (0, 1)$. We'll furthermore
 require power $1 - \beta \in (0, 1)$ at $\theta = \delta > 0$.
 
 We chose a one-tailed test as opposed to the more common two-tailed tests
-because they make much more sense in the context of online A/B testing, where
-we are interested in determining whether the new variant is sufficiently better
-than control. This was also discussed in [part
+because one-tailed tests make much more sense in the context of online A/B
+testing, where we are interested in determining whether the new variant is
+sufficiently better than control. This was also discussed in [part
 I](/post/ab-testing-inference/#types-of-hypotheses).
 
 Let's define the sample mean to be
@@ -160,7 +160,7 @@ $$
 
 <p class="mobile">
 $$
-Z_{n,\ \text{unpooled}}^\prime = \frac{\Delta_n}{\hat \sigma_{\Delta n,\ \text{unpooled}}},\ \text{pooled}}},\ \text{with}
+Z_{n,\ \text{unpooled}}^\prime = \frac{\Delta_n}{\hat \sigma_{\Delta n,\ \text{unpooled}}},\ \text{with}
 $$
 $$
 \hat \sigma_{\Delta n,\ \text{unpooled}}^2 = \bar X_n(1 - \bar X_n) + \bar Y_n(1 - \bar Y_n)
@@ -214,18 +214,9 @@ values of $\theta$, and lower for lower values.
 $$
 \begin{aligned}
 1 - \beta &= 1 - \operatorname{Pr}(\text{Accept } H_0 \mid H_0 \text{ is false}) =\\\\
-&= 1 - \operatorname{Pr}(|Z_n^\prime| \leq c \mid \theta = \delta) =\\\\
-&= \operatorname{Pr}(|Z_n^\prime| > c \mid \theta = \delta) =\\\\
-&= \operatorname{Pr}(Z_n^\prime > c \mid \theta = \delta) + \operatorname{Pr}(Z_n^\prime < -c \mid \theta = \delta)
-\end{aligned}
-$$
-
-Observe that at $\theta = \delta$, the second probability is going to be
-vanishingly small, and can be ignored for practical purposes. Therefore:
-
-$$
-\begin{aligned}
-1 - \beta &\approx \operatorname{Pr}(Z_n^\prime - \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n} > c -\delta\hat \sigma_{\Delta n}^{-1} \sqrt{n}) =\\\\
+&= 1 - \operatorname{Pr}(Z_n^\prime \leq c \mid \theta = \delta) =\\\\
+&= \operatorname{Pr}(Z_n^\prime > c \mid \theta = \delta) =\\\\
+&= \operatorname{Pr}(Z_n^\prime - \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n} > c -\delta\hat \sigma_{\Delta n}^{-1} \sqrt{n}) =\\\\
 &= 1 - \Phi(c - \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n})
 \end{aligned}
 $$
@@ -234,6 +225,7 @@ Recall from $(1)$ that we found that in order to limit the Type I error at
 the desired significance level $\alpha$, the critical value $c$ must be equal
 to $\Phi^{-1}(1 - \alpha)$. Therefore,
 
+<div class="non-mobile">
 $$
 \begin{aligned}
 \Phi^{-1}(1 - \beta) &= \Phi^{-1}(1 - \Phi(\Phi^{-1}(1 - \alpha) - \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n})) =\\\\
@@ -241,13 +233,24 @@ $$
 &= -\Phi^{-1}(1 - \alpha) + \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n}\\\\
 \end{aligned}
 $$
+</div>
+<div class="mobile">
+$$
+\begin{aligned}
+&\Phi^{-1}(1 - \beta) =\\\\
+=\ &\Phi^{-1}(1 - \Phi(\Phi^{-1}(1 - \alpha) - \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n})) =\\\\
+=\ &\Phi^{-1}(\Phi(-\Phi^{-1}(1 - \alpha) + \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n})) =\\\\
+=\ &-\Phi^{-1}(1 - \alpha) + \delta\hat \sigma_{\Delta n}^{-1} \sqrt{n}
+\end{aligned}
+$$
+</div>
 
 Before presenting the final expression for $n$, note that $\hat \sigma_{\Delta
 n}$ depends on $\bar X_n$ and $\bar Y_n$, which are observable only after the
 experiment is completed. Thus we can define
 
 $$
-s_{\text{pooled}}^2 = 2 \pi (1 - \pi) n^{-1},\qquad\qquad \pi = (\pi_1 + \pi_2)
+s^2 = 2 \pi (1 - \pi)/n,\quad \pi = (\pi_1 + \pi_2)
 / 2
 $$
 
@@ -318,8 +321,8 @@ Bernoulli random variable:
 
 $$
 \begin{aligned}
-X_i &\sim \operatorname{Bernoulli}(p_1)\qquad\qquad i = 1, \ldots, n\\\\
-Y_j &\sim \operatorname{Bernoulli}(p_2)\qquad\qquad j = 1, \ldots, m
+X_i &\sim \operatorname{Bernoulli}(p_1)\qquad i = 1, \ldots, n\\\\
+Y_j &\sim \operatorname{Bernoulli}(p_2)\qquad j = 1, \ldots, m
 \end{aligned}
 $$
 
@@ -353,11 +356,9 @@ where $\bar W_{n, m} = (\bar X_n + r \bar Y_m) / (1 + r)$. The test statistic
 is then
 
 $$
-Z_{n, m}^\prime = \frac{\Delta_{n, m}}{\hat \sigma_{\Delta n, m}},
+Z_{n, m}^\prime = \frac{\Delta_{n, m}}{\hat \sigma_{\Delta n, m}} \sim \mathcal
+N(\theta\hat \sigma_{\Delta n, m}^{-1}, 1)
 $$
-
-with sampling distribution $\mathcal N(\theta\hat \sigma_{\Delta n, m}^{-1},
-1)$.
 
 Simple algebra shows that the critical value for this statistic is again $c =
 \Phi^{-1}(1 - \alpha)$. At $\theta = \delta$, the power of the test is required
@@ -385,7 +386,7 @@ Since $\hat \sigma_{\Delta n, m}$ depends on $\bar X_n$ and $\bar Y_m$, which
 are observable only after the experiment is completed, we define
 
 $$
-s_{\text{pooled}}^2 = \pi (1 - \pi)(n^{-1} + m^{-1}),\qquad \pi = (\pi_1 + r \pi_2) / (1 + r)
+s^2 = \pi (1 - \pi)(n^{-1} + m^{-1}),\qquad \pi = (\pi_1 + r \pi_2) / (1 + r)
 $$
 
 as an estimate of $\hat \sigma_{\Delta n, m}^2$, where $\pi_1$ and $\pi_2$ are
@@ -407,14 +408,80 @@ n^\star = \frac{n}{4}{\left(1 + \sqrt{1 + \frac{2(1 + r)}{n r \delta}}\right)}^2
 \end{align}
 $$
 
+It's easy to see that $(2)$ and $(3)$ are special cases of $(4)$ and $(5)$ with
+$r = 1$.
+
 ## Continuous responses
-In online A/B testing there are several continuous variables of interest, the
-most important of which usually are: average order value (AOV), and average
-revenue per user (ARPU). ARPU is defined as the product between conversion rate
-and AOV.
+In online A/B testing there are several continuous variables of interest, like
+the average order value (AOV) and average revenue per user (ARPU, defined as
+the product between conversion rate and AOV).
 
 These continous variables are not normally distributed, but if the observations
-are independent, the sample means will are normally distributed, thanks to the
-Central Limit Theorem.
+are independent, the sample means are normally distributed, thanks to the
+Central Limit Theorem. To apply the theorem, we also require that these random
+variables have finite mean and variance (as these are assumptions of the
+Central Limit Theorem). If they represent order values, these assumptions are
+satisfied in most cases since such distribution should have limited support
+(that is, the order values belong to a bounded interval $[0, v]$ for some $v >
+0$).
+
+Therefore, if $X_i, i = 1, \ldots, n$ and $Y_j, j = 1, \ldots, m$ (with $m =
+rn$ for some $r > 0$) are independent, continous random variables with finite
+mean and variance, their sample means are normally distributed for sufficiently
+large values of $n$ and $m$:
+
+$$
+\begin{aligned}
+\bar X_n &= \frac 1n \sum_{i = 1}^n X_i \sim \mathcal N(\mu_1, \sigma_1)\\\\
+\bar Y_m &= \frac 1m \sum_{i = 1}^m Y_i \sim \mathcal N(\mu_2, \sigma_2)\\\\
+\end{aligned}
+$$
+
+We are interested in the one-tailed, non inferiority test
+
+$$
+\begin{aligned}
+H_0&: \theta \leq 0\\\\
+H_a&: \theta > 0
+\end{aligned}\quad\quad\theta = \mu_2 - \mu_1
+$$
+
+with significance level $\alpha \in (0, 1)$, and power $1 - \beta \in (0, 1)$
+at a minimum effect of interest $\theta = \delta > 0$.
+
+As before, we consider the difference $\Delta_{n, m} = \bar Y_m - \bar X_n$ as
+an estimator for $\theta$ since $\Delta_{n, m} \sim \mathcal N(\theta,
+\sigma_{\Delta n, m}^2)$ with $\sigma_{\Delta n, m}^2 = \sigma_1^2 +
+\sigma_2^2$
+
+The test statistic $T_{n, m} = \Delta_{n, m} / \sigma_{\Delta n, m}$ has unit
+variance, but since $\sigma_1$ and $\sigma_2$ are unknown, we replace them with
+the sample variances:
+
+$$
+\begin{aligned}
+s_1^2 = \frac 1{n - 1} \sum_{i = 1}^n {(X_i - \bar X_n)}^2\\\\
+s_2^2 = \frac 1{m - 1} \sum_{j = 1}^m {(Y_i - \bar Y_m)}^2
+\end{aligned}
+$$
+
+Therefore, we consider the test statistic
+
+$$
+T^\prime_{n, m} = \frac{\Delta_{n, m}}{\hat \sigma_{\Delta n, m}},\qquad \hat
+\sigma_{\Delta n, m}^2 = s_1^2 + s_2^2
+$$
+
+This statistic is not normally distributed since the variance estimate in the
+denominator does not depend exclusively on the sample means, but directly on
+the observed data. This introduces a source of additional variance in the test
+statistic, which is distributed as a Student's t variable instead. In practice,
+the difference is very small with sample sizes above $30$. Since in online A/B
+testing we usually deal with much larger sample sizes, the normal approximation
+is appropriate. Thus, in the following sections we'll assume $T^\prime_{n, m}
+\sim \mathcal N(\theta\hat \sigma_{\Delta n, m}^{-1}, 1)$.
+
+The same reasoning as before shows that the critical value below which the null
+hypothesis is rejected is $c = \Phi^{-1}(1 - \alpha)$.
 
 ## One-pass algorithms

@@ -1,0 +1,16 @@
+{{ $src := .Get 0 }}
+{{ $title := .Get 1 }}
+{{ $size := .Get 2 }}
+{{ $imgsrc := resources.Get $src }}
+{{ $imgpng := $imgsrc.Resize (printf "%s png" $size) }}
+{{ $imgwebp := $imgsrc.Resize (printf "%s webp" $size) }}
+
+<picture>
+  <source srcset="{{ $imgwebp.RelPermalink }}" type="images/webp">
+  <source srcset="{{ $imgpng.RelPermalink }}" type="images/png">
+  <img src="{{ $imgpng.RelPermalink }}"
+       width="{{ $imgpng.Width }}"
+       height="{{ $imgpng.Height }}"
+       alt="{{ $title }}"
+       title="{{ $title }}">
+</picture>

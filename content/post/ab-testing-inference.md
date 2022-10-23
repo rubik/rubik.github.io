@@ -480,20 +480,16 @@ Visually, we can represent the calculated test statistic and the required
 significance level as follows:
 
 <figure class="pad">
-  <img src="/static/images/ab-testing-significance.png"
-       alt="Significance level and test statistic"
-       title="Significance level and test statistic">
+  {{< imgproc "images/ab-testing-significance.png" "Significance level and test statistic" "854x q100" >}}
 </figure>
 
 In the chart above, the significance region is shaded in green, and the
 calculated test statistic is in red. The p-value is the region to the right of
 the test statistic under the standard normal curve, and it's clearly smaller
-than the significance region in green:
+than the significance region in green from the chart above:
 
 <figure class="pad">
-  <img src="/static/images/ab-testing-p-value.png"
-       alt="p-value representation"
-       title="p-value representation">
+  {{< imgproc "images/ab-testing-p-value.png" "p-value representation" "854x q100" >}}
 </figure>
 
 The experiment is concluded by rejecting the null hypothesis and accepting the
