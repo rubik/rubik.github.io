@@ -411,3 +411,46 @@ n = \frac{1 + r}{r}\frac{s_\star^2 {[\Phi^{-1}(1 - \beta) + \Phi^{-1}(1 - \alpha
 $$
 
 ## One-pass algorithms
+[Welford (1962)](https://doi.org/10.2307%2F1266577) found the following formulas
+that don't suffer from numerical instability as much as the naive approach,
+using the squares of differences from the current mean, $M_{2, n} = \sum_{i =
+1}^n {(x_i - \bar x_n)}^2$:
+
+$$
+\begin{aligned}
+\bar x_n &= \bar x_{n - 1} + \frac{x_n - \bar x_{n - 1}}{n}\\\\
+M_{2, n} &= M_{2, n - 1} + (x_n - \bar x_{n - 1})(x_n - \bar x_n)\\\\
+s_n^2 &= \frac{M_{2, n}}{n - 1}
+\end{aligned}
+$$
+
+The formulas above can be used to keep track of the AOV, but they do not work
+with a quantity like ARPU. The reason is that such formulas keep track of the
+running average and update it whenever a new value is observed. With ARPU,
+there are two updates: when a new user is observed ($n \mapsto n + 1$), and
+when a conversion from an existing user is observed. The latter is equivalent
+to the following state change (from $n$ users with $k$ conversions, to $n$
+users and $k + 1$ conversions):
+
+$$
+(0, \ldots, 0, x_{n - k + 1}, \ldots, x_n) \mapsto (0, \ldots, 0, x_{n - k},
+\ldots, x_n)
+$$
+
+where we assume
+
+$$
+M_{2, n}^\star = M_{2, n - 1}^\star + \frac{n - 1}{n} x_n^2 - 2x_n\bar x_{n - 1}
+$$
+
+Parallel groups combination formulas, due to [Chen et al.
+(1979)](https://doi.org/10.1007/978-3-642-51461-6_3):
+
+$$
+\begin{aligned}
+n_{AB} &= n_A + n_B\\\\
+\delta &= \bar x_B - \bar x_A\\\\
+\bar x_{AB} &= \bar x_A + \delta \frac{n_B}{n_{AB}}\\\\
+M_{AB} &= M_A + M_B + + \delta^2\frac{n_A n_B}{n_{AB}}
+\end{aligned}
+$$
