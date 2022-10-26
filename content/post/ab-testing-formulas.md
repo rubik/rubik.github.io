@@ -9,10 +9,14 @@ summary: "Statistical framework underlying online A/B testing: formulas for bina
 ---
 
 This post continues the A/B testing series and it shows how to derive key
-formulas for some common cases encountered in online A/B tests. This post
-assumes some basic knowledge about calculus, random variables, and statistics.
-For an overview of the basic concepts and the underlying statistical framework,
-I recommend reading part I of the series linked below.
+formulas for some common cases encountered in online A/B tests. We'll show how
+to derive the formulas for the test statistic and sample size calculation.
+We'll also provide some online algorithms that allow post-test analysis and
+p-value calculations without having to store all the observations.
+
+This post assumes some basic knowledge about calculus, random variables, and
+statistics. For an overview of the basic concepts and the underlying
+statistical framework, I recommend reading part I of the series linked below.
 
 ### A/B testing fundamentals series
 * [Part I: Statistical inference and hypothsis testing](/post/ab-testing-inference)
@@ -21,7 +25,7 @@ I recommend reading part I of the series linked below.
 * Part IV: Multivariate tests
 
 
-## Binary responses
+## Sample size for binary responses
 We'll first describe one of the most common cases encountered in online A/B
 tests: a binary response variable, such as whether a conversion happened or not
 for a particular user. Let $X_i, Y_i, i = 1, \ldots, n$ be the conversion data
@@ -318,7 +322,7 @@ calculation of the sample size requires an iterative procedure involving
 binomial distributions, and thus it's rarely used in practice. $(3)$ or even
 $(2)$ provide good approximations.
 
-## Continuous responses
+## Sample size for continuous responses
 In online A/B testing there are several continuous variables of interest, like
 the average order value (AOV) and average revenue per user (ARPU, defined as
 the product between conversion rate and AOV).
@@ -410,11 +414,26 @@ $$
 n = \frac{1 + r}{r}\frac{s_\star^2 {[\Phi^{-1}(1 - \beta) + \Phi^{-1}(1 - \alpha)]}^2}{\delta^2}
 $$
 
-## One-pass algorithms
-[Welford (1962)](https://doi.org/10.2307%2F1266577) found the following formulas
-that don't suffer from numerical instability as much as the naive approach,
-using the squares of differences from the current mean, $M_{2, n} = \sum_{i =
-1}^n {(x_i - \bar x_n)}^2$:
+## Single-pass algorithms
+Once all observations have been collected, to calculate p-values (or confidence
+intervals) and reach a conclusion, one must be able to calculate the sample
+variance. That's possible by storing all observations and carrying out the
+computation at the end, but sometimes that's not possible to due the size of
+the datasets, performance considerations or other constraints. We'll now
+present a few formulas to keep track of observed variance online, i.e. by
+seeing the observed values only once. No storage is required in this case.
+
+The case of binary responses is trivial, since the variance is a function of
+the observed proportion. That is, just by keeping track of the number of
+observations $n$ and number of conversions $k$, the sample variance is $p (1 -
+p)$ with $p = k / n$.
+
+The case of continous responses (such as AOV) is more delicate. [Welford
+(1962)](https://doi.org/10.2307%2F1266577) found the following formulas that
+don't suffer from numerical instability as much as other naiver approaches. The
+idea is to keep track of the sum of squares of differences from the current
+mean, $M_{2, n} = \sum_{i = 1}^n {(x_i - \bar x_n)}^2$, and only calculate the
+sample variance at the end, when needed:
 
 $$
 \begin{aligned}
@@ -424,27 +443,43 @@ s_n^2 &= \frac{M_{2, n}}{n - 1}
 \end{aligned}
 $$
 
-The formulas above can be used to keep track of the AOV, but they do not work
-with a quantity like ARPU. The reason is that such formulas keep track of the
-running average and update it whenever a new value is observed. With ARPU,
-there are two updates: when a new user is observed ($n \mapsto n + 1$), and
-when a conversion from an existing user is observed. The latter is equivalent
-to the following state change (from $n$ users with $k$ conversions, to $n$
-users and $k + 1$ conversions):
+The formulas above can be used to keep track of metrics like the AOV, but they
+do not work with a metric like ARPU. The reason is that such formulas keep
+track of the running average and update it whenever a new value is observed.
+With ARPU, there are two updates: when a new user is observed ($n \mapsto n +
+1$), and when a conversion from an existing user is observed. The latter is
+equivalent to the following state change, where the state goes from $n$ users
+with $k$ conversions (and thus $n - k$ non-conversions with value $0$) to $n$
+users and $k + 1$ conversions (and thus $n - k - 1$ non-conversions with value
+$0$):
 
 $$
 (0, \ldots, 0, x_{n - k + 1}, \ldots, x_n) \mapsto (0, \ldots, 0, x_{n - k},
 \ldots, x_n)
 $$
 
-where we assume
+In this case, the updating formula for the sum of squared differences must be
+slightly modified. I derived the following formula:
 
 $$
 M_{2, n}^\star = M_{2, n - 1}^\star + \frac{n - 1}{n} x_n^2 - 2x_n\bar x_{n - 1}
 $$
 
-Parallel groups combination formulas, due to [Chen et al.
-(1979)](https://doi.org/10.1007/978-3-642-51461-6_3):
+When these single-pass algorithms are used, it's no longer possible to perform
+segment analysis after the experiment. E.g. carrying out statistical
+evaluations on subsets of the observed samples, such as: is the conversion rate
+significantly better in variant B, when considering only mobile users, or
+new users, returning users, etc.?
+
+Indeed, if the observations are not stored along with information on each
+user, it's not possible to perform such segment analysis afterwards. However,
+if the segments of interest are defined before the experiment is started, it's
+possible to keep track of each segment as if it were an individual test, and
+combine the results at the end. That's possible with the following
+group-combination formulas, due to [Chen et al.
+(1979)](https://doi.org/10.1007/978-3-642-51461-6_3), which can be used to
+combine the results from groups $A$ and $B$ and obtain the combined sample
+variance.
 
 $$
 \begin{aligned}
@@ -454,3 +489,154 @@ n_{AB} &= n_A + n_B\\\\
 M_{AB} &= M_A + M_B + + \delta^2\frac{n_A n_B}{n_{AB}}
 \end{aligned}
 $$
+
+Note that in these formulas $A$ and $B$ do not represent the experiment
+variants, but rather two arbitrary subsets of the experiment samples.
+
+The following sample Python code implements the formulas described above:
+
+```python
+import dataclasses
+
+@dataclasses.dataclass
+class VariantState:
+    n: int = 0
+    conversions: int = 0
+    aov: float = .0
+    ov_m2: float = .0
+    arpu: float = .0
+    rpu_m2: float = .0
+
+    def track(self):
+        '''Record the entrance of a new user in the A/B test.'''
+
+        new_arpu = (self.n * self.arpu) / (self.n + 1)
+        # mimic an SQL update, where all fields are updated at the same time
+        # this makes it easy to translate this code to an SQL query
+        self.n, self.arpu, self.rpu_m2 = (
+            self.n + 1,
+            new_arpu,
+            self.rpu_m2 + self.arpu * new_arpu,
+        )
+
+    def conversion(self, amount):
+        '''Record a conversion from a user that is part of the A/B test.'''
+
+        new_aov = (self.conversions * self.aov + amount) / (self.conversions + 1)
+        new_arpu = (self.n * self.arpu + amount) / self.n
+        # mimic an SQL update, where all fields are updated at the same time
+        # this makes it easy to translate this code to an SQL query
+        (
+            self.conversions,
+            self.aov, self.ov_m2,
+            self.arpu, self.rpu_m2
+        ) = (
+            self.conversions + 1,
+            new_aov,
+            self.ov_m2 + (amount - self.aov) * (amount - new_aov),
+            new_arpu,
+            (
+                self.rpu_m2 + (self.n - 1) / self.n * amount**2 -
+                2 * amount * self.arpu
+            ),
+        )
+
+    @property
+    def ov_var(self):
+        '''Order value (OV) sample variance.'''
+
+        if self.conversions < 2:
+            return 0
+        return self.ov_m2 / (self.conversions - 1)
+
+    @property
+    def rpu_var(self):
+        '''Revenue per user (RPU) sample variance.'''
+
+        if self.n < 2:
+            return 0
+        return self.rpu_m2 / (self.n - 1)
+
+    def combine(self, other):
+        '''Combine this state with another state.'''
+
+        n_t = self.n + other.n
+        c_t = self.conversions + other.conversions
+        delta_ov = other.aov - self.aov
+        delta_rpu = other.arpu - self.arpu
+        ov_t = self.aov + delta_ov * other.conversions / c_t
+        rpu_t = self.arpu + delta_rpu * other.n / n_t
+        ov_m2 = self.ov_m2 + other.ov_m2 + delta_ov**2 * self.conversions * other.conversions / c_t
+        rpu_m2 = self.rpu_m2 + other.rpu_m2 + delta_rpu**2 * self.n * other.n / n_t
+        return VariantState(
+            n=n_t,
+            conversions=c_t,
+            aov=ov_t,
+            ov_m2=ov_m2,
+            arpu=rpu_t,
+            rpu_m2=rpu_m2,
+        )
+```
+
+Example usage:
+
+```python
+mobile_a = VariantState()
+mobile_b = VariantState()
+desktop_a = VariantState()
+desktop_b = VariantState()
+mobile_a.track()
+mobile_a.track()
+mobile_b.track()
+desktop_b.track()
+desktop_b.track()
+desktop_a.track()
+mobile_a.conversion(53)
+desktop_b.conversion(71)
+mobile_b.track()
+mobile_b.conversion(81)
+desktop_a.conversion(29)
+desktop_a.track()
+
+mobile_a
+# VariantState(n=2, conversions=1, aov=53.0, ov_m2=0.0, arpu=26.5, rpu_m2=1404.5)
+
+desktop_a
+# VariantState(n=2, conversions=1, aov=29.0, ov_m2=0.0, arpu=14.5, rpu_m2=420.5)
+
+variant_a = mobile_a.combine(desktop_a)
+
+mobile_b
+# VariantState(n=2, conversions=1, aov=81.0, ov_m2=0.0, arpu=40.5, rpu_m2=3280.5)
+
+desktop_b
+# VariantState(n=2, conversions=1, aov=71.0, ov_m2=0.0, arpu=35.5, rpu_m2=2520.5)
+
+variant_b = mobile_b.combine(desktop_b)
+
+variant_a
+# VariantState(n=4, conversions=2, aov=41.0, ov_m2=288.0, arpu=20.5, rpu_m2=1969.0)
+
+variant_b
+# VariantState(n=4, conversions=2, aov=76.0, ov_m2=50.0, arpu=38.0, rpu_m2=5826.0)
+
+mobile_a.aov
+# 53.0
+
+mobile_a.ov_var
+# 0
+
+mobile_b.arpu
+# 40.5
+
+mobile_b.rpu_var
+# 3280.5
+```
+
+## Summary
+This post showed how to derive the sample size formulas for binary and
+continous responses, and presented some useful formulas for online A/B test
+tracking and variance computation.
+
+Part III will discuss the peeking problem in online A/B tests and a detailed
+description of sequential tests as a possible solution.
