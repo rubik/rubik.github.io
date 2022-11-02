@@ -19,10 +19,13 @@ statistics. For an overview of the basic concepts and the underlying
 statistical framework, I recommend reading part I of the series linked below.
 
 ### A/B testing fundamentals series
-* [Part I: Statistical inference and hypothsis testing](/post/ab-testing-inference)
-* Part II: Formulas for binary and continous responses (this post)
-* Part III: Group sequential tests
-* Part IV: Multivariate tests
+* [Part I: Introduction](/post/ab-testing-introduction/)
+* [Part II: Statistical inference and hypothsis testing](/post/ab-testing-inference/)
+* Part III: Formulas for binary and continous responses (this post)
+* Part IV: Group sequential tests
+* Part V: Multivariate tests
+* Part VI: Bayesian testing
+* Part VII: Test evaluation and generalizability of test results
 
 
 ## Sample size for binary responses

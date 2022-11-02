@@ -8,24 +8,20 @@ draft: false
 summary: "Statistical framework underlying online A/B testing using a frequentist approach to hypothesis testing."
 ---
 
-A/B testing, also referred to as "split testing", is a randomized
-experimentation process in which two or more versions of a variable (web page,
-page element, etc.) are shown to different segments of website visitors at the
-same time to determine which version leaves the maximum impact and drives
-business metrics, most commonly conversion rate and average revenue per user
-(ARPU).
-
 This series of posts explores the statistical framework (with a frequentist
 approach) behind controlled trials with a focus on online A/B testing, and it
 assumes some basic knowledge about calculus, random variables, and statistics.
-In this first post we'll describe the foundation to A/B testing: statistical
-inference through hypothesis testing.
+In this first post we'll describe the foundation of frequentist A/B testing:
+statistical inference through hypothesis testing.
 
 ### A/B testing fundamentals series
-* Part I: Statistical inference and hypothsis testing (this post)
-* [Part II: Formulas for binary and continous responses](/post/ab-testing-formulas/)
-* Part III: Group sequential tests
-* Part IV: Multivariate tests
+* [Part I: Introduction](/post/ab-testing-introduction/)
+* Part II: Statistical inference and hypothsis testing (this post)
+* [Part III: Formulas for binary and continous responses](/post/ab-testing-formulas/)
+* Part IV: Group sequential tests
+* Part V: Multivariate tests
+* Part VI: Bayesian testing
+* Part VII: Test evaluation and generalizability of test results
 
 ## Hypothesis testing
 Statistical inference is the application of statistical methods to learn the
