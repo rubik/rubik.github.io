@@ -334,10 +334,10 @@ These continous variables are not normally distributed, but if the observations
 are independent, the sample means are normally distributed, thanks to the
 Central Limit Theorem. To apply the theorem, we also require that these random
 variables have finite mean and variance (as these are assumptions of the
-Central Limit Theorem). If they represent order values, these assumptions are
-satisfied in most cases since such distribution should have limited support
-(that is, the order values belong to a bounded interval $[0, v]$ for some $v >
-0$).
+Central Limit Theorem) $\mu_1, \mu_2$ and $\sigma_1^2, \sigma_2^2$. If they
+represent order values, these assumptions are satisfied in most cases since
+such distribution should have limited support (that is, the order values belong
+to a bounded interval $[0, v]$ for some $v > 0$).
 
 Therefore, if $X_i, i = 1, \ldots, n$ and $Y_j, j = 1, \ldots, m$ (with $m =
 rn$ for some $r > 0$) are independent, continous random variables with finite
