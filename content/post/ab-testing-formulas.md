@@ -414,13 +414,15 @@ $s_\star^2$.
 After substituting $m = rn$, we can solve for $n$:
 
 $$
+\begin{align}
 n = \frac{1 + r}{r}\frac{s_\star^2 {[\Phi^{-1}(1 - \beta) + \Phi^{-1}(1 - \alpha)]}^2}{\delta^2}
+\end{align}
 $$
 
 ## Single-pass algorithms
 Once all observations have been collected, to calculate p-values (or confidence
 intervals) and reach a conclusion, one must be able to calculate the sample
-variance. That's possible by storing all observations and carrying out the
+variance. A common method is to store all observations and carry out the
 computation at the end, but sometimes that's not possible to due the size of
 the datasets, performance considerations or other constraints. We'll now
 present a few formulas to keep track of observed variance online, i.e. by
@@ -428,21 +430,21 @@ seeing the observed values only once. No storage is required in this case.
 
 The case of binary responses is trivial, since the variance is a function of
 the observed proportion. That is, just by keeping track of the number of
-observations $n$ and number of conversions $k$, the sample variance is $p (1 -
-p)$ with $p = k / n$.
+observations $n$ and number of conversions $k$, the sample proportion is $p = k
+/ n$, and the sample variance is $p (1 - p)$.
 
 The case of continous responses (such as AOV) is more delicate. [Welford
-(1962)](https://doi.org/10.2307%2F1266577) found the following formulas that
-don't suffer from numerical instability as much as other naiver approaches. The
-idea is to keep track of the sum of squares of differences from the current
-mean, $M_{2, n} = \sum_{i = 1}^n {(x_i - \bar x_n)}^2$, and only calculate the
-sample variance at the end, when needed:
+(1962)](https://doi.org/10.2307%2F1266577) discovered the following online
+formulas that don't suffer from numerical instability as much as other naiver
+approaches. The idea is to keep track of the sum of squares of differences from
+the current mean, $M_{2, n} = \sum_{i = 1}^n {(x_i - \bar x_n)}^2$, and only
+calculate the sample variance at the end, when needed:
 
 $$
 \begin{aligned}
-\bar x_n &= \bar x_{n - 1} + \frac{x_n - \bar x_{n - 1}}{n}\\\\
-M_{2, n} &= M_{2, n - 1} + (x_n - \bar x_{n - 1})(x_n - \bar x_n)\\\\
-s_n^2 &= \frac{M_{2, n}}{n - 1}
+\bar x_{n + 1} &= \bar x_n + \frac{x_{n + 1} - \bar x_n}{n + 1}\\\\
+M_{2, n + 1} &= M_{2, n} + (x_{n + 1} - \bar x_n)(x_{n + 1} - \bar x_{n + 1})\\\\
+s_{n + 1}^2 &= \frac{M_{2, n + 1}}{n}
 \end{aligned}
 $$
 
@@ -457,28 +459,26 @@ users and $k + 1$ conversions (and thus $n - k - 1$ non-conversions with value
 $0$):
 
 $$
-(0, \ldots, 0, x_{n - k + 1}, \ldots, x_n) \mapsto (0, \ldots, 0, x_{n - k},
-\ldots, x_n)
+(x_1, \ldots, x_k, \underbrace{0, \ldots, 0}\_{n - k})
+\mapsto (x_1, \ldots, x_{k + 1}, \underbrace{0, \ldots, 0}\_{n - k - 1})
 $$
 
 In this case, the updating formula for the sum of squared differences must be
 slightly modified. I derived the following formula:
 
 $$
-M_{2, n}^\star = M_{2, n - 1}^\star + \frac{n - 1}{n} x_n^2 - 2x_n\bar x_{n - 1}
+M_{2, n, k + 1}^\star = M_{2, n, k}^\star + \frac{n - 1}{n} x_{k + 1}^2 - 2x_{k + 1}\bar x_k
 $$
 
 When these single-pass algorithms are used, it's no longer possible to perform
-segment analysis after the experiment. E.g. carrying out statistical
-evaluations on subsets of the observed samples, such as: is the conversion rate
-significantly better in variant B, when considering only mobile users, or
-new users, returning users, etc.?
+segment analysis after the experiment (i.e. comparing subsets of each sample,
+like mobile users in A vs mobile users in B, etc.).
 
 Indeed, if the observations are not stored along with information on each
 user, it's not possible to perform such segment analysis afterwards. However,
 if the segments of interest are defined before the experiment is started, it's
 possible to keep track of each segment as if it were an individual test, and
-combine the results at the end. That's possible with the following
+combine the results at the end. That's accomplished with the following
 group-combination formulas, due to [Chen et al.
 (1979)](https://doi.org/10.1007/978-3-642-51461-6_3), which can be used to
 combine the results from groups $A$ and $B$ and obtain the combined sample
@@ -496,7 +496,7 @@ $$
 Note that in these formulas $A$ and $B$ do not represent the experiment
 variants, but rather two arbitrary subsets of the experiment samples.
 
-The following sample Python code implements the formulas described above:
+The following sample Python code implements the formulas described above.
 
 ```python
 import dataclasses
