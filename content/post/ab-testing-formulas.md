@@ -25,7 +25,8 @@ statistical framework, I recommend reading part I of the series linked below.
 * Part IV: Group sequential tests
 * Part V: Multivariate tests
 * Part VI: Bayesian testing
-* Part VII: Test evaluation and generalizability of test results
+* Part VII: Bayesian vs frequentist testing
+* Part VIII: Test evaluation and generalizability of test results
 
 
 ## Sample size for binary responses
@@ -441,22 +442,28 @@ the current mean, $M_{2, n} = \sum_{i = 1}^n {(x_i - \bar x_n)}^2$, and only
 calculate the sample variance at the end, when needed:
 
 $$
+\begin{align}
 \begin{aligned}
 \bar x_{n + 1} &= \bar x_n + \frac{x_{n + 1} - \bar x_n}{n + 1}\\\\
 M_{2, n + 1} &= M_{2, n} + (x_{n + 1} - \bar x_n)(x_{n + 1} - \bar x_{n + 1})\\\\
 s_{n + 1}^2 &= \frac{M_{2, n + 1}}{n}
 \end{aligned}
+\end{align}
 $$
 
 The formulas above can be used to keep track of metrics like the AOV, but they
 do not work with a metric like ARPU. The reason is that such formulas keep
 track of the running average and update it whenever a new value is observed.
-With ARPU, there are two updates: when a new user is observed ($n \mapsto n +
-1$), and when a conversion from an existing user is observed. The latter is
-equivalent to the following state change, where the state goes from $n$ users
-with $k$ conversions (and thus $n - k$ non-conversions with value $0$) to $n$
-users and $k + 1$ conversions (and thus $n - k - 1$ non-conversions with value
-$0$):
+With ARPU, there are two updates:
+
+1. when a new user is observed ($n \mapsto n + 1$ and $x_{n + 1} = 0$), and the
+   formulas above are applied without change;
+2. when a conversion from a user is observed.
+
+The latter is equivalent to the following state change, where the state goes
+from $n$ users with $k$ conversions (and thus $n - k$ non-conversions with
+value $0$) to $n$ users and $k + 1$ conversions (and thus $n - k - 1$
+non-conversions with value $0$):
 
 $$
 (x_1, \ldots, x_k, \underbrace{0, \ldots, 0}\_{n - k})
@@ -467,30 +474,33 @@ In this case, the updating formula for the sum of squared differences must be
 slightly modified. I derived the following formula:
 
 $$
+\begin{align}
 M_{2, n, k + 1}^\star = M_{2, n, k}^\star + \frac{n - 1}{n} x_{k + 1}^2 - 2x_{k + 1}\bar x_k
+\end{align}
 $$
 
-When these single-pass algorithms are used, it's no longer possible to perform
-segment analysis after the experiment (i.e. comparing subsets of each sample,
-like mobile users in A vs mobile users in B, etc.).
+When these single-pass algorithms are used to track the whole A/B test, it's no
+longer possible to perform segment analysis after the experiment (i.e.
+comparing subsets of each sample, like mobile users in A vs mobile users in B,
+etc.).
 
-Indeed, if the observations are not stored along with information on each
-user, it's not possible to perform such segment analysis afterwards. However,
-if the segments of interest are defined before the experiment is started, it's
-possible to keep track of each segment as if it were an individual test, and
+However, if the segments of interest are defined before the experiment is
+started, one can track each segment as if it were an individual test, and
 combine the results at the end. That's accomplished with the following
 group-combination formulas, due to [Chen et al.
 (1979)](https://doi.org/10.1007/978-3-642-51461-6_3), which can be used to
 combine the results from groups $A$ and $B$ and obtain the combined sample
-variance.
+mean and variance.
 
 $$
+\begin{align}
 \begin{aligned}
 n_{AB} &= n_A + n_B\\\\
 \delta &= \bar x_B - \bar x_A\\\\
 \bar x_{AB} &= \bar x_A + \delta \frac{n_B}{n_{AB}}\\\\
 M_{AB} &= M_A + M_B + + \delta^2\frac{n_A n_B}{n_{AB}}
 \end{aligned}
+\end{align}
 $$
 
 Note that in these formulas $A$ and $B$ do not represent the experiment
@@ -514,8 +524,8 @@ class VariantState:
         '''Record the entrance of a new user in the A/B test.'''
 
         new_arpu = (self.n * self.arpu) / (self.n + 1)
-        # mimic an SQL update, where all fields are updated at the same time
-        # this makes it easy to translate this code to an SQL query
+        # mimic a SQL update, where all fields are updated at the same time
+        # this makes it easy to translate this code to a SQL query
         self.n, self.arpu, self.rpu_m2 = (
             self.n + 1,
             new_arpu,
@@ -527,8 +537,8 @@ class VariantState:
 
         new_aov = (self.conversions * self.aov + amount) / (self.conversions + 1)
         new_arpu = (self.n * self.arpu + amount) / self.n
-        # mimic an SQL update, where all fields are updated at the same time
-        # this makes it easy to translate this code to an SQL query
+        # mimic a SQL update, where all fields are updated at the same time
+        # this makes it easy to translate this code to a SQL query
         (
             self.conversions,
             self.aov, self.ov_m2,

@@ -23,4 +23,5 @@ This series will cover...
 * Part IV: Group sequential tests
 * Part V: Multivariate tests
 * Part VI: Bayesian testing
-* Part VII: Test evaluation and generalizability of test results
+* Part VII: Bayesian vs frequentist testing
+* Part VIII: Test evaluation and generalizability of test results
