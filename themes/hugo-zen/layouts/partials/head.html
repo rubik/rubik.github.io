@@ -19,10 +19,9 @@
   <link href="{{ .RSSLink }}" rel="feed" type="application/rss+xml" title="{{ .Site.Title }}" />
 {{ end }}
 {{ if not (in (string .Site.BaseURL) "localhost") }}
-<!-- Panelbear -->
-<script async src="https://cdn.panelbear.com/analytics.js?site=7moiko9QLML"></script>
+<script async src="https://rum.cronitor.io/script.js"></script>
 <script>
-    window.panelbear = window.panelbear || function() { (window.panelbear.q = window.panelbear.q || []).push(arguments); };
-    panelbear('config', { site: '7moiko9QLML' });
+    window.cronitor = window.cronitor || function() { (window.cronitor.q = window.cronitor.q || []).push(arguments); };
+    cronitor('config', { clientKey: 'ab51f29e7df6ffe65a02338fc78976e1' });
 </script>
 {{ end }}
