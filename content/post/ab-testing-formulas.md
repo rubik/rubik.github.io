@@ -1,6 +1,6 @@
 ---
 author: "Michele Lacchia"
-title: "A/B testing fundamentals - part II: binary and continous responses"
+title: "A/B testing fundamentals - part III: binary and continous responses"
 date: "2022-10-08"
 tags: ["math", "statistics", "ab-tests"]
 hasMath: true
@@ -225,8 +225,8 @@ $\theta = 0$ which is the closest to the alternative hypothesis boundary and
 thus the worst case in terms of Type I errors.
 </blockquote>
 
-We now derive the conditions to control the Type II error, and we'll find that
-we can do so by running the experiment with a big enough sample size.
+We now derive the conditions to control the Type II error $\beta$, and we'll
+find that we can do so by running the experiment with a big enough sample size.
 Controlling the Type II error is equivalent to requiring a specific test power,
 since the latter is defined as $1 - \beta$.
 
@@ -244,29 +244,25 @@ $$
 \end{aligned}
 $$
 
+As our goal is to obtain an expression for the sample size $n$, we need to
+solve the equation for $\hat \sigma_{\Delta n, m}^{-1}$ first, and then with
+respect to $n$. We have:
+
+$$
+\begin{aligned}
+\Phi^{-1}(1 - \beta) &= \Phi^{-1}(1 - \Phi(c - \delta\hat \sigma_{\Delta n, m}^{-1})) =\\\\
+&= \Phi^{-1}(\Phi(-c + \delta\hat \sigma_{\Delta n, m}^{-1})) =\\\\
+&= -c + \delta\hat \sigma_{\Delta n, m}^{-1}\\\\
+\end{aligned}
+$$
+
 Recall from $(1)$ that we found that in order to limit the Type I error at
 the desired significance level $\alpha$, the critical value $c$ must be equal
 to $\Phi^{-1}(1 - \alpha)$. Therefore,
 
-<div class="non-mobile">
 $$
-\begin{aligned}
-\Phi^{-1}(1 - \beta) &= \Phi^{-1}(1 - \Phi(\Phi^{-1}(1 - \alpha) - \delta\hat \sigma_{\Delta n, m}^{-1})) =\\
-&= \Phi^{-1}(\Phi(-\Phi^{-1}(1 - \alpha) + \delta\hat \sigma_{\Delta n, m}^{-1})) =\\
-&= -\Phi^{-1}(1 - \alpha) + \delta\hat \sigma_{\Delta n, m}^{-1}\\
-\end{aligned}
+\delta\hat \sigma_{\Delta n, m}^{-1} = \Phi^{-1}(1 - \alpha) + \Phi^{-1}(1 - \beta)
 $$
-</div>
-<div class="mobile">
-$$
-\begin{aligned}
-&\Phi^{-1}(1 - \beta) =\\\\
-=\ &\Phi^{-1}(1 - \Phi(\Phi^{-1}(1 - \alpha) - \delta\hat \sigma_{\Delta n, m}^{-1})) =\\\\
-=\ &\Phi^{-1}(\Phi(-\Phi^{-1}(1 - \alpha) + \delta\hat \sigma_{\Delta n, m}^{-1})) =\\\\
-=\ &-\Phi^{-1}(1 - \alpha) + \delta\hat \sigma_{\Delta n, m}^{-1}
-\end{aligned}
-$$
-</div>
 
 Before presenting the final expression for $n$, note that $\hat \sigma_{\Delta
 n, m}$ depends on $\bar X_n$ and $\bar Y_n$, which are observable only after
@@ -299,7 +295,7 @@ $$
 Observe that the sample size $n$ required to attain power $1 - \beta$ and
 maintain significance $\alpha$:
 
-1. is directly proportional to the variance $\pi (1 - \pi)$
+1. is directly proportional to the variance estimate $\pi (1 - \pi)$
 2. is inversely proportional to the square of the minimum effect of interest
    $\delta$
 
@@ -337,7 +333,7 @@ Central Limit Theorem. To apply the theorem, we also require that these random
 variables have finite mean and variance (as these are assumptions of the
 Central Limit Theorem) $\mu_1, \mu_2$ and $\sigma_1^2, \sigma_2^2$. If they
 represent order values, these assumptions are satisfied in most cases since
-such distribution should have limited support (that is, the order values belong
+such distribution should have compact support (that is, the order values belong
 to a bounded interval $[0, v]$ for some $v > 0$).
 
 Therefore, if $X_i, i = 1, \ldots, n$ and $Y_j, j = 1, \ldots, m$ (with $m =
@@ -364,10 +360,10 @@ $$
 with significance level $\alpha \in (0, 1)$, and power $1 - \beta \in (0, 1)$
 at a minimum effect of interest $\theta = \delta > 0$.
 
-As before, we consider the difference $\Delta_{n, m} = \bar Y_m - \bar X_n$ as
-an estimator for $\theta$ since $\Delta_{n, m} \sim \mathcal N(\theta,
-\sigma_{\Delta n, m}^2)$ with $\sigma_{\Delta n, m}^2 = \sigma_1^2/n +
-\sigma_2^2/m$.
+As for the case of binary responses, we consider the difference $\Delta_{n, m}
+= \bar Y_m - \bar X_n$ as an estimator for $\theta$ since $\Delta_{n, m} \sim
+\mathcal N(\theta, \sigma_{\Delta n, m}^2)$ with $\sigma_{\Delta n, m}^2 =
+\sigma_1^2/n + \sigma_2^2/m$.
 
 The test statistic $T_{n, m} = \Delta_{n, m} / \sigma_{\Delta n, m}$ has unit
 variance, but since $\sigma_1$ and $\sigma_2$ are unknown, we replace them with
@@ -398,19 +394,18 @@ is appropriate. Thus, in the following paragraphs we'll assume $T^\prime_{n, m}
 
 The same reasoning as before shows that the critical value below which the null
 hypothesis is rejected is $c = \Phi^{-1}(1 - \alpha)$. Analogous power
-calculations lead to the equation
+calculations lead to the same equation:
 
 $$
-\Phi^{-1}(1 - \beta) = -\Phi^{-1}(1 - \alpha) + \delta \hat \sigma_{\Delta n,
-m}^{-1}
+\delta\hat \sigma_{\Delta n, m}^{-1} = \Phi^{-1}(1 - \alpha) + \Phi^{-1}(1 - \beta)
 $$
 
-Before we can derive the expression for the sample size, we have to substitute
-$s_1^2$ and $s_2^2$ which are only known at the end of the experiment as they
-depend on the observed data. The experiment designer usually assumes that both
-variances are equal and estimates the value with recent and representative
-historical data, if available. We shall denote this estimate with the symbol
-$s_\star^2$.
+Before we can derive the expression for the sample size, we have to find a
+suitable replacement for $s_1^2$ and $s_2^2$, which are only known at the end
+of the experiment as they depend on the observed data. The experiment designer
+usually assumes that both variances are equal and estimates the value with
+recent and representative historical data, if available. We shall denote this
+estimate with the symbol $s_\star^2$.
 
 After substituting $m = rn$, we can solve for $n$:
 
@@ -475,7 +470,7 @@ slightly modified. I derived the following formula:
 
 $$
 \begin{align}
-M_{2, n, k + 1}^\star = M_{2, n, k}^\star + \frac{n - 1}{n} x_{k + 1}^2 - 2x_{k + 1}\bar x_k
+M_{2, n, k + 1} = M_{2, n, k} + \frac{n - 1}{n} x_{k + 1}^2 - 2x_{k + 1}\bar x_k
 \end{align}
 $$
 
@@ -651,5 +646,5 @@ This post showed how to derive the sample size formulas for binary and
 continous responses, and presented some useful formulas for online A/B test
 tracking and variance computation.
 
-Part III will discuss the peeking problem in online A/B tests and a detailed
+Part IV will discuss the peeking problem in online A/B tests and a detailed
 description of sequential tests as a possible solution.

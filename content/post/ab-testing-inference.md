@@ -1,6 +1,6 @@
 ---
 author: "Michele Lacchia"
-title: "A/B testing fundamentals - part I: statistical inference and hypothesis testing"
+title: "A/B testing fundamentals - part II: statistical inference and hypothesis testing"
 date: "2022-10-08"
 tags: ["math", "statistics", "ab-tests"]
 hasMath: true
