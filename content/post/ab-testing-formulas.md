@@ -23,10 +23,9 @@ statistical framework, I recommend reading part I of the series linked below.
 * [Part II: Statistical inference and hypothsis testing](/post/ab-testing-inference/)
 * Part III: Formulas for binary and continous responses (this post)
 * Part IV: Group sequential tests
-* Part V: Multivariate tests
-* Part VI: Bayesian testing
+* Part V: Test evaluation and generalizability of test results
+* Part VI: A/B testing calculators
 * Part VII: Bayesian vs frequentist testing
-* Part VIII: Test evaluation and generalizability of test results
 
 
 ## Sample size for binary responses
@@ -473,6 +472,13 @@ $$
 M_{2, n, k + 1} = M_{2, n, k} + \frac{n - 1}{n} x_{k + 1}^2 - 2x_{k + 1}\bar x_k
 \end{align}
 $$
+
+<blockquote>
+<strong>Note:</strong> the online updating scheme outlined above assumes that
+a user can make at most a single conversion. Accounting for multiple conversions
+from the same user complicates the formulas considerably, and that's outside
+of the scope of this post.
+</blockquote>
 
 When these single-pass algorithms are used to track the whole A/B test, it's no
 longer possible to perform segment analysis after the experiment (i.e.

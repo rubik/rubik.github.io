@@ -10,7 +10,7 @@ summary: "Statistical framework underlying online A/B testing using a frequentis
 
 This series of posts explores the statistical framework (with a frequentist
 approach) behind controlled trials with a focus on online A/B testing, and it
-assumes some basic knowledge about calculus, random variables, and statistics.
+assumes some basic knowledge of calculus, random variables, and statistics.
 In this first post we'll describe the foundation of frequentist A/B testing:
 statistical inference through hypothesis testing.
 
@@ -19,10 +19,9 @@ statistical inference through hypothesis testing.
 * Part II: Statistical inference and hypothsis testing (this post)
 * [Part III: Formulas for binary and continous responses](/post/ab-testing-formulas/)
 * Part IV: Group sequential tests
-* Part V: Multivariate tests
-* Part VI: Bayesian testing
+* Part V: Test evaluation and generalizability of test results
+* Part VI: A/B testing calculators
 * Part VII: Bayesian vs frequentist testing
-* Part VIII: Test evaluation and generalizability of test results
 
 ## Hypothesis testing
 Statistical inference is the application of statistical methods to learn the
