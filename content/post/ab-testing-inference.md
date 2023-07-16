@@ -99,8 +99,9 @@ Testing a composite null hypothesis is what usually makes the most sense in an
 online A/B test, as we are interested in detecting and estimating effects in
 only one direction: e.g. an increase in conversion rate or average revenue per
 user. In fact, using a point null hypothesis would require a larger sample size
-for the same significance level, and running a test so long as to detect a
-statistically significant negative effect is overall harmful for the business.
+for the same significance level, and running a test for a longer period of time
+to detect a statistically significant negative effect is overall more harmful
+for the business.
 
 ## Errors
 Since hypothesis tests derive their conclusions from a sample, and therefore
@@ -223,7 +224,7 @@ Beware! You should only assess the A/B testing results <strong>at the
 end</strong> of the experiment, once all data has been collected. Calculating
 p-values multiple times with the intent to stop the test while the required
 sample size has not been achieved exposes you to a much larger Type I error
-than anticipated. More on this in Part III of this series.
+than anticipated. More on this in Part IV of the series.
 </blockquote>
 
 ## Test statistics
@@ -400,15 +401,15 @@ out entirely. Granted, provided the experiment was designed properly, scenario
 \#3 is very unlikely, and by setting a significance level we accept that we'll
 make the wrong decision a certain fraction of times over the long run. It's
 therefore logical to interpret low p-values according to scenario \#1 above in
-practice, although the other two possibilities should not be forgotten.
+practice, although the other two possibilities should not be disregarded.
 
-Understanding statistical uncertainty is key for implementing a data-driven
-approach. Even when statistical methods are employed properly, it doesn't mean
-that a conclusion reached through the experimental procedure is irrefutable,
-certain, or unquestionable. Statistics is the science of estimating
-uncertainty. It cannot lead to certain conclusions, it can only suggest how
-close we are to having irrefutable evidence. Statistical methods provide means
-to estimate risk and control it as we deem appropriate.
+Understanding statistical uncertainty is crucial for implementing a data-driven
+approach. Even if statistical methods are applied correctly, this doesn't
+guarantee the resulting conclusions will be irrefutable, absolute, or beyond
+dispute. Statistics focuses on quantifying uncertainty: it doesn't yield
+definite conclusions, but rather indicates how close we are to obtaining
+irrefutable evidence. Statistical methods equip us with tools to assess risk
+and manage it as we consider appropriate.
 
 ## Example
 Consider an A/B test that was designed with two variants, A and B, in which the
