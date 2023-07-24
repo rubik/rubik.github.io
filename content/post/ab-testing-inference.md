@@ -18,7 +18,7 @@ statistical inference through hypothesis testing.
 * [Part I: Introduction](/post/ab-testing-introduction/)
 * Part II: Statistical inference and hypothsis testing (this post)
 * [Part III: Formulas for binary and continous responses](/post/ab-testing-formulas/)
-* Part IV: Group sequential tests
+* [Part IV: Sequential tests](/post/ab-testing-sequential/)
 * Part V: Test evaluation and generalizability of test results
 * Part VI: A/B testing calculators
 * Part VII: Bayesian vs frequentist testing

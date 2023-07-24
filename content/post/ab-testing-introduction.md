@@ -47,7 +47,7 @@ understanding of A/B testing.
 * Part I: Introduction (this post)
 * [Part II: Statistical inference and hypothsis testing](/post/ab-testing-inference/)
 * [Part III: Formulas for binary and continous responses](/post/ab-testing-formulas/)
-* Part IV: Group sequential tests
+* [Part IV: Sequential tests](/post/ab-testing-sequential/)
 * Part V: Test evaluation and generalizability of test results
 * Part VI: A/B testing calculators
 * Part VII: Bayesian vs frequentist testing
